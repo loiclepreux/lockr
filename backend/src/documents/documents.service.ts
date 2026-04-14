@@ -7,23 +7,40 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 export class DocumentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateDocumentDto & { ownerId: string }) {
-    return this.prisma.doc.create({
+  private serializeBigInt<T>(data: T): T {
+    return JSON.parse(
+      JSON.stringify(data, (_, value) => (typeof value === 'bigint' ? value.toString() : value)),
+    );
+  }
+
+  async create(
+    data: CreateDocumentDto & {
+      ownerId: string;
+      filePath: string;
+      size: string;
+      name: string;
+    },
+  ) {
+    const document = await this.prisma.doc.create({
       data: {
         ...data,
         size: BigInt(data.size),
-        addedDate: new Date(data.addedDate),
+        addedDate: data.addedDate ? new Date(data.addedDate) : new Date(),
       },
     });
+
+    return this.serializeBigInt(document);
   }
 
   async findAll() {
-    return this.prisma.doc.findMany({
+    const documents = await this.prisma.doc.findMany({
       include: {
         owner: true,
         docType: true,
       },
     });
+
+    return this.serializeBigInt(document);
   }
 
   async findOne(id: string) {
@@ -39,7 +56,7 @@ export class DocumentsService {
       throw new NotFoundException('Document introuvable');
     }
 
-    return document;
+    return this.serializeBigInt(document);
   }
 
   async update(id: string, data: UpdateDocumentDto, userId: string) {
@@ -53,13 +70,12 @@ export class DocumentsService {
       throw new ForbiddenException('Modification non autorisée');
     }
 
-    const { size, addedDate, docTypeId, ...rest } = data;
+    const { addedDate, docTypeId, ...rest } = data;
 
-    return this.prisma.doc.update({
+    const updatedDocument = await this.prisma.doc.update({
       where: { id },
       data: {
         ...rest,
-        ...(size ? { size: BigInt(size) } : {}),
         ...(addedDate ? { addedDate: new Date(addedDate) } : {}),
         ...(docTypeId
           ? {
@@ -70,6 +86,8 @@ export class DocumentsService {
           : {}),
       },
     });
+
+    return this.serializeBigInt(document);
   }
 
   async remove(id: string, userId: string) {

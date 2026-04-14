@@ -1,10 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UnauthorizedException,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { UnauthorizedException } from '@nestjs/common';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -19,16 +33,28 @@ export class DocumentsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createDocumentDto: CreateDocumentDto, @Req() req: AuthenticatedRequest) {
-    const ownerId = req.user?.id || req.user?.sub;
+  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createDocumentDto: CreateDocumentDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const ownerId = req.user?.id ?? req.user?.sub;
 
     if (!ownerId) {
       throw new UnauthorizedException('Utilisateur non authentifié');
     }
 
+    if (!file) {
+      throw new BadRequestException('Aucun fichier envoyé');
+    }
+
     return this.documentsService.create({
       ...createDocumentDto,
       ownerId,
+      filePath: file.path,
+      size: file.size.toString(),
+      name: createDocumentDto.name || file.originalname,
     });
   }
 
