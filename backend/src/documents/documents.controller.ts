@@ -1,8 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Request } from 'express';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { UnauthorizedException } from '@nestjs/common';
+
+interface AuthenticatedRequest extends Request {
+  user: {
+    id?: string;
+    sub?: string;
+  };
+}
 
 @Controller('documents')
 export class DocumentsController {
@@ -10,15 +19,17 @@ export class DocumentsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(@Body() createDocuementDto: CreateDocumentDto, @Req() req: any) {
-    console.log('User from request:', req.user);
+  create(@Body() createDocumentDto: CreateDocumentDto, @Req() req: AuthenticatedRequest) {
+    const ownerId = req.user?.id || req.user?.sub;
 
-    const newDocumentData = {
+    if (!ownerId) {
+      throw new UnauthorizedException('Utilisateur non authentifié');
+    }
+
+    return this.documentsService.create({
       ...createDocumentDto,
-      creatorId: req.user?.id || req.user?.sub,
-    };
-
-    return this.documentsService.create(newDocumentData);
+      ownerId,
+    });
   }
 
   @Get()
@@ -32,14 +43,28 @@ export class DocumentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDocumentDto: UpdateDocumentDto) {
-    return this.documentsService.update(id, updateDocumentDto);
+  @UseGuards(AuthGuard)
+  update(
+    @Param('id') id: string,
+    @Body() updateDocumentDto: UpdateDocumentDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const userId = req.user?.id ?? req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('Utilisateur non authentifié');
+    }
+    return this.documentsService.update(id, updateDocumentDto, userId);
   }
 
-  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: any) {
-    const userId = req.user?.id || req.user?.sub;
+  @UseGuards(AuthGuard)
+  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const userId = req.user?.id ?? req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('Utilisateur non authentifié');
+    }
 
     return this.documentsService.remove(id, userId);
   }

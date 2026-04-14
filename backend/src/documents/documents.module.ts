@@ -6,4 +6,4 @@ import { DocumentsController } from './documents.controller';
   controllers: [DocumentsController],
   providers: [DocumentsService],
 })
-export class GroupsModule {}
+export class DocumentsModule {}

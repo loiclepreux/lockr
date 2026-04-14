@@ -1,54 +1,92 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'prisma/prisma.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
-import { PrismaService } from 'prisma/prisma.service';
-import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentsService {
   constructor(private readonly prisma: PrismaService) {}
-  async create(data: CreateDocumentDto & { creatorId: string }): Promise<Document> {
-  const document = await this.prisma.document.create({
-    data,
-  });
-  
-  return document; 
-}
+
+  async create(data: CreateDocumentDto & { ownerId: string }) {
+    return this.prisma.doc.create({
+      data: {
+        ...data,
+        size: BigInt(data.size),
+        addedDate: new Date(data.addedDate),
+      },
+    });
+  }
 
   async findAll() {
-    const result = await this.prisma.document.findMany({});
-    return result;
-  }
-
-  async findOne(id: string) : Promise<Document | null>{
-    const result = await this.prisma.document.findUnique({
-      where: { id },
+    return this.prisma.doc.findMany({
+      include: {
+        owner: true,
+        docType: true,
+      },
     });
-    return result;
   }
 
-  async update(
-    id: string,
-    data: UpdateDocumentDto,
-  ): Promise<Document> {
-    const result = await this.prisma.document.update({
+  async findOne(id: string) {
+    const document = await this.prisma.doc.findUnique({
       where: { id },
-      data,
+      include: {
+        owner: true,
+        docType: true,
+      },
     });
-    return result;
-  }
 
-  async remove(id: string, userId: any) {
-    const document = await this.findOne(id);
-    if(!document){
-      throw new NotFoundException()
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
     }
-    if (String(document.creatorId) !== String(userId)) {
-      throw new ForbiddenException();
+
+    return document;
+  }
+
+  async update(id: string, data: UpdateDocumentDto, userId: string) {
+    const document = await this.prisma.doc.findUnique({ where: { id } });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
     }
-    const result = await this.prisma.document.delete({
+
+    if (document.ownerId !== userId) {
+      throw new ForbiddenException('Modification non autorisée');
+    }
+
+    const { size, addedDate, docTypeId, ...rest } = data;
+
+    return this.prisma.doc.update({
+      where: { id },
+      data: {
+        ...rest,
+        ...(size ? { size: BigInt(size) } : {}),
+        ...(addedDate ? { addedDate: new Date(addedDate) } : {}),
+        ...(docTypeId
+          ? {
+              docType: {
+                connect: { id: docTypeId },
+              },
+            }
+          : {}),
+      },
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const document = await this.prisma.doc.findUnique({
       where: { id },
     });
-    return result;
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
+    }
+
+    if (document.ownerId !== userId) {
+      throw new ForbiddenException('Tu ne peux pas supprimer ce document');
+    }
+
+    return this.prisma.doc.delete({
+      where: { id },
+    });
   }
 }

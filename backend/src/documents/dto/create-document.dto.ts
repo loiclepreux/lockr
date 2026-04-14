@@ -1,21 +1,25 @@
-import { IsString, IsInt, IsEnum, IsOptional, IsUrl, MinLength } from 'class-validator';
-import { privacyEnum } from 'prisma/generated/prisma/client';
+import { IsDateString, IsEnum, IsNotEmpty, IsString, MinLength, IsUUID } from 'class-validator';
+import { extentionEnum } from 'prisma/generated/prisma/client';
 
-export class CreateGroupDto {
+export class CreateDocumentDto {
   @IsString()
-  @MinLength(3)
+  @MinLength(2)
   name: string;
 
-  @IsString()
-  description: string;
+  @IsEnum(extentionEnum)
+  extension: extentionEnum;
 
   @IsString()
-  category: string;
+  @IsNotEmpty()
+  size: string; // à ajuster ensuite si tu veux gérer BigInt proprement
 
-  @IsEnum(privacyEnum)
-  privacy: privacyEnum;
+  @IsUUID()
+  docTypeId: string;
 
-  @IsOptional()
-  @IsUrl()
-  imgUrl?: string;
+  @IsDateString()
+  addedDate: string;
+
+  @IsString()
+  @IsNotEmpty()
+  filePath: string;
 }
