@@ -1,6 +1,8 @@
 import { useState } from "react";
 import FeedbackMessage from "../ui/FeedbackMessage";
 import { feedbackMessages } from "../../types/feedbackMessage";
+import { useCreateGroup } from "../../hooks/useGroups";
+import type { IGroupMember } from "../../types/IGroup";
 
 interface CreateGroupModalProps {
     isOpen: boolean;
@@ -19,7 +21,46 @@ export default function CreateGroupModal({
         message: string;
     } | null>(null);
 
-    const handleConfirm = () => {
+    // ── Membres : liste locale construite avant soumission ──────────────────
+    // Les membres n'ont pas encore d'id ici — c'est le serveur qui les génère.
+    // On stocke juste les infos saisies en attendant.
+    const [members, setMembers] = useState<Omit<IGroupMember, "id">[]>([]);
+    const [memberFirstName, setMemberFirstName] = useState("");
+    const [memberLastName, setMemberLastName] = useState("");
+    const [memberEmail, setMemberEmail] = useState("");
+
+    // Le hook mutation — mutateAsync nous donne une Promise qu'on peut await
+    const { mutateAsync: createGroup, isPending } = useCreateGroup();
+
+    // ── Ajouter un membre à la liste locale ─────────────────────────────────
+    const handleAddMember = () => {
+        if (
+            !memberFirstName.trim() ||
+            !memberLastName.trim() ||
+            !memberEmail.trim()
+        )
+            return;
+
+        setMembers((prev) => [
+            ...prev,
+            {
+                firstName: memberFirstName,
+                lastName: memberLastName,
+                email: memberEmail,
+            },
+        ]);
+
+        // On vide les champs du mini-formulaire après ajout
+        setMemberFirstName("");
+        setMemberLastName("");
+        setMemberEmail("");
+    };
+
+    const handleRemoveMember = (index: number) => {
+        setMembers((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const handleConfirm = async () => {
         setFeedback(null);
 
         if (!name.trim()) {
@@ -37,22 +78,19 @@ export default function CreateGroupModal({
             });
             return;
         }
-        // TODO : appel API pour créer le groupe
+
         try {
-            console.log({ name, description, type });
+            // On envoie le groupe avec ses membres d'un seul coup
+            await createGroup({ name, description, members });
 
             setFeedback({
                 type: "success",
                 message: feedbackMessages.group.createSuccess,
             });
 
+            // Petit délai pour que l'utilisateur voie le message de succès
             setTimeout(() => {
                 handleClose();
-                onClose();
-                setName("");
-                setDescription("");
-                setType("Personnel");
-                setFeedback(null);
             }, 1200);
         } catch (error) {
             console.error(error);
@@ -67,6 +105,10 @@ export default function CreateGroupModal({
         setName("");
         setDescription("");
         setType("Personnel");
+        setMembers([]);
+        setMemberFirstName("");
+        setMemberLastName("");
+        setMemberEmail("");
         setFeedback(null);
         onClose();
     };
@@ -75,7 +117,6 @@ export default function CreateGroupModal({
 
     return (
         <dialog open className="modal">
-            {/* Overlay — clic pour fermer */}
             <div className="modal-backdrop" onClick={onClose} />
 
             <div className="modal-box max-w-lg bg-[#0f1115] text-white border border-cyan-500/20 shadow-[0_0_30px_rgba(0,255,255,0.08)] rounded-2xl">
@@ -101,7 +142,6 @@ export default function CreateGroupModal({
                     </div>
                 )}
 
-                {/* Formulaire */}
                 <div className="flex flex-col gap-5">
                     {/* Nom du groupe */}
                     <div className="flex flex-col gap-1.5">
@@ -232,6 +272,90 @@ export default function CreateGroupModal({
                             />
                         </label>
                     </div>
+
+                    {/* ── Section membres ─────────────────────────────────────────────────── */}
+                    <div className="flex flex-col gap-3 border-t border-white/10 pt-5">
+                        <label className="text-gray-400 text-xs uppercase tracking-widest">
+                            Membres ({members.length})
+                        </label>
+
+                        {/* Liste des membres déjà ajoutés */}
+                        {members.length > 0 && (
+                            <div className="flex flex-col gap-2">
+                                {members.map((member, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center justify-between bg-white/3 border border-cyan-500/10 rounded-xl px-4 py-2"
+                                    >
+                                        <span className="text-sm text-gray-300">
+                                            {member.firstName} {member.lastName}
+                                            <span className="text-gray-500 ml-2">
+                                                — {member.email}
+                                            </span>
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleRemoveMember(index)
+                                            }
+                                            className="text-gray-500 hover:text-red-400 transition-colors text-xs cursor-pointer"
+                                        >
+                                            Retirer
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Mini-formulaire d'ajout */}
+                        <div className="flex flex-col gap-2">
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Prénom"
+                                    value={memberFirstName}
+                                    onChange={(e) =>
+                                        setMemberFirstName(e.target.value)
+                                    }
+                                    className="input input-bordered input-sm flex-1 bg-white/3 border-cyan-500/20 text-white placeholder-gray-600 focus:border-cyan-500/50 focus:outline-none"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Nom"
+                                    value={memberLastName}
+                                    onChange={(e) =>
+                                        setMemberLastName(e.target.value)
+                                    }
+                                    className="input input-bordered input-sm flex-1 bg-white/3 border-cyan-500/20 text-white placeholder-gray-600 focus:border-cyan-500/50 focus:outline-none"
+                                />
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={memberEmail}
+                                    onChange={(e) =>
+                                        setMemberEmail(e.target.value)
+                                    }
+                                    // Permet d'ajouter le membre en appuyant sur Entrée
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault();
+                                            handleAddMember();
+                                        }
+                                    }}
+                                    className="input input-bordered input-sm flex-1 bg-white/3 border-cyan-500/20 text-white placeholder-gray-600 focus:border-cyan-500/50 focus:outline-none"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddMember}
+                                    className="px-4 py-1 rounded-xl border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 transition-all duration-200 text-sm cursor-pointer"
+                                >
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Boutons d'action — même style que la modal notifications */}
@@ -244,9 +368,10 @@ export default function CreateGroupModal({
                     </button>
                     <button
                         onClick={handleConfirm}
+                        disabled={isPending}
                         className="px-5 py-3 rounded-xl bg-cyan-500 text-black font-semibold hover:bg-cyan-400 transition-all duration-300 cursor-pointer"
                     >
-                        Créer
+                        {isPending ? "Création..." : "Créer"}
                     </button>
                 </div>
             </div>

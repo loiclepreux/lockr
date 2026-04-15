@@ -1,15 +1,9 @@
 import GroupCard from "./GroupCard";
-
-interface Group {
-    id: number;
-    name: string;
-    description: string;
-    membersCount: number;
-}
+import type { IGroup } from "../../types/IGroup";
 
 interface GroupListProps {
     title: string;
-    groups: Group[];
+    groups: IGroup[];
 }
 
 export default function GroupList({ title, groups }: GroupListProps) {
@@ -36,6 +30,7 @@ export default function GroupList({ title, groups }: GroupListProps) {
                     {groups.map((group) => (
                         <GroupCard
                             key={group.id}
+                            id={group.id}
                             name={group.name}
                             description={group.description}
                             membersCount={group.membersCount}

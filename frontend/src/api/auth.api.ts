@@ -1,15 +1,10 @@
 import { api } from "../utils/axios-client.ts";
 import type { SigninData, SignupData } from "../types/auth.type.ts";
 import axios from "axios";
+import type { IUser } from "../types/IUser.ts";
 
 export type MeResponse = {
-    user: {
-        id: string;
-        email: string;
-        firstName: string;
-        lastName: string;
-        password: string;
-    };
+    user: IUser
 };
 
 export type AuthResponse = {
@@ -33,12 +28,12 @@ export class AuthApi {
         return data;
     }
 
+    // ⚠️ Appel direct axios — contourne volontairement l'intercepteur
+    // pour éviter la boucle infinie si le refresh token est lui-même invalide
     static async refresh(): Promise<AuthResponse> {
         const { data } = await axios.get(
             `${import.meta.env.VITE_API_URL}/auth/refresh`,
-            {
-                withCredentials: true,
-            },
+            { withCredentials: true },
         );
         return data;
     }

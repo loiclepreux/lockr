@@ -10,11 +10,10 @@ export class DocumentsService {
   constructor(private readonly prisma: PrismaService) {}
 
   // je transforme les BigInt en string pour éviter des erreurs JSON
-  private serializeBigInt(data: any) {
-    return JSON.parse(
-      JSON.stringify(data, (_, value) => (typeof value === 'bigint' ? value.toString() : value)),
+  private TransformBigInt = (data: any) =>
+    JSON.parse(
+      JSON.stringify(data, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
     );
-  }
 
   // je récupère un document ou j'envoie une erreur s'il n'existe pas
   private async getDocument(id: string) {
@@ -50,7 +49,7 @@ export class DocumentsService {
         addedDate: data.addedDate ? new Date(data.addedDate) : new Date(),
       },
     });
-    return this.serializeBigInt(newDocument);
+    return this.TransformBigInt(newDocument);
   }
 
   // récupèration de tout les documents
@@ -61,7 +60,7 @@ export class DocumentsService {
         docType: true,
       },
     });
-    return this.serializeBigInt(documents);
+    return this.TransformBigInt(documents);
   }
 
   // récupèration d'un document
@@ -76,7 +75,7 @@ export class DocumentsService {
     if (!document) {
       throw new NotFoundException('Document introuvable');
     }
-    return this.serializeBigInt(document);
+    return this.TransformBigInt(document);
   }
 
   // suppression d'un document
@@ -86,7 +85,7 @@ export class DocumentsService {
     const deletedDocument = await this.prisma.doc.delete({
       where: { id },
     });
-    return this.serializeBigInt(deletedDocument);
+    return this.TransformBigInt(deletedDocument);
   }
 
  // mise a jours du status d'un document
@@ -97,7 +96,7 @@ export class DocumentsService {
       where: { id },
       data: { status },
     });
-    return this.serializeBigInt(updatedDocument);
+    return this.TransformBigInt(updatedDocument);
   }
 
   // modification d'un document
@@ -121,7 +120,7 @@ export class DocumentsService {
       where: { id },
       data: updateData,
     });
-    return this.serializeBigInt(updatedDocument);
+    return this.TransformBigInt(updatedDocument);
   }
 
   // partage d'un document avec d'autre users
@@ -136,7 +135,7 @@ export class DocumentsService {
       throw new NotFoundException('le destinataire est introuvable');
     }
 
-    const existingShare = await this.prisma.sharedDoc.findUnique({
+    const existShare = await this.prisma.sharedDoc.findUnique({
       where: {
         docId_receiverId: {
           docId: documentId,
@@ -144,7 +143,7 @@ export class DocumentsService {
         },
       },
     });
-    if (existingShare) {
+    if (existShare) {
       throw new BadRequestException('Ce document est déjà partagé avec cet utilisateur');
     }
 
@@ -159,6 +158,6 @@ export class DocumentsService {
         expirationDate: expirationDate ? new Date(expirationDate) : null,
       },
     });
-    return this.serializeBigInt(newShare);
+    return this.TransformBigInt(newShare);
   }
 }
