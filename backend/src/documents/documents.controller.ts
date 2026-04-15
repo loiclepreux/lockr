@@ -18,7 +18,9 @@ import { Request } from 'express';
 import { DocumentsService } from './documents.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { CreateShareDto } from './dto/create-share.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { UpdateDocumentStatusDto } from './dto/status-document.dto';
 
 interface AuthenticatedRequest extends Request {
   user: {
@@ -93,5 +95,37 @@ export class DocumentsController {
     }
 
     return this.documentsService.remove(id, userId);
+  }
+
+  @Post(':id/share')
+  @UseGuards(AuthGuard)
+  shareDocument(
+    @Param('id') documentId: string,
+    @Body() createShareDto: CreateShareDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const userId = req.user?.id ?? req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('Utilisateur non authentifié');
+    }
+
+    return this.documentsService.shareDocument(documentId, createShareDto, userId);
+  }
+
+  @Patch(':id/status')
+  @UseGuards(AuthGuard)
+  updateStatus(
+    @Param('id') id: string,
+    @Body() dto: UpdateDocumentStatusDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const userId = req.user?.id ?? req.user?.sub;
+
+    if (!userId) {
+      throw new UnauthorizedException('Utilisateur non authentifié');
+    }
+
+    return this.documentsService.updateStatus(id, dto.status, userId);
   }
 }

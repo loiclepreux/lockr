@@ -23,6 +23,15 @@ export const extentionEnum = {
 export type extentionEnum = (typeof extentionEnum)[keyof typeof extentionEnum]
 
 
+export const DocStatus = {
+  ACTIVE: 'ACTIVE',
+  ARCHIVED: 'ARCHIVED',
+  DELETED: 'DELETED'
+} as const
+
+export type DocStatus = (typeof DocStatus)[keyof typeof DocStatus]
+
+
 export const privacyEnum = {
   public: 'public',
   private: 'private'

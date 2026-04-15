@@ -48,6 +48,7 @@ model Doc {
   docTypeId String
   addedDate DateTime
   filePath  String
+  status    DocStatus     @default(ACTIVE)
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -66,6 +67,12 @@ enum extentionEnum {
   png
   jpg
   jpeg
+}
+
+enum DocStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
 }
 
 model DocType {

@@ -1,7 +1,14 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
+import { CreateShareDto } from './dto/create-share.dto';
+import { DocStatus } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class DocumentsService {
@@ -106,5 +113,77 @@ export class DocumentsService {
     return this.prisma.doc.delete({
       where: { id },
     });
+  }
+
+  async shareDocument(documentId: string, createShareDto: CreateShareDto, requesterId: string) {
+    const { receiverId, expirationDate } = createShareDto;
+
+    const document = await this.prisma.doc.findUnique({
+      where: { id: documentId },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
+    }
+
+    if (document.ownerId !== requesterId) {
+      throw new ForbiddenException('Seul le propriétaire peut partager ce document');
+    }
+
+    const receiver = await this.prisma.user.findUnique({
+      where: { id: receiverId },
+    });
+
+    if (!receiver) {
+      throw new NotFoundException('Utilisateur destinataire introuvable');
+    }
+
+    const existingShare = await this.prisma.sharedDoc.findUnique({
+      where: {
+        docId_receiverId: {
+          docId: documentId,
+          receiverId,
+        },
+      },
+    });
+
+    if (existingShare) {
+      throw new BadRequestException('Ce document est déjà partagé avec cet utilisateur');
+    }
+
+    const share = await this.prisma.sharedDoc.create({
+      data: {
+        doc: {
+          connect: { id: documentId },
+        },
+        receiver: {
+          connect: { id: receiverId },
+        },
+        ...(expirationDate ? { expirationDate: new Date(expirationDate) } : {}),
+      },
+    });
+
+    return this.serializeBigInt(share);
+  }
+
+  async updateStatus(id: string, status: DocStatus, userId: string) {
+    const document = await this.prisma.doc.findUnique({
+      where: { id },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
+    }
+
+    if (document.ownerId !== userId) {
+      throw new ForbiddenException('Modification non autorisée');
+    }
+
+    const updated = await this.prisma.doc.update({
+      where: { id },
+      data: { status },
+    });
+
+    return this.serializeBigInt(updated);
   }
 }
