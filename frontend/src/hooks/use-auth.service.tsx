@@ -1,14 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { AuthApi } from "../api/auth.api";
 import type {
     AuthResponse,
     MeResponse,
     SigninData,
     SignupData,
-} from "../types/auth.type";
-import { useAuthStore } from "../stores/auth.store";
-import { useToastStore } from "../stores/toast.store";
+} from "../types/auth.types";
+import { useAuthStore } from "../stores/useAuthStore";
+import { useToastStore } from "../stores/useToastStore";
 
 export function useSignin() {
     const { setUser, setAccessToken } = useAuthStore();

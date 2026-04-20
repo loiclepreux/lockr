@@ -18,7 +18,8 @@ export default function GroupPage() {
                         Mes <span className="text-cyan-400">groupes</span>
                     </h1>
                     <p className="text-sm text-gray-400">
-                        Gérez vos groupes personnels et les groupes partagés avec vous.
+                        Gérez vos groupes personnels et les groupes partagés
+                        avec vous.
                     </p>
                 </header>
 
@@ -29,7 +30,10 @@ export default function GroupPage() {
                             Chargement de vos groupes...
                         </p>
                     ) : (
-                        <GroupList title="Mes groupes" groups={myGroups ?? []} />
+                        <GroupList
+                            title="Mes groupes"
+                            groups={myGroups ?? []}
+                        />
                     )}
                 </section>
 
@@ -54,7 +58,19 @@ export default function GroupPage() {
                 title="Créer un groupe"
                 className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 w-14 h-14 rounded-full bg-cyan-500 text-black flex items-center justify-center shadow-lg hover:bg-cyan-400 transition"
             >
-                +
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
             </button>
 
             <CreateGroupModal

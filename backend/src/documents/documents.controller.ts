@@ -7,6 +7,7 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UpdateDocumentStatusDto } from './dto/status-document.dto';
+import { createMulterConfig } from 'src/config/config.multer';
 
 interface AuthentifRequest extends Request {
   user: {
@@ -32,7 +33,24 @@ export class DocumentsController {
   // j'upload un document et l'associe a l'utilisateur authentifié
   @Post()
   @UseGuards(AuthGuard)
-  @UseInterceptors(FileInterceptor('file', { dest: './uploads' }))
+  @UseInterceptors(
+  FileInterceptor(
+    'file',
+    createMulterConfig({
+      folder: 'documents',
+      allowedMimeTypes: [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'audio/mpeg',
+        'video/mp4',
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+      ],
+      maxSizeMb: 20,
+    }),
+  ),
+)
   create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,

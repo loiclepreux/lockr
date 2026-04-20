@@ -158,6 +158,6 @@ export class DocumentsService {
         expirationDate: expirationDate ? new Date(expirationDate) : null,
       },
     });
-    return this.TransformBigInt(newShare);
+    return (newShare);
   }
 }

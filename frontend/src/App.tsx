@@ -38,14 +38,14 @@ function App() {
                     {/* Routes privées temporairement accessibles */}
                     {/* <Route element={<PrivateRoute />}> */}
                         <Route element={<PrivateLayout />}>
-                            <Route path="/dashboard" element={<DashboardPage />} />
-                            <Route path="/groups" element={<GroupPage />} />
-                            <Route path="/documents" element={<DocumentsPage />} />
-                            <Route path="/myAccount" element={<MyAccount />} />
-                            <Route
-                                path="/notifications"
-                                element={<NotificationPage />}
-                            />
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/groups" element={<GroupPage />} />
+                        <Route path="/documents" element={<DocumentsPage />} />
+                        <Route path="/myAccount" element={<MyAccount />} />
+                        <Route
+                            path="/notifications"
+                            element={<NotificationPage />}
+                        />
                         </Route>
                     {/* </Route> */}
                 </Routes>
