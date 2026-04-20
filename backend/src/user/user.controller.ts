@@ -93,6 +93,7 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {
+    console.log("🚀 ~ UserController ~ remove ~ id:", id)
     try {
       await this.userService.remove(id);
     } catch (error) {
