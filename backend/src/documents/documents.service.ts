@@ -46,6 +46,7 @@ export class DocumentsService {
       data: {
         ...data,
         size: BigInt(data.size),
+        status: DocStatus.ACTIVE,
         addedDate: data.addedDate ? new Date(data.addedDate) : new Date(),
       },
     });
