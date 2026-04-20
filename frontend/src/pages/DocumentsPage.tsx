@@ -1,20 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import {
-    ChevronRight,
-    Clock,
     Download,
     Edit2,
-    Infinity,
     MoreVertical,
-    Plus,
-    Settings2,
     Share2,
     Trash2,
-    User,
-    X,
 } from "lucide-react";
 import FeedbackMessage from "../components/ui/FeedbackMessage";
 import { feedbackMessages } from "../types/feedbackMessage";
+import { ShareModal } from "../components/modal/ShareModal";
 
 interface DocumentFile {
     id: number;
@@ -508,7 +502,6 @@ export default function DocumentsPage() {
                     </div>
                 </div>
             </div>
-
             {openMenuId !== null && (
                 <div
                     ref={menuRef}
@@ -599,9 +592,26 @@ export default function DocumentsPage() {
                     </ul>
                 </div>
             )}
-
             {/* MODAL SHARE */}
-            <dialog
+            <ShareModal
+                state={{
+                    selectedDoc,
+                    feedback,
+                    selectedUsers,
+                    emailInput,
+                    suggestedUsers,
+                    existingAccess,
+                }}
+                actions={{
+                    setEmailInput,
+                    setExistingAccess,
+                    removeUser,
+                    addUser,
+                    confirmShare,
+                }}
+            />
+            ;
+            {/* <dialog
                 id="share_modal"
                 className="modal modal-bottom sm:modal-middle backdrop-blur-sm"
             >
@@ -913,8 +923,7 @@ export default function DocumentsPage() {
                 <form method="dialog" className="modal-backdrop bg-black/50">
                     <button>fermer</button>
                 </form>
-            </dialog>
-
+            </dialog> */}
             {/* MODAL DELETE */}
             <dialog
                 id="delete_modal"
@@ -954,7 +963,6 @@ export default function DocumentsPage() {
                     <button>fermer</button>
                 </form>
             </dialog>
-
             {/* MODAL RENAME */}
             <dialog
                 id="rename_modal"
