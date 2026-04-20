@@ -351,7 +351,7 @@ export type DocCreateInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -369,7 +369,7 @@ export type DocUncheckedCreateInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -417,7 +417,7 @@ export type DocCreateManyInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -654,7 +654,7 @@ export type DocCreateWithoutOwnerInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -670,7 +670,7 @@ export type DocUncheckedCreateWithoutOwnerInput = {
   extension: $Enums.extentionEnum
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -727,7 +727,7 @@ export type DocCreateWithoutDocTypeInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -743,7 +743,7 @@ export type DocUncheckedCreateWithoutDocTypeInput = {
   extension: $Enums.extentionEnum
   ownerId: string
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -783,7 +783,7 @@ export type DocCreateWithoutSharedDocsInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -800,7 +800,7 @@ export type DocUncheckedCreateWithoutSharedDocsInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -859,7 +859,7 @@ export type DocCreateWithoutGroupsInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -876,7 +876,7 @@ export type DocUncheckedCreateWithoutGroupsInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -936,7 +936,7 @@ export type DocCreateManyOwnerInput = {
   extension: $Enums.extentionEnum
   size: bigint | number
   docTypeId: string
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -992,7 +992,7 @@ export type DocCreateManyDocTypeInput = {
   extension: $Enums.extentionEnum
   ownerId: string
   size: bigint | number
-  status: $Enums.DocStatus
+  status?: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
