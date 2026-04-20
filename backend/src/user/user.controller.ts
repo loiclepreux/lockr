@@ -95,7 +95,8 @@ export class UserController {
   async remove(@Param('id') id: string) {
     try {
       await this.userService.remove(id);
-    } catch {
+    } catch (error) {
+      console.error('DELETE USER ERROR:', error);
       throw new NotFoundException();
     }
   }

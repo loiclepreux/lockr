@@ -7,6 +7,7 @@ import PublicLayout from "./components/layouts/PublicLayout";
 
 // Auth guard
 import PrivateRoute from "./components/auth/PrivateRoute";
+import PrivateLayout from "./components/layouts/PrivateLayout";
 
 // Pages publiques
 import Home from "./pages/Home";
@@ -36,14 +37,22 @@ function App() {
 
                     {/* ====== ROUTES PRIVÉES (LOC-104) ====== */}
                     <Route element={<PrivateRoute />}>
-                        <Route path="/dashboard" element={<DashboardPage />} />
-                        <Route path="/groups" element={<GroupPage />} />
-                        <Route path="/documents" element={<DocumentsPage />} />
-                        <Route path="/myAccount" element={<MyAccount />} />
-                        <Route
-                            path="/notifications"
-                            element={<NotificationPage />}
-                        />
+                        <Route element={<PrivateLayout />}>
+                            <Route
+                                path="/dashboard"
+                                element={<DashboardPage />}
+                            />
+                            <Route path="/groups" element={<GroupPage />} />
+                            <Route
+                                path="/documents"
+                                element={<DocumentsPage />}
+                            />
+                            <Route path="/myAccount" element={<MyAccount />} />
+                            <Route
+                                path="/notifications"
+                                element={<NotificationPage />}
+                            />
+                        </Route>
                     </Route>
                 </Routes>
             </BrowserRouter>

@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
+import NavBarLanding from "../ui/NavBarLanding";
 
 // --------------------------------------------------------------------------
 // PublicLayout (LOC-103) — Layout des pages NON connectées
@@ -25,6 +26,11 @@ const PublicLayout = () => {
     }
 
     // Outlet = la page enfant (Home, Signin, ou Signup)
-    return <Outlet />;
+    return (
+        <div className="bg-[#0b0f14] text-white min-h-screen">
+            <NavBarLanding />
+            <Outlet />
+        </div>
+    );
 };
 export default PublicLayout;
