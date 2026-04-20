@@ -1,24 +1,48 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import Logo from "../assets/images/logo.png";
-import type { IUser } from "../types/IUser";
+import { AuthApi } from "../api/auth.api";
+import { useAuthStore } from "../stores/useAuthStore";
 
-interface ISigninInput extends Omit<IUser, "id"> {
-    confirmPassword?: string;
+interface ISigninInput {
+    email: string;
+    password: string;
 }
 
 const Signin = () => {
+    const navigate = useNavigate();
+    // login n'existe plus — on utilise setAccessToken et setUser séparément
+    const setAccessToken = useAuthStore((state) => state.setAccessToken);
+    const setUser = useAuthStore((state) => state.setUser);
+
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        formState: { errors },
     } = useForm<ISigninInput>();
 
-    const onSubmit: SubmitHandler<ISigninInput> = (data) => {
-        if (data.password === data.confirmPassword) {
-            console.log("Valid data :", data);
-        } else {
-            console.error("Passwords do not match");
+    const onSubmit: SubmitHandler<ISigninInput> = async (formData) => {
+        try {
+            const response = await AuthApi.signin({
+                email: formData.email,
+                password: formData.password,
+            });
+
+            // response.data contient { accessToken, user } via IResponse<AuthPayload>
+            const { accessToken, user } = response.data;
+
+            // On met à jour le store en deux étapes — plus de login() centralisé
+            setAccessToken(accessToken);
+            setUser(user);
+
+            navigate("/dashboard");
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                const message =
+                    error.response?.data?.message || "Identifiants invalides";
+                alert(message);
+            }
         }
     };
 
@@ -63,14 +87,18 @@ const Signin = () => {
                         <div className="form-control mt-2">
                             <label className="label">
                                 <span className="label-text">
-                                    Password <span className="text-error">*</span>
+                                    Password{" "}
+                                    <span className="text-error">*</span>
                                 </span>
                             </label>
                             <input
                                 type="password"
                                 placeholder="Password"
                                 className={`input input-bordered ${errors.password ? "input-error" : ""}`}
-                                {...register("password", { required: true, minLength: 8 })}
+                                {...register("password", {
+                                    required: true,
+                                    minLength: 8,
+                                })}
                             />
                             {errors.password?.type === "required" && (
                                 <label className="label">
@@ -89,17 +117,25 @@ const Signin = () => {
                         </div>
 
                         <div className="mt-2 text-sm">
-                            <button type="button" className="link link-hover text-alt opacity-70">
+                            <button
+                                type="button"
+                                className="link link-hover text-alt opacity-70"
+                            >
                                 Forgot password?
                             </button>
                         </div>
 
-                        <button type="submit" className="btn btn-primary mt-6 w-full">
+                        <button
+                            type="submit"
+                            className="btn btn-primary mt-6 w-full"
+                        >
                             Login
                         </button>
                     </form>
 
-                    <div className="divider text-xs uppercase opacity-50">OR</div>
+                    <div className="divider text-xs uppercase opacity-50">
+                        OR
+                    </div>
 
                     <div className="text-center">
                         <Link to="/signup" className="link link-hover text-sm">

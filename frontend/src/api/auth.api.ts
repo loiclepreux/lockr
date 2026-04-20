@@ -5,7 +5,7 @@ import type {
     AuthResponse,
     SigninData,
     SignupData,
-} from "../types/auth.type";
+} from "../types/auth.types.ts";
 import type { IUser } from "../types/IUser";
 import type { IResponse } from "../types/IResponse.ts";
 export type MeResponse = IResponse<IUser>;

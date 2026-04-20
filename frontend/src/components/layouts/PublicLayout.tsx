@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useAuthStore from "../../stores/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 // --------------------------------------------------------------------------
 // PublicLayout (LOC-103) — Layout des pages NON connectées
@@ -27,5 +27,4 @@ const PublicLayout = () => {
     // Outlet = la page enfant (Home, Signin, ou Signup)
     return <Outlet />;
 };
-
 export default PublicLayout;

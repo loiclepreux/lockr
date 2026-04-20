@@ -1,13 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router";
 import "./index.css";
 
 // Layout
 import PublicLayout from "./components/layouts/PublicLayout";
-import PrivateLayout from "./components/layouts/PrivateLayout";
 
 // Auth guard
-// import PrivateRoute from "./components/auth/PrivateRoute";
+import PrivateRoute from "./components/auth/PrivateRoute";
 
 // Pages publiques
 import Home from "./pages/Home";
@@ -28,16 +27,15 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <Routes>
-                    {/* Routes publiques */}
+                    {/* ====== ROUTES PUBLIQUES (LOC-103) ====== */}
                     <Route element={<PublicLayout />}>
                         <Route path="/" element={<Home />} />
                         <Route path="/signup" element={<Signup />} />
                         <Route path="/signin" element={<Signin />} />
                     </Route>
 
-                    {/* Routes privées temporairement accessibles */}
-                    {/* <Route element={<PrivateRoute />}> */}
-                        <Route element={<PrivateLayout />}>
+                    {/* ====== ROUTES PRIVÉES (LOC-104) ====== */}
+                    <Route element={<PrivateRoute />}>
                         <Route path="/dashboard" element={<DashboardPage />} />
                         <Route path="/groups" element={<GroupPage />} />
                         <Route path="/documents" element={<DocumentsPage />} />
@@ -46,8 +44,7 @@ function App() {
                             path="/notifications"
                             element={<NotificationPage />}
                         />
-                        </Route>
-                    {/* </Route> */}
+                    </Route>
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>

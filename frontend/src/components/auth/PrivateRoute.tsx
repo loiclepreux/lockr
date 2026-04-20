@@ -1,11 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useAuthStore from "../../stores/useAuthStore";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const PrivateRoute = () => {
-    // Ce composant se re-rendra automatiquement si cette valeur change
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const accessToken = useAuthStore((state) => state.accessToken);
 
-    if (!isAuthenticated) {
+    if (!accessToken) {
         return <Navigate to="/signin" replace />;
     }
 
