@@ -54,7 +54,7 @@ model Doc {
   updatedAt DateTime      @updatedAt
 
   owner      User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  docType    DocType       @relation(fields: [docTypeId], references: [id])
+  docType    DocType       @relation(fields: [docTypeId], references: [id], onDelete: Cascade)
   sharedDocs SharedDoc[]
   groups     DocsInGroup[]
 }
