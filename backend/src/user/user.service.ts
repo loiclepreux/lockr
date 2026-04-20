@@ -10,9 +10,18 @@ export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateUserDto): Promise<Omit<User, 'password'>> {
-
     const user = await this.prisma.user.create({
-      data,
+      data: {
+        email: data.email,
+        password: data.password,
+        // On crée le profil lié en même temps — nested write Prisma
+        profile: {
+          create: {
+            firstName: data.firstName,
+            lastName: data.lastName,
+          },
+        },
+      },
       omit: { password: true },
     });
     return user;
@@ -35,7 +44,7 @@ export class UserService {
       where: { email },
     });
   }
-  async findOne(id: string) : Promise<Omit<User, 'password'> | null> {
+  async findOne(id: string): Promise<Omit<User, 'password'> | null> {
     const result = await this.prisma.user.findUnique({
       where: { id },
       omit: { password: true },
@@ -53,11 +62,14 @@ export class UserService {
       select: { email: true },
     });
   }
+  async updateRefreshToken(id: string, refreshToken: string | null): Promise<void> {
+  await this.prisma.user.update({
+    where: { id },
+    data: { refreshToken },
+  });
+}
 
-  async update(
-    id: string,
-    data: UpdateUserDto,
-  ): Promise<Omit<User, 'password'>> {
+  async update(id: string, data: UpdateUserDto): Promise<Omit<User, 'password'>> {
     const result = await this.prisma.user.update({
       where: { id },
       data,
@@ -71,6 +83,5 @@ export class UserService {
       where: { id },
     });
     return result;
-
   }
 }

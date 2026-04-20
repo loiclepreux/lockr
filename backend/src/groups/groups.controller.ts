@@ -3,6 +3,7 @@ import { GroupsService } from './groups.service';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { addMemberDTO } from './dto/add-member.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -19,6 +20,18 @@ export class GroupsController {
     };
 
     return this.groupsService.create(newGroupData);
+  }
+
+  @Post(':id/members')
+  @UseGuards(AuthGuard)
+  async addMember(
+    @Param('id') groupId: string,
+    @Body() addMemberDTO: addMemberDTO,
+    @Req() req: any,
+  ) {
+    const userId = req.user?.id || req.user?.sub;
+
+    return this.groupsService.addMember(groupId, addMemberDTO, userId);
   }
 
   @Get()

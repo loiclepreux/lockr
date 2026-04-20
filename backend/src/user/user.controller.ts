@@ -9,6 +9,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -17,6 +18,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { IResponse } from '../utils/interfaces/response.interface';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import type { Request } from 'express';
+
+type RequestWithUser = Request & { user: { sub: string } };
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -27,6 +31,20 @@ export class UserController {
     // pagination a faire
     return {
       data: await this.userService.findAll(),
+      dataType: 'User',
+      timeStamp: new Date(),
+    };
+  }
+
+  @Get('me')
+  async getMe(@Req() req: RequestWithUser): Promise<IResponse<Omit<User, 'password'>>> {
+    const userId = req.user.sub;
+
+    const user = await this.userService.findOne(userId);
+    if (!user) throw new NotFoundException('Utilisateur non trouvé');
+
+    return {
+      data: user,
       dataType: 'User',
       timeStamp: new Date(),
     };
@@ -64,6 +82,7 @@ export class UserController {
           );
       }
     }
+    const updateUser = await this.userService.update(id, updateUserDto);
     return {
       data: await this.userService.update(id, updateUserDto),
       dataType: 'User',

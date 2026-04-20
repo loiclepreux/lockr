@@ -87,4 +87,34 @@ export class AuthController {
       timeStamp: new Date(),
     };
   }
+
+  @Post('logout')
+  async logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<IResponse<null>> {
+    const refreshToken = request.cookies.refreshToken;
+
+    if (refreshToken) {
+      try {
+        const decoded = this.authService.decodeToken(refreshToken);
+        if (decoded?.sub) {
+          await this.userService.updateRefreshToken(decoded.sub, null);
+        }
+      } catch (error: unknown) {
+        console.log(
+          'Logout - erreur verifyRefreshToken:',
+          error instanceof Error ? error.message : error,
+        );
+      }
+    }
+
+    this.authService.clearCookie('refreshToken', response);
+
+    return {
+      data: null,
+      dataType: 'Auth',
+      timeStamp: new Date(),
+    };
+  }
 }
