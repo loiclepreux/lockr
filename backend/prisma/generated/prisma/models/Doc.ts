@@ -41,6 +41,7 @@ export type DocMinAggregateOutputType = {
   ownerId: string | null
   size: bigint | null
   docTypeId: string | null
+  status: $Enums.DocStatus | null
   addedDate: Date | null
   filePath: string | null
   createdAt: Date | null
@@ -54,6 +55,7 @@ export type DocMaxAggregateOutputType = {
   ownerId: string | null
   size: bigint | null
   docTypeId: string | null
+  status: $Enums.DocStatus | null
   addedDate: Date | null
   filePath: string | null
   createdAt: Date | null
@@ -67,6 +69,7 @@ export type DocCountAggregateOutputType = {
   ownerId: number
   size: number
   docTypeId: number
+  status: number
   addedDate: number
   filePath: number
   createdAt: number
@@ -90,6 +93,7 @@ export type DocMinAggregateInputType = {
   ownerId?: true
   size?: true
   docTypeId?: true
+  status?: true
   addedDate?: true
   filePath?: true
   createdAt?: true
@@ -103,6 +107,7 @@ export type DocMaxAggregateInputType = {
   ownerId?: true
   size?: true
   docTypeId?: true
+  status?: true
   addedDate?: true
   filePath?: true
   createdAt?: true
@@ -116,6 +121,7 @@ export type DocCountAggregateInputType = {
   ownerId?: true
   size?: true
   docTypeId?: true
+  status?: true
   addedDate?: true
   filePath?: true
   createdAt?: true
@@ -216,6 +222,7 @@ export type DocGroupByOutputType = {
   ownerId: string
   size: bigint
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date
   filePath: string
   createdAt: Date
@@ -252,6 +259,7 @@ export type DocWhereInput = {
   ownerId?: Prisma.StringFilter<"Doc"> | string
   size?: Prisma.BigIntFilter<"Doc"> | bigint | number
   docTypeId?: Prisma.StringFilter<"Doc"> | string
+  status?: Prisma.EnumDocStatusFilter<"Doc"> | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
@@ -269,6 +277,7 @@ export type DocOrderByWithRelationInput = {
   ownerId?: Prisma.SortOrder
   size?: Prisma.SortOrder
   docTypeId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -290,6 +299,7 @@ export type DocWhereUniqueInput = Prisma.AtLeast<{
   ownerId?: Prisma.StringFilter<"Doc"> | string
   size?: Prisma.BigIntFilter<"Doc"> | bigint | number
   docTypeId?: Prisma.StringFilter<"Doc"> | string
+  status?: Prisma.EnumDocStatusFilter<"Doc"> | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
@@ -307,6 +317,7 @@ export type DocOrderByWithAggregationInput = {
   ownerId?: Prisma.SortOrder
   size?: Prisma.SortOrder
   docTypeId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -328,6 +339,7 @@ export type DocScalarWhereWithAggregatesInput = {
   ownerId?: Prisma.StringWithAggregatesFilter<"Doc"> | string
   size?: Prisma.BigIntWithAggregatesFilter<"Doc"> | bigint | number
   docTypeId?: Prisma.StringWithAggregatesFilter<"Doc"> | string
+  status?: Prisma.EnumDocStatusWithAggregatesFilter<"Doc"> | $Enums.DocStatus
   addedDate?: Prisma.DateTimeWithAggregatesFilter<"Doc"> | Date | string
   filePath?: Prisma.StringWithAggregatesFilter<"Doc"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Doc"> | Date | string
@@ -339,6 +351,7 @@ export type DocCreateInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -356,6 +369,7 @@ export type DocUncheckedCreateInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -369,6 +383,7 @@ export type DocUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -386,6 +401,7 @@ export type DocUncheckedUpdateInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -401,6 +417,7 @@ export type DocCreateManyInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -412,6 +429,7 @@ export type DocUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -425,6 +443,7 @@ export type DocUncheckedUpdateManyInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -454,6 +473,7 @@ export type DocCountOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   size?: Prisma.SortOrder
   docTypeId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -471,6 +491,7 @@ export type DocMaxOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   size?: Prisma.SortOrder
   docTypeId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -484,6 +505,7 @@ export type DocMinOrderByAggregateInput = {
   ownerId?: Prisma.SortOrder
   size?: Prisma.SortOrder
   docTypeId?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -551,6 +573,10 @@ export type BigIntFieldUpdateOperationsInput = {
   decrement?: bigint | number
   multiply?: bigint | number
   divide?: bigint | number
+}
+
+export type EnumDocStatusFieldUpdateOperationsInput = {
+  set?: $Enums.DocStatus
 }
 
 export type DocCreateNestedManyWithoutDocTypeInput = {
@@ -628,6 +654,7 @@ export type DocCreateWithoutOwnerInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -643,6 +670,7 @@ export type DocUncheckedCreateWithoutOwnerInput = {
   extension: $Enums.extentionEnum
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -687,6 +715,7 @@ export type DocScalarWhereInput = {
   ownerId?: Prisma.StringFilter<"Doc"> | string
   size?: Prisma.BigIntFilter<"Doc"> | bigint | number
   docTypeId?: Prisma.StringFilter<"Doc"> | string
+  status?: Prisma.EnumDocStatusFilter<"Doc"> | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
@@ -698,6 +727,7 @@ export type DocCreateWithoutDocTypeInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -713,6 +743,7 @@ export type DocUncheckedCreateWithoutDocTypeInput = {
   extension: $Enums.extentionEnum
   ownerId: string
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -752,6 +783,7 @@ export type DocCreateWithoutSharedDocsInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -768,6 +800,7 @@ export type DocUncheckedCreateWithoutSharedDocsInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -796,6 +829,7 @@ export type DocUpdateWithoutSharedDocsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -812,6 +846,7 @@ export type DocUncheckedUpdateWithoutSharedDocsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -824,6 +859,7 @@ export type DocCreateWithoutGroupsInput = {
   name: string
   extension: $Enums.extentionEnum
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -840,6 +876,7 @@ export type DocUncheckedCreateWithoutGroupsInput = {
   ownerId: string
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -868,6 +905,7 @@ export type DocUpdateWithoutGroupsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -884,6 +922,7 @@ export type DocUncheckedUpdateWithoutGroupsInput = {
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -897,6 +936,7 @@ export type DocCreateManyOwnerInput = {
   extension: $Enums.extentionEnum
   size: bigint | number
   docTypeId: string
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -908,6 +948,7 @@ export type DocUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -923,6 +964,7 @@ export type DocUncheckedUpdateWithoutOwnerInput = {
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -937,6 +979,7 @@ export type DocUncheckedUpdateManyWithoutOwnerInput = {
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   docTypeId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -949,6 +992,7 @@ export type DocCreateManyDocTypeInput = {
   extension: $Enums.extentionEnum
   ownerId: string
   size: bigint | number
+  status: $Enums.DocStatus
   addedDate: Date | string
   filePath: string
   createdAt?: Date | string
@@ -960,6 +1004,7 @@ export type DocUpdateWithoutDocTypeInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -975,6 +1020,7 @@ export type DocUncheckedUpdateWithoutDocTypeInput = {
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -989,6 +1035,7 @@ export type DocUncheckedUpdateManyWithoutDocTypeInput = {
   extension?: Prisma.EnumextentionEnumFieldUpdateOperationsInput | $Enums.extentionEnum
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   size?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  status?: Prisma.EnumDocStatusFieldUpdateOperationsInput | $Enums.DocStatus
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1042,6 +1089,7 @@ export type DocSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   ownerId?: boolean
   size?: boolean
   docTypeId?: boolean
+  status?: boolean
   addedDate?: boolean
   filePath?: boolean
   createdAt?: boolean
@@ -1062,13 +1110,14 @@ export type DocSelectScalar = {
   ownerId?: boolean
   size?: boolean
   docTypeId?: boolean
+  status?: boolean
   addedDate?: boolean
   filePath?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DocOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "extension" | "ownerId" | "size" | "docTypeId" | "addedDate" | "filePath" | "createdAt" | "updatedAt", ExtArgs["result"]["doc"]>
+export type DocOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "extension" | "ownerId" | "size" | "docTypeId" | "status" | "addedDate" | "filePath" | "createdAt" | "updatedAt", ExtArgs["result"]["doc"]>
 export type DocInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   docType?: boolean | Prisma.DocTypeDefaultArgs<ExtArgs>
@@ -1092,6 +1141,7 @@ export type $DocPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     ownerId: string
     size: bigint
     docTypeId: string
+    status: $Enums.DocStatus
     addedDate: Date
     filePath: string
     createdAt: Date
@@ -1475,6 +1525,7 @@ export interface DocFieldRefs {
   readonly ownerId: Prisma.FieldRef<"Doc", 'String'>
   readonly size: Prisma.FieldRef<"Doc", 'BigInt'>
   readonly docTypeId: Prisma.FieldRef<"Doc", 'String'>
+  readonly status: Prisma.FieldRef<"Doc", 'DocStatus'>
   readonly addedDate: Prisma.FieldRef<"Doc", 'DateTime'>
   readonly filePath: Prisma.FieldRef<"Doc", 'String'>
   readonly createdAt: Prisma.FieldRef<"Doc", 'DateTime'>
