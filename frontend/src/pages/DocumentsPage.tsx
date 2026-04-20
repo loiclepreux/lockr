@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Download, Edit2, MoreVertical, Share2, Trash2 } from "lucide-react";
+import { Download, Edit2, Share2, Trash2 } from "lucide-react";
 import FeedbackMessage from "../components/ui/FeedbackMessage";
 import { feedbackMessages } from "../types/feedbackMessage";
 import { ShareModal } from "../components/modal/ShareModal";
 import { DeleteModal } from "../components/modal/DeleteModal";
 import { RenameModal } from "../components/modal/RenameModal";
+import { DocumentMobile } from "../documents/MobileDocument";
+import { DocumentDesktop } from "../documents/DesktopDocument";
 
 interface DocumentFile {
     id: number;
@@ -390,113 +392,18 @@ export default function DocumentsPage() {
                 )}
 
                 {/* MOBILE */}
-                <div className="grid grid-cols-1 gap-4 md:hidden">
-                    {documents.map((doc) => (
-                        <div
-                            key={doc.id}
-                            className="rounded-2xl border border-cyan-500/10 bg-[#111318] p-4 shadow-[0_0_30px_rgba(0,255,255,0.03)]"
-                        >
-                            <div className="flex items-start justify-between gap-3">
-                                <div className="min-w-0 flex-1">
-                                    <div
-                                        className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getTypeClasses(
-                                            doc.type,
-                                        )}`}
-                                    >
-                                        {doc.type}
-                                    </div>
-
-                                    <p className="mt-3 break-words text-sm font-medium text-white">
-                                        {doc.name}
-                                    </p>
-                                </div>
-
-                                <button
-                                    type="button"
-                                    className="shrink-0 rounded-lg p-2 text-gray-300 transition hover:bg-cyan-500/10 hover:text-cyan-400"
-                                    onClick={(e) => handleMenuToggle(doc, e)}
-                                >
-                                    <MoreVertical size={18} />
-                                </button>
-                            </div>
-
-                            <div className="mt-4 flex flex-wrap gap-3 text-sm text-gray-400">
-                                <span>{doc.size}</span>
-                                <span>•</span>
-                                <span>{doc.date}</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <DocumentMobile
+                    documents={documents}
+                    getTypeClasses={getTypeClasses}
+                    handleMenuToggle={handleMenuToggle}
+                />
 
                 {/* DESKTOP / TABLET */}
-                <div className="hidden md:block rounded-2xl border border-cyan-500/10 bg-[#111318] shadow-[0_0_40px_rgba(0,255,255,0.03)]">
-                    <div className="overflow-x-auto rounded-2xl">
-                        <table className="w-full border-separate border-spacing-0">
-                            <thead className="sticky top-0 z-10 bg-[#0f1115] border-b border-white/5">
-                                <tr className="text-xs uppercase tracking-[0.18em] text-gray-400">
-                                    <th className="px-4 py-4 text-left font-semibold lg:px-6 lg:py-5">
-                                        Nom
-                                    </th>
-                                    <th className="px-4 py-4 text-left font-semibold lg:px-6 lg:py-5">
-                                        Taille
-                                    </th>
-                                    <th className="px-4 py-4 text-center font-semibold lg:px-6 lg:py-5">
-                                        Date d'ajout
-                                    </th>
-                                    <th className="px-4 py-4 text-right font-semibold lg:px-6 lg:py-5 lg:pr-8">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                {documents.map((doc) => (
-                                    <tr
-                                        key={doc.id}
-                                        className="hover:bg-cyan-500/5 transition-all duration-200"
-                                    >
-                                        <td className="border-b border-white/5 px-4 py-4 lg:px-6 lg:py-5">
-                                            <div className="flex min-w-0 items-center gap-3 lg:gap-4">
-                                                <div
-                                                    className={`shrink-0 rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getTypeClasses(
-                                                        doc.type,
-                                                    )}`}
-                                                >
-                                                    {doc.type}
-                                                </div>
-
-                                                <span className="max-w-[220px] truncate font-medium text-white lg:max-w-[420px]">
-                                                    {doc.name}
-                                                </span>
-                                            </div>
-                                        </td>
-
-                                        <td className="border-b border-white/5 px-4 py-4 text-gray-400 lg:px-6 lg:py-5">
-                                            {doc.size}
-                                        </td>
-
-                                        <td className="border-b border-white/5 px-4 py-4 text-center text-gray-400 lg:px-6 lg:py-5">
-                                            {doc.date}
-                                        </td>
-
-                                        <td className="border-b border-white/5 px-4 py-4 text-right lg:px-6 lg:py-5 lg:pr-8">
-                                            <button
-                                                type="button"
-                                                className="rounded-lg p-2 text-gray-300 transition hover:bg-cyan-500/10 hover:text-cyan-400"
-                                                onClick={(e) =>
-                                                    handleMenuToggle(doc, e)
-                                                }
-                                            >
-                                                <MoreVertical size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <DocumentDesktop
+                    documents={documents}
+                    getTypeClasses={getTypeClasses}
+                    handleMenuToggle={handleMenuToggle}
+                />
             </div>
             {openMenuId !== null && (
                 <div
@@ -588,6 +495,7 @@ export default function DocumentsPage() {
                     </ul>
                 </div>
             )}
+
             {/* MODAL SHARE */}
             <ShareModal
                 state={{
@@ -606,11 +514,13 @@ export default function DocumentsPage() {
                     confirmShare,
                 }}
             />
-            ;{/* MODAL DELETE */}
+
+            {/* MODAL DELETE */}
             <DeleteModal
                 selectedDoc={selectedDoc}
                 confirmDelete={confirmDelete}
             />
+
             {/* MODAL RENAME */}
             <RenameModal
                 selectedDoc={selectedDoc}
