@@ -22,6 +22,12 @@ interface AccessUser {
     expiry: string | null;
 }
 
+interface AccessGroup {
+    id: string;
+    name: string;
+    expiry: string | null;
+}
+
 const MOCK_USERS = [
     "alexandre.dubois@gmail.com",
     "sarah.martin@outlook.fr",
@@ -29,6 +35,13 @@ const MOCK_USERS = [
     "julie.vignaud@yahoo.com",
     "kevin.durant@gmail.com",
     "sophie.bernadotte@gmail.com",
+];
+
+const MOCK_GROUPS = [
+    { id: 1, name: "Equipe Front" },
+    { id: 2, name: "Equipe Back" },
+    { id: 3, name: "Admins Lockr" },
+    { id: 4, name: "Projet CNP" },
 ];
 
 export default function DocumentsPage() {
@@ -116,6 +129,21 @@ export default function DocumentsPage() {
     } | null>(null);
 
     const [emailInput, setEmailInput] = useState("");
+    const [selectedGroupId, setSelectedGroupId] = useState("");
+    const [existingGroupAccess, setExistingGroupAccess] = useState<
+        AccessGroup[]
+    >([
+        {
+            id: "1",
+            name: "Equipe Front",
+            expiry: "7 jours",
+        },
+        {
+            id: "2",
+            name: "Admins Lockr",
+            expiry: null,
+        },
+    ]);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [suggestedUsers, setSuggestedUsers] = useState<string[]>([]);
     const [existingAccess, setExistingAccess] = useState<AccessUser[]>([
@@ -261,6 +289,7 @@ export default function DocumentsPage() {
         setSelectedDoc(doc);
         setOpenMenuId(null);
         setSelectedUsers([]);
+        setSelectedGroupId("");
         setEmailInput("");
         openDialog("share_modal");
     };
@@ -324,7 +353,7 @@ export default function DocumentsPage() {
             return;
         }
 
-        if (selectedUsers.length === 0) {
+        if (selectedUsers.length === 0 && existingGroupAccess.length === 0) {
             setFeedback({
                 type: "error",
                 message: feedbackMessages.document.shareUsers,
@@ -366,6 +395,39 @@ export default function DocumentsPage() {
 
     const removeUser = (user: string) => {
         setSelectedUsers((prev) => prev.filter((u) => u !== user));
+    };
+
+    const addGroup = () => {
+        if (!selectedGroupId) return;
+
+        const selectedGroup = MOCK_GROUPS.find(
+            (group) => String(group.id) === selectedGroupId,
+        );
+
+        if (!selectedGroup) return;
+
+        const alreadyExists = existingGroupAccess.some(
+            (group) => group.id === selectedGroupId,
+        );
+
+        if (alreadyExists) {
+            setFeedback({
+                type: "error",
+                message: "Ce groupe a déjà accès au document.",
+            });
+            return;
+        }
+
+        setExistingGroupAccess((prev) => [
+            ...prev,
+            {
+                id: String(selectedGroup.id),
+                name: selectedGroup.name,
+                expiry: null,
+            },
+        ]);
+
+        setSelectedGroupId("");
     };
 
     return (
@@ -505,6 +567,9 @@ export default function DocumentsPage() {
                     emailInput,
                     suggestedUsers,
                     existingAccess,
+                    selectedGroupId,
+                    existingGroupAccess,
+                    groups: MOCK_GROUPS,
                 }}
                 actions={{
                     setEmailInput,
@@ -512,6 +577,9 @@ export default function DocumentsPage() {
                     removeUser,
                     addUser,
                     confirmShare,
+                    setSelectedGroupId,
+                    setExistingGroupAccess,
+                    addGroup,
                 }}
             />
 
