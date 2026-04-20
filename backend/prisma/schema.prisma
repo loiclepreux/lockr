@@ -47,6 +47,7 @@ model Doc {
   ownerId   String
   size      BigInt
   docTypeId String
+  status    DocStatus
   addedDate DateTime
   filePath  String
   createdAt DateTime      @default(now())
