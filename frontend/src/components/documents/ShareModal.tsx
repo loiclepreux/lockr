@@ -10,18 +10,7 @@ import {
     Trash2,
 } from "lucide-react";
 import FeedbackMessage from "../ui/FeedbackMessage";
-
-interface AccessUser {
-    email: string;
-    initials: string;
-    expiry: string | null;
-}
-
-interface AccessGroup {
-    id: string;
-    name: string;
-    expiry: string | null;
-}
+import type { AccessGroup, AccessUser } from "../../types/documentFiles"
 
 interface ShareModalState {
     selectedDoc: { name: string } | null;
