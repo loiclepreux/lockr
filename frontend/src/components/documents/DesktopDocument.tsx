@@ -59,7 +59,7 @@ export function DocumentDesktop({
                                 Date d'ajout
                             </th>
                             <th className="px-4 py-4 text-center font-semibold lg:px-6 lg:py-5">
-                                Statut
+                                Type
                             </th>
                             <th className="px-4 py-4 text-center font-semibold lg:px-6 lg:py-5">
                                 Priorité

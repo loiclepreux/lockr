@@ -29,6 +29,7 @@ export default function DocumentsPage() {
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [newName, setNewName] = useState("");
+    const [doctypeFilter, setDoctypeFilter] = useState<string>("Tous");
 
     const [priorityFilter, setPriorityFilter] = useState<
         "Toutes" | "Haute" | "Moyenne" | "Basse"
@@ -39,9 +40,19 @@ export default function DocumentsPage() {
         message: string;
     } | null>(null);
 
+    const uniqueDoctypes = [
+        "Tous",
+        ...Array.from(new Set(documents.map((doc) => doc.doctype))),
+    ];
+
     const filteredDocuments = documents.filter((doc) => {
-        if (priorityFilter === "Toutes") return true;
-        return doc.priority === priorityFilter;
+        const matchPriority =
+            priorityFilter === "Toutes" || doc.priority === priorityFilter;
+
+        const matchDoctype =
+            doctypeFilter === "Tous" || doc.doctype === doctypeFilter;
+
+        return matchPriority && matchDoctype;
     });
 
     const [emailInput, setEmailInput] = useState("");
@@ -330,28 +341,53 @@ export default function DocumentsPage() {
                         Mes <span className="text-cyan-400">documents</span>
                     </h1>
 
-                    <div className="mt-4 flex gap-3">
-                        {["Toutes", "Haute", "Moyenne", "Basse"].map((p) => (
-                            <button
-                                key={p}
-                                onClick={() =>
+                    <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-4">
+                        {/* PRIORITÉ */}
+                        <div className="w-full max-w-xs">
+                            <label className="mb-2 block text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                                Priorité
+                            </label>
+
+                            <select
+                                value={priorityFilter}
+                                onChange={(e) =>
                                     setPriorityFilter(
-                                        p as
+                                        e.target.value as
                                             | "Toutes"
                                             | "Haute"
                                             | "Moyenne"
                                             | "Basse",
                                     )
                                 }
-                                className={`px-4 py-2 rounded-xl text-sm transition ${
-                                    priorityFilter === p
-                                        ? "bg-cyan-500 text-black"
-                                        : "bg-[#111318] text-gray-300 hover:bg-cyan-500/10"
-                                }`}
+                                className="w-full rounded-xl border border-cyan-500/10 bg-[#111318] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400"
                             >
-                                {p}
-                            </button>
-                        ))}
+                                <option value="Toutes">Toutes</option>
+                                <option value="Haute">Haute</option>
+                                <option value="Moyenne">Moyenne</option>
+                                <option value="Basse">Basse</option>
+                            </select>
+                        </div>
+
+                        {/* DOCTYPE */}
+                        <div className="w-full max-w-xs">
+                            <label className="mb-2 block text-[11px] uppercase tracking-[0.18em] text-gray-400">
+                                Type de document
+                            </label>
+
+                            <select
+                                value={doctypeFilter}
+                                onChange={(e) =>
+                                    setDoctypeFilter(e.target.value)
+                                }
+                                className="w-full rounded-xl border border-cyan-500/10 bg-[#111318] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-400"
+                            >
+                                {uniqueDoctypes.map((type) => (
+                                    <option key={type} value={type}>
+                                        {type}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     <p className="mt-2 text-sm text-gray-400">

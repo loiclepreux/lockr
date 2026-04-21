@@ -48,20 +48,20 @@ export function useSignup() {
 
 export function useLogout() {
     // logout() remplace clearAuth() qui a été supprimé du store
-    const { logout } = useAuthStore();
+    const { clearAuth } = useAuthStore();
     const queryClient = useQueryClient();
     const addToast = useToastStore((s) => s.addToast);
 
     return useMutation<void, Error, void>({
         mutationFn: () => AuthApi.logout(),
         onSuccess: () => {
-            logout();
+            clearAuth();
             queryClient.removeQueries({ queryKey: ["session"] });
             addToast("Déconnexion réussie", "success");
         },
         onError: () => {
             // Même en cas d'erreur réseau, on déconnecte localement — l'UX est prioritaire
-            logout();
+            clearAuth();
             queryClient.removeQueries({ queryKey: ["session"] });
             addToast("Déconnexion réussie", "success");
         },
@@ -88,6 +88,7 @@ export function useChangeEmail() {
 
 export function useMe() {
     const { setUser } = useAuthStore();
+
     return useQuery<MeResponse, Error>({
         queryKey: ["session"],
         queryFn: async () => {
