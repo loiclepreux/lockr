@@ -4,6 +4,7 @@ import FeedbackMessage from "../components/ui/FeedbackMessage";
 import { feedbackMessages } from "../types/feedbackMessage";
 import { ShareModal } from "../components/documents/ShareModal";
 import { DeleteModal } from "../components/documents/DeleteModal";
+import { UploadModal } from "../components/documents/UploadModal";
 import { RenameModal } from "../components/documents/RenameModal";
 import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
@@ -174,6 +175,27 @@ export default function DocumentsPage() {
 
         setMenuPosition({ top, left });
         setOpenMenuId(doc.id);
+    };
+
+    const handleUpload = (data: {
+        file: File;
+        doctype: string;
+        priority: "Haute" | "Moyenne" | "Basse";
+    }) => {
+        const extension =
+            data.file.name.split(".").pop()?.toUpperCase() || "FILE";
+
+        const newDoc: DocumentFile = {
+            id: Date.now(),
+            name: data.file.name,
+            size: `${(data.file.size / 1024 / 1024).toFixed(2)} MB`,
+            date: "À l'instant",
+            type: extension,
+            doctype: data.doctype,
+            priority: data.priority,
+        };
+
+        setDocuments((prev) => [newDoc, ...prev]);
     };
 
     const handleDeleteClick = (doc: DocumentFile) => {
@@ -510,6 +532,9 @@ export default function DocumentsPage() {
                 </div>
             )}
 
+            {/* MODAL UPLOAD */}
+            <UploadModal onUpload={handleUpload} />
+
             {/* MODAL SHARE */}
             <ShareModal
                 state={{
@@ -551,6 +576,26 @@ export default function DocumentsPage() {
                 setNewName={setNewName}
                 confirmRename={confirmRename}
             />
+
+            <button
+                onClick={() => openDialog("upload_modal")}
+                title="Ajouter un document"
+                className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 w-14 h-14 rounded-full bg-cyan-500 text-black flex items-center justify-center shadow-lg hover:bg-cyan-400 transition"
+            >
+                <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+            </button>
         </main>
     );
 }
