@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Download, Edit2, Share2, Trash2 } from "lucide-react";
 import FeedbackMessage from "../components/ui/FeedbackMessage";
 import { feedbackMessages } from "../types/feedbackMessage";
-import { ShareModal } from "../components/modal/ShareModal";
-import { DeleteModal } from "../components/modal/DeleteModal";
-import { RenameModal } from "../components/modal/RenameModal";
-import { DocumentMobile } from "../documents/MobileDocument";
-import { DocumentDesktop } from "../documents/DesktopDocument";
+import { ShareModal } from "../components/documents/ShareModal";
+import { DeleteModal } from "../components/documents/DeleteModal";
+import { RenameModal } from "../components/documents/RenameModal";
+import { DocumentMobile } from "../components/documents/MobileDocument";
+import { DocumentDesktop } from "../components/documents/DesktopDocument";
 
 interface DocumentFile {
     id: number;
