@@ -6,6 +6,8 @@ interface DocumentFile {
     size: string;
     date: string;
     type: string;
+    status: "En attente" | "Partagé" | "Archivé" | "Validé" | "Refusé";
+    priority: "Haute" | "Moyenne" | "Basse";
 }
 
 interface DocumentDesktopProps {
@@ -16,6 +18,32 @@ interface DocumentDesktopProps {
         e: React.MouseEvent<HTMLButtonElement>,
     ) => void;
 }
+
+const getStatusClasses = (status: DocumentFile["status"]) => {
+    switch (status) {
+        case "En attente":
+            return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+        case "Partagé":
+            return "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20";
+        case "Archivé":
+            return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
+        case "Validé":
+            return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        case "Refusé":
+            return "bg-red-500/10 text-red-400 border border-red-500/20";
+    }
+};
+
+const getPriorityClasses = (priority: DocumentFile["priority"]) => {
+    switch (priority) {
+        case "Haute":
+            return "bg-red-500/10 text-red-400 border border-red-500/20";
+        case "Moyenne":
+            return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
+        case "Basse":
+            return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+    }
+};
 
 export function DocumentDesktop({
     documents,
@@ -39,6 +67,13 @@ export function DocumentDesktop({
                             </th>
                             <th className="px-4 py-4 text-right font-semibold lg:px-6 lg:py-5 lg:pr-8">
                                 Actions
+                            </th>
+                            <th className="px-4 py-4 text-center font-semibold lg:px-6 lg:py-5">
+                                Statut
+                            </th>
+
+                            <th className="px-4 py-4 text-center font-semibold lg:px-6 lg:py-5">
+                                Priorité
                             </th>
                         </tr>
                     </thead>
@@ -71,6 +106,26 @@ export function DocumentDesktop({
 
                                 <td className="border-b border-white/5 px-4 py-4 text-center text-gray-400 lg:px-6 lg:py-5">
                                     {doc.date}
+                                </td>
+
+                                <td className="border-b border-white/5 px-4 py-4 text-center lg:px-6 lg:py-5">
+                                    <span
+                                        className={`inline-block rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getStatusClasses(
+                                            doc.status,
+                                        )}`}
+                                    >
+                                        {doc.status}
+                                    </span>
+                                </td>
+
+                                <td className="border-b border-white/5 px-4 py-4 text-center lg:px-6 lg:py-5">
+                                    <span
+                                        className={`inline-block rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getPriorityClasses(
+                                            doc.priority,
+                                        )}`}
+                                    >
+                                        {doc.priority}
+                                    </span>
                                 </td>
 
                                 <td className="border-b border-white/5 px-4 py-4 text-right lg:px-6 lg:py-5 lg:pr-8">

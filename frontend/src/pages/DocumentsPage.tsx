@@ -7,8 +7,12 @@ import { DeleteModal } from "../components/documents/DeleteModal";
 import { RenameModal } from "../components/documents/RenameModal";
 import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
-import { mockDocuments, mockGroups, mockUsers } from "../types/documentFiles"
-import type { DocumentFile, AccessGroup, AccessUser } from "../types/documentFiles"
+import { mockDocuments, mockGroups, mockUsers } from "../types/documentFiles";
+import type {
+    DocumentFile,
+    AccessGroup,
+    AccessUser,
+} from "../types/documentFiles";
 
 const MOCK_USERS = [
     "alexandre.dubois@gmail.com",
@@ -19,30 +23,46 @@ const MOCK_USERS = [
     "sophie.bernadotte@gmail.com",
 ];
 
-const MOCK_GROUPS = [
-    { id: 1, name: "Equipe Front" },
-    { id: 2, name: "Equipe Back" },
-    { id: 3, name: "Admins Lockr" },
-    { id: 4, name: "Projet CNP" },
-];
-
 export default function DocumentsPage() {
     const [documents, setDocuments] = useState<DocumentFile[]>(mockDocuments);
     const [selectedDoc, setSelectedDoc] = useState<DocumentFile | null>(null);
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [newName, setNewName] = useState("");
+
+    const [priorityFilter, setPriorityFilter] = useState<
+        "Toutes" | "Haute" | "Moyenne" | "Basse"
+    >("Toutes");
+
     const [feedback, setFeedback] = useState<{
         type: "success" | "error";
         message: string;
     } | null>(null);
 
+    const updateDocumentStatus = (
+        id: number,
+        newStatus: DocumentFile["status"],
+    ) => {
+        setDocuments((prev) =>
+            prev.map((doc) =>
+                doc.id === id ? { ...doc, status: newStatus } : doc,
+            ),
+        );
+    };
+
+    const filteredDocuments = documents.filter((doc) => {
+        if (priorityFilter === "Toutes") return true;
+        return doc.priority === priorityFilter;
+    });
+
     const [emailInput, setEmailInput] = useState("");
     const [selectedGroupId, setSelectedGroupId] = useState("");
-    const [existingGroupAccess, setExistingGroupAccess] = useState<AccessGroup[]>(mockGroups);
+    const [existingGroupAccess, setExistingGroupAccess] =
+        useState<AccessGroup[]>(mockGroups);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [suggestedUsers, setSuggestedUsers] = useState<string[]>([]);
-    const [existingAccess, setExistingAccess] = useState<AccessUser[]>(mockUsers);
+    const [existingAccess, setExistingAccess] =
+        useState<AccessUser[]>(mockUsers);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -245,6 +265,8 @@ export default function DocumentsPage() {
             return;
         }
 
+        updateDocumentStatus(selectedDoc.id, "Partagé");
+
         setFeedback({
             type: "success",
             message: feedbackMessages.document.shareSuccess,
@@ -262,6 +284,10 @@ export default function DocumentsPage() {
                 message: feedbackMessages.document.downloadError,
             });
             return;
+        }
+
+        if (doc.status === "En attente") {
+            updateDocumentStatus(doc.id, "Validé");
         }
 
         setFeedback({
@@ -284,7 +310,7 @@ export default function DocumentsPage() {
     const addGroup = () => {
         if (!selectedGroupId) return;
 
-        const selectedGroup = MOCK_GROUPS.find(
+        const selectedGroup = mockGroups.find(
             (group) => String(group.id) === selectedGroupId,
         );
 
@@ -322,6 +348,30 @@ export default function DocumentsPage() {
                         Mes <span className="text-cyan-400">documents</span>
                     </h1>
 
+                    <div className="mt-4 flex gap-3">
+                        {["Toutes", "Haute", "Moyenne", "Basse"].map((p) => (
+                            <button
+                                key={p}
+                                onClick={() =>
+                                    setPriorityFilter(
+                                        p as
+                                            | "Toutes"
+                                            | "Haute"
+                                            | "Moyenne"
+                                            | "Basse",
+                                    )
+                                }
+                                className={`px-4 py-2 rounded-xl text-sm transition ${
+                                    priorityFilter === p
+                                        ? "bg-cyan-500 text-black"
+                                        : "bg-[#111318] text-gray-300 hover:bg-cyan-500/10"
+                                }`}
+                            >
+                                {p}
+                            </button>
+                        ))}
+                    </div>
+
                     <p className="mt-2 text-sm text-gray-400">
                         {documents.length} fichiers sécurisés dans votre espace
                         Lockr
@@ -339,14 +389,14 @@ export default function DocumentsPage() {
 
                 {/* MOBILE */}
                 <DocumentMobile
-                    documents={documents}
+                    documents={filteredDocuments}
                     getTypeClasses={getTypeClasses}
                     handleMenuToggle={handleMenuToggle}
                 />
 
                 {/* DESKTOP / TABLET */}
                 <DocumentDesktop
-                    documents={documents}
+                    documents={filteredDocuments}
                     getTypeClasses={getTypeClasses}
                     handleMenuToggle={handleMenuToggle}
                 />
@@ -453,7 +503,10 @@ export default function DocumentsPage() {
                     existingAccess,
                     selectedGroupId,
                     existingGroupAccess,
-                    groups: MOCK_GROUPS,
+                    groups: mockGroups.map((group) => ({
+                        id: Number(group.id),
+                        name: group.name,
+                    })),
                 }}
                 actions={{
                     setEmailInput,

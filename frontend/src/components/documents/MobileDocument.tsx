@@ -6,13 +6,44 @@ interface DocumentFile {
     size: string;
     date: string;
     type: string;
+    status: "En attente" | "Partagé" | "Archivé" | "Validé" | "Refusé";
+    priority: "Haute" | "Moyenne" | "Basse";
 }
 
 interface DocumentMobileProps {
     documents: DocumentFile[];
     getTypeClasses: (type: string) => string;
-    handleMenuToggle: (doc: DocumentFile, e: React.MouseEvent<HTMLButtonElement>) => void;
+    handleMenuToggle: (
+        doc: DocumentFile,
+        e: React.MouseEvent<HTMLButtonElement>,
+    ) => void;
 }
+
+const getStatusClasses = (status: DocumentFile["status"]) => {
+    switch (status) {
+        case "En attente":
+            return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
+        case "Partagé":
+            return "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20";
+        case "Archivé":
+            return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
+        case "Validé":
+            return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        case "Refusé":
+            return "bg-red-500/10 text-red-400 border border-red-500/20";
+    }
+};
+
+const getPriorityClasses = (priority: DocumentFile["priority"]) => {
+    switch (priority) {
+        case "Haute":
+            return "bg-red-500/10 text-red-400 border border-red-500/20";
+        case "Moyenne":
+            return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
+        case "Basse":
+            return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+    }
+};
 
 export function DocumentMobile({
     documents,
@@ -28,13 +59,34 @@ export function DocumentMobile({
                 >
                     <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
-                            <div className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getTypeClasses(doc.type)}`}>
+                            <div
+                                className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getTypeClasses(doc.type)}`}
+                            >
                                 {doc.type}
                             </div>
                             <p className="mt-3 break-words text-sm font-medium text-white">
                                 {doc.name}
                             </p>
+
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                <span
+                                    className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getStatusClasses(
+                                        doc.status,
+                                    )}`}
+                                >
+                                    {doc.status}
+                                </span>
+
+                                <span
+                                    className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getPriorityClasses(
+                                        doc.priority,
+                                    )}`}
+                                >
+                                    {doc.priority}
+                                </span>
+                            </div>
                         </div>
+
                         <button
                             type="button"
                             className="shrink-0 rounded-lg p-2 text-gray-300 transition hover:bg-cyan-500/10 hover:text-cyan-400"
