@@ -88,7 +88,6 @@ export function useChangeEmail() {
 
 export function useMe() {
     const { setUser } = useAuthStore();
-
     return useQuery<MeResponse, Error>({
         queryKey: ["session"],
         queryFn: async () => {

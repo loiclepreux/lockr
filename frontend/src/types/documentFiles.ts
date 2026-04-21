@@ -4,14 +4,13 @@ export interface DocumentFile {
     size: string;
     date: string;
     type: string;
-    status: "En attente" | "Partagé" | "Archivé" | "Validé" | "Refusé";
+    doctype: string;
     priority: "Haute" | "Moyenne" | "Basse";
 }
 
 export interface AccessGroup {
     id: string;
     name: string;
-    expiry: string | null;
 }
 
 export interface AccessUser {
@@ -27,7 +26,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "1.2 MB",
         date: "Il y a 2h",
         type: "PDF",
-        status: "En attente",
+        doctype: "administratif",
         priority: "Haute",
     },
     {
@@ -36,7 +35,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "4.5 MB",
         date: "Hier",
         type: "IMG",
-        status: "Validé",
+        doctype: "juridique",
         priority: "Basse",
     },
     {
@@ -45,7 +44,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "850 KB",
         date: "Aujourd'hui",
         type: "XLS",
-        status: "Refusé",
+        doctype: "economique",
         priority: "Basse",
     },
     {
@@ -54,7 +53,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "2.1 MB",
         date: "Il y a 3 jours",
         type: "IMG",
-        status: "Archivé",
+        doctype: "personnel",
         priority: "Moyenne",
     },
     {
@@ -63,7 +62,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "15.4 MB",
         date: "10 Mars 2026",
         type: "PPT",
-        status: "Partagé",
+        doctype: "academique",
         priority: "Haute",
     },
     {
@@ -72,7 +71,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "12 KB",
         date: "Il y a 1h",
         type: "TXT",
-        status: "En attente",
+        doctype: "administratif",
         priority: "Moyenne",
     },
     {
@@ -81,7 +80,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "142.8 MB",
         date: "Hier",
         type: "MOV",
-        status: "Validé",
+        doctype: "juridique",
         priority: "Haute",
     },
     {
@@ -90,7 +89,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "450 KB",
         date: "Il y a 5 jours",
         type: "PDF",
-        status: "Partagé",
+        doctype: "economique",
         priority: "Moyenne",
     },
     {
@@ -99,7 +98,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "2.4 GB",
         date: "01 Janv 2026",
         type: "ZIP",
-        status: "En attente",
+        doctype: "academique",
         priority: "Basse",
     },
     {
@@ -108,7 +107,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "15 KB",
         date: "Hier",
         type: "SVG",
-        status: "Refusé",
+        doctype: "personnel",
         priority: "Haute",
     },
 ];
@@ -117,17 +116,14 @@ export const mockGroups: AccessGroup[] = [
     {
         id: "1",
         name: "Equipe Front",
-        expiry: "7 jours",
     },
     {
         id: "2",
         name: "Equipe Back",
-        expiry: null,
     },
     {
         id: "3",
         name: "Projet CNP",
-        expiry: null,
     },
 ];
 

@@ -10,7 +10,7 @@ import {
     Trash2,
 } from "lucide-react";
 import FeedbackMessage from "../ui/FeedbackMessage";
-import type { AccessGroup, AccessUser } from "../../types/documentFiles"
+import type { AccessGroup, AccessUser } from "../../types/documentFiles";
 
 interface ShareModalState {
     selectedDoc: { name: string } | null;
@@ -59,7 +59,6 @@ export function ShareModal({ state, actions }: ShareModalProps) {
         addUser,
         confirmShare,
         setSelectedGroupId,
-        setExistingGroupAccess,
         addGroup,
     } = actions;
 
@@ -386,7 +385,7 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                 <div className="my-6 flex items-center gap-3">
                     <div className="h-px flex-1 bg-white/5" />
                     <span className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
-                        Groupes avec accès
+                        Groupes sélectionnés
                     </span>
                     <div className="h-px flex-1 bg-white/5" />
                 </div>
@@ -395,151 +394,19 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                     {existingGroupAccess.map((group) => (
                         <div
                             key={group.id}
-                            className="flex flex-col gap-4 rounded-2xl border border-white/5 bg-[#0f1115] p-4 sm:flex-row sm:items-center sm:justify-between"
+                            className="flex items-center gap-3 rounded-2xl border border-white/5 bg-[#0f1115] p-4"
                         >
-                            <div className="flex min-w-0 items-center gap-3">
-                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-500/10 text-xs font-bold text-cyan-400">
-                                    {group.name.charAt(0).toUpperCase()}
-                                </div>
-
-                                <div className="min-w-0">
-                                    <p className="truncate text-sm font-medium text-white">
-                                        {group.name}
-                                    </p>
-
-                                    <p
-                                        className={`mt-1 flex items-center gap-1 text-[11px] ${
-                                            group.expiry
-                                                ? "text-orange-400"
-                                                : "text-cyan-400"
-                                        }`}
-                                    >
-                                        {group.expiry
-                                            ? `Expire dans ${group.expiry}`
-                                            : "Accès indéfini"}
-                                    </p>
-                                </div>
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-500/10 text-xs font-bold text-cyan-400">
+                                {group.name.charAt(0).toUpperCase()}
                             </div>
 
-                            <div className="dropdown dropdown-end">
-                                <label
-                                    tabIndex={0}
-                                    className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-cyan-500/10 px-4 py-2 text-sm text-cyan-400 transition hover:bg-cyan-500/20"
-                                >
-                                    Gérer l'accès
-                                </label>
-
-                                <ul
-                                    tabIndex={0}
-                                    className="dropdown-content z-[110] mt-2 w-64 rounded-2xl border border-cyan-500/10 bg-[#111318] p-2 shadow-[0_12px_30px_rgba(0,0,0,0.45)]"
-                                >
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-xl px-3 py-2 text-left text-sm text-white hover:bg-cyan-500/5"
-                                            onClick={() =>
-                                                setExistingGroupAccess(
-                                                    existingGroupAccess.map(
-                                                        (g) =>
-                                                            g.id === group.id
-                                                                ? {
-                                                                      ...g,
-                                                                      expiry: "1 heure",
-                                                                  }
-                                                                : g,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            + 1 heure
-                                        </button>
-                                    </li>
-
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-xl px-3 py-2 text-left text-sm text-white hover:bg-cyan-500/5"
-                                            onClick={() =>
-                                                setExistingGroupAccess(
-                                                    existingGroupAccess.map(
-                                                        (g) =>
-                                                            g.id === group.id
-                                                                ? {
-                                                                      ...g,
-                                                                      expiry: "24 heures",
-                                                                  }
-                                                                : g,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            + 1 jour
-                                        </button>
-                                    </li>
-
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-xl px-3 py-2 text-left text-sm text-white hover:bg-cyan-500/5"
-                                            onClick={() =>
-                                                setExistingGroupAccess(
-                                                    existingGroupAccess.map(
-                                                        (g) =>
-                                                            g.id === group.id
-                                                                ? {
-                                                                      ...g,
-                                                                      expiry: "7 jours",
-                                                                  }
-                                                                : g,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            + 1 semaine
-                                        </button>
-                                    </li>
-
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-xl px-3 py-2 text-left text-sm text-cyan-400 hover:bg-cyan-500/5"
-                                            onClick={() =>
-                                                setExistingGroupAccess(
-                                                    existingGroupAccess.map(
-                                                        (g) =>
-                                                            g.id === group.id
-                                                                ? {
-                                                                      ...g,
-                                                                      expiry: null,
-                                                                  }
-                                                                : g,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            Rendre indéfini
-                                        </button>
-                                    </li>
-
-                                    <div className="mx-3 h-px bg-white/5" />
-
-                                    <li>
-                                        <button
-                                            type="button"
-                                            className="w-full rounded-xl px-3 py-2 text-left text-sm text-red-400 hover:bg-red-500/10"
-                                            onClick={() =>
-                                                setExistingGroupAccess(
-                                                    existingGroupAccess.filter(
-                                                        (g) =>
-                                                            g.id !== group.id,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            Supprimer l'accès
-                                        </button>
-                                    </li>
-                                </ul>
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-medium text-white">
+                                    {group.name}
+                                </p>
+                                <p className="mt-1 text-[11px] text-cyan-400">
+                                    Accès indéfini
+                                </p>
                             </div>
                         </div>
                     ))}

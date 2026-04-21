@@ -39,17 +39,6 @@ export default function DocumentsPage() {
         message: string;
     } | null>(null);
 
-    const updateDocumentStatus = (
-        id: number,
-        newStatus: DocumentFile["status"],
-    ) => {
-        setDocuments((prev) =>
-            prev.map((doc) =>
-                doc.id === id ? { ...doc, status: newStatus } : doc,
-            ),
-        );
-    };
-
     const filteredDocuments = documents.filter((doc) => {
         if (priorityFilter === "Toutes") return true;
         return doc.priority === priorityFilter;
@@ -257,15 +246,13 @@ export default function DocumentsPage() {
             return;
         }
 
-        if (selectedUsers.length === 0 && existingGroupAccess.length === 0) {
+        if (selectedUsers.length === 0 && !selectedGroupId) {
             setFeedback({
                 type: "error",
                 message: feedbackMessages.document.shareUsers,
             });
             return;
         }
-
-        updateDocumentStatus(selectedDoc.id, "Partagé");
 
         setFeedback({
             type: "success",
@@ -284,10 +271,6 @@ export default function DocumentsPage() {
                 message: feedbackMessages.document.downloadError,
             });
             return;
-        }
-
-        if (doc.status === "En attente") {
-            updateDocumentStatus(doc.id, "Validé");
         }
 
         setFeedback({
@@ -317,7 +300,7 @@ export default function DocumentsPage() {
         if (!selectedGroup) return;
 
         const alreadyExists = existingGroupAccess.some(
-            (group) => group.id === selectedGroupId,
+            (group) => String(group.id) === selectedGroupId,
         );
 
         if (alreadyExists) {
@@ -333,7 +316,6 @@ export default function DocumentsPage() {
             {
                 id: String(selectedGroup.id),
                 name: selectedGroup.name,
-                expiry: null,
             },
         ]);
 

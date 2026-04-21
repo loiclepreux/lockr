@@ -1,14 +1,5 @@
 import { MoreVertical } from "lucide-react";
-
-interface DocumentFile {
-    id: number;
-    name: string;
-    size: string;
-    date: string;
-    type: string;
-    status: "En attente" | "Partagé" | "Archivé" | "Validé" | "Refusé";
-    priority: "Haute" | "Moyenne" | "Basse";
-}
+import type { DocumentFile } from "../../types/documentFiles";
 
 interface DocumentMobileProps {
     documents: DocumentFile[];
@@ -19,18 +10,20 @@ interface DocumentMobileProps {
     ) => void;
 }
 
-const getStatusClasses = (status: DocumentFile["status"]) => {
-    switch (status) {
-        case "En attente":
-            return "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20";
-        case "Partagé":
+const getDocTypeClasses = (doctype: string) => {
+    switch (doctype) {
+        case "Contrat":
             return "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20";
-        case "Archivé":
-            return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
-        case "Validé":
+        case "Facture":
+            return "bg-orange-500/10 text-orange-400 border border-orange-500/20";
+        case "Identité":
+            return "bg-violet-500/10 text-violet-400 border border-violet-500/20";
+        case "CV":
             return "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-        case "Refusé":
-            return "bg-red-500/10 text-red-400 border border-red-500/20";
+        case "Présentation":
+            return "bg-pink-500/10 text-pink-400 border border-pink-500/20";
+        default:
+            return "bg-slate-500/10 text-slate-300 border border-slate-500/20";
     }
 };
 
@@ -70,11 +63,11 @@ export function DocumentMobile({
 
                             <div className="mt-3 flex flex-wrap gap-2">
                                 <span
-                                    className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getStatusClasses(
-                                        doc.status,
+                                    className={`inline-flex rounded-lg border px-3 py-1 text-[10px] font-bold uppercase tracking-wide ${getDocTypeClasses(
+                                        doc.doctype,
                                     )}`}
                                 >
-                                    {doc.status}
+                                    {doc.doctype}
                                 </span>
 
                                 <span
