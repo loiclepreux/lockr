@@ -126,11 +126,6 @@ export const mockGroups: AccessGroup[] = [
     },
     {
         id: "3",
-        name: "Admins Lockr",
-        expiry: null,
-    },
-    {
-        id: "4",
         name: "Projet CNP",
         expiry: null,
     },
