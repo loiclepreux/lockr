@@ -36,8 +36,8 @@ export const mockDocuments: DocumentFile[] = [
         size: "4.5 MB",
         date: "Hier",
         type: "IMG",
-        status: "En attente",
-        priority: "Haute",
+        status: "Validé",
+        priority: "Basse",
     },
     {
         id: 3,
@@ -45,8 +45,8 @@ export const mockDocuments: DocumentFile[] = [
         size: "850 KB",
         date: "Aujourd'hui",
         type: "XLS",
-        status: "En attente",
-        priority: "Haute",
+        status: "Refusé",
+        priority: "Basse",
     },
     {
         id: 4,
@@ -54,8 +54,8 @@ export const mockDocuments: DocumentFile[] = [
         size: "2.1 MB",
         date: "Il y a 3 jours",
         type: "IMG",
-        status: "En attente",
-        priority: "Haute",
+        status: "Archivé",
+        priority: "Moyenne",
     },
     {
         id: 5,
@@ -63,7 +63,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "15.4 MB",
         date: "10 Mars 2026",
         type: "PPT",
-        status: "En attente",
+        status: "Partagé",
         priority: "Haute",
     },
     {
@@ -73,7 +73,7 @@ export const mockDocuments: DocumentFile[] = [
         date: "Il y a 1h",
         type: "TXT",
         status: "En attente",
-        priority: "Haute",
+        priority: "Moyenne",
     },
     {
         id: 7,
@@ -81,7 +81,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "142.8 MB",
         date: "Hier",
         type: "MOV",
-        status: "En attente",
+        status: "Validé",
         priority: "Haute",
     },
     {
@@ -90,8 +90,8 @@ export const mockDocuments: DocumentFile[] = [
         size: "450 KB",
         date: "Il y a 5 jours",
         type: "PDF",
-        status: "En attente",
-        priority: "Haute",
+        status: "Partagé",
+        priority: "Moyenne",
     },
     {
         id: 9,
@@ -100,7 +100,7 @@ export const mockDocuments: DocumentFile[] = [
         date: "01 Janv 2026",
         type: "ZIP",
         status: "En attente",
-        priority: "Haute",
+        priority: "Basse",
     },
     {
         id: 10,
@@ -108,7 +108,7 @@ export const mockDocuments: DocumentFile[] = [
         size: "15 KB",
         date: "Hier",
         type: "SVG",
-        status: "En attente",
+        status: "Refusé",
         priority: "Haute",
     },
 ];
