@@ -53,7 +53,7 @@ const NavBarDashboard = () => {
                             </div>
 
                             <h2 className="text-lg font-semibold">
-                                Wesley Doe
+                                John Doe
                             </h2>
                         </div>
                     </div>

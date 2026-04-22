@@ -73,12 +73,14 @@ const Signin = () => {
                                 type="email"
                                 placeholder="Email"
                                 className={`input input-bordered ${errors.email ? "input-error" : ""}`}
-                                {...register("email", { required: true })}
+                                {...register("email", {
+                                    required: "Email is required",
+                                })}
                             />
-                            {errors.email?.type === "required" && (
+                            {errors.email && (
                                 <label className="label">
                                     <span className="label-text-alt text-error">
-                                        Email is required
+                                        {errors.email.message}
                                     </span>
                                 </label>
                             )}
@@ -96,21 +98,17 @@ const Signin = () => {
                                 placeholder="Password"
                                 className={`input input-bordered ${errors.password ? "input-error" : ""}`}
                                 {...register("password", {
-                                    required: true,
-                                    minLength: 8,
+                                    required: "Password is required",
+                                    minLength: {
+                                        value: 8,
+                                        message: "Minimum 8 characters",
+                                    },
                                 })}
                             />
-                            {errors.password?.type === "required" && (
+                            {errors.password && (
                                 <label className="label">
                                     <span className="label-text-alt text-error">
-                                        Password is required
-                                    </span>
-                                </label>
-                            )}
-                            {errors.password?.type === "minLength" && (
-                                <label className="label">
-                                    <span className="label-text-alt text-error">
-                                        Minimum 8 characters
+                                        {errors.password.message}
                                     </span>
                                 </label>
                             )}

@@ -1,5 +1,3 @@
-// src/components/groups/GroupHistoryModal.tsx
-
 import { useState } from "react";
 import { useGroupHistory } from "../../hooks/useHistory";
 import type { HistoryAction } from "../../types/IHistory";

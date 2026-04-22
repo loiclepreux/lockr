@@ -3,14 +3,19 @@
 // Ces hooks font le pont entre les fonctions API et les composants React.
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createGroup, deleteGroup, getMyGroups, getSharedGroups } from "../api/groups.api";
+import {
+    createGroup,
+    deleteGroup,
+    getMyGroups,
+    getSharedGroups,
+} from "../api/groups.api";
 //       ↑ On importe les fonctions du fichier API (le maillon précédent)
 
 // ─── LIRE MES GROUPES ──────────────────────────────────
 export const useMyGroups = () => {
     return useQuery({
         queryKey: ["groups", "mine"], // L'étiquette dans le cache
-        queryFn: getMyGroups // La fonction API à appeler
+        queryFn: getMyGroups, // La fonction API à appeler
     });
 };
 
@@ -18,7 +23,7 @@ export const useMyGroups = () => {
 export const useSharedGroups = () => {
     return useQuery({
         queryKey: ["groups", "shared"],
-        queryFn: getSharedGroups
+        queryFn: getSharedGroups,
     });
 };
 
@@ -31,7 +36,7 @@ export const useCreateGroup = () => {
         onSuccess: () => {
             // "Les groupes ont changé, tout le monde rafraîchit !"
             queryClient.invalidateQueries({ queryKey: ["groups"] });
-        }
+        },
     });
 };
 
@@ -43,6 +48,6 @@ export const useDeleteGroup = () => {
         mutationFn: deleteGroup,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups"] });
-        }
+        },
     });
 };

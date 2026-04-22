@@ -36,9 +36,10 @@ export const feedbackMessages = {
     },
     password: {
         emptyPassword: "Veuillez remplir tous les champs.",
-        passwordLength: "Le nouveau mot de passe doit contenir au moins 8 caractères.",
+        passwordLength:
+            "Le nouveau mot de passe doit contenir au moins 8 caractères.",
         passwordConfirm: "La confirmation du mot de passe ne correspond pas.",
         passwordSuccess: "Le mot de passe a été modifié avec succès.",
         passwordError: "Une erreur est survenue.",
-    }
+    },
 };
