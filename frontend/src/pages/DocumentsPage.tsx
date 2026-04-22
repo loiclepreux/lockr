@@ -220,6 +220,7 @@ export default function DocumentsPage() {
         openDialog("share_modal");
     };
 
+    // error and success messages for delete.
     const confirmDelete = () => {
         if (!selectedDoc) {
             setFeedback({
@@ -239,6 +240,7 @@ export default function DocumentsPage() {
         closeDialog("delete_modal");
     };
 
+    // error and success messages for rename.
     const confirmRename = () => {
         if (!selectedDoc) {
             setFeedback({
@@ -256,20 +258,29 @@ export default function DocumentsPage() {
             return;
         }
 
-        setDocuments((prev) =>
-            prev.map((doc) =>
-                doc.id === selectedDoc.id ? { ...doc, name: newName } : doc,
-            ),
-        );
+        try {
+            setDocuments((prev) =>
+                prev.map((doc) =>
+                    doc.id === selectedDoc.id ? { ...doc, name: newName } : doc,
+                ),
+            );
 
-        setFeedback({
-            type: "success",
-            message: feedbackMessages.document.renameSuccess,
-        });
+            setFeedback({
+                type: "success",
+                message: feedbackMessages.document.renameSuccess,
+            });
 
-        closeDialog("rename_modal");
+            closeDialog("rename_modal");
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: feedbackMessages.document.renameError,
+            });
+        }
     };
 
+    // error and success messages for share.
     const confirmShare = () => {
         if (!selectedDoc) {
             setFeedback({
@@ -287,14 +298,23 @@ export default function DocumentsPage() {
             return;
         }
 
-        setFeedback({
-            type: "success",
-            message: feedbackMessages.document.shareSuccess,
-        });
+        try {
+            setFeedback({
+                type: "success",
+                message: feedbackMessages.document.shareSuccess,
+            });
 
-        closeDialog("share_modal");
+            closeDialog("share_modal");
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: feedbackMessages.document.shareError,
+            });
+        }
     };
 
+    // error and success messages for download.
     const handleDownload = () => {
         const doc = documents.find((d) => d.id === openMenuId);
 
