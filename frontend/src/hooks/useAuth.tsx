@@ -1,25 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AuthApi } from "../api/auth.api";
-import type {
-    AuthResponse,
-    MeResponse,
-    SigninData,
-    SignupData,
-} from "../types/auth.types";
+import { AuthApi, type MeResponse } from "../api/auth.api";
+import type { AuthResponse, SigninData, SignupData } from "../types/auth.types";
+
 import { useAuthStore } from "../stores/useAuthStore";
 import { useToastStore } from "../stores/useToastStore";
 
 export function useSignin() {
-    // On utilise login() directement — une seule action atomique au lieu de deux setters
-    const { login } = useAuthStore();
+    const setUser = useAuthStore((state) => state.setUser);
+    const setAccesToken = useAuthStore((state) => state.setAccessToken);
+
     const queryClient = useQueryClient();
     const addToast = useToastStore((s) => s.addToast);
 
     return useMutation<AuthResponse, Error, SigninData>({
         mutationFn: (payload) => AuthApi.signin(payload),
         onSuccess: (res) => {
-            // res.data contient { accessToken, user } — on respecte la structure AuthResponse
-            login(res.data.accessToken, res.data.user);
+            setUser(res.data.user);
+            setAccesToken(res.data.accessToken);
             queryClient.invalidateQueries({ queryKey: ["session"] });
             addToast("Connexion réussie", "success");
         },
@@ -43,12 +40,8 @@ export function useSignup() {
     });
 }
 
-// useRefreshToken supprimé — l'interceptor Axios gère déjà le refresh silencieusement.
-// Un useQuery ici créerait un double mécanisme qui entrerait en conflit.
-
 export function useLogout() {
-    // logout() remplace clearAuth() qui a été supprimé du store
-    const { clearAuth } = useAuthStore();
+    const clearAuth = useAuthStore((state) => state.clearAuth);
     const queryClient = useQueryClient();
     const addToast = useToastStore((s) => s.addToast);
 
@@ -60,7 +53,6 @@ export function useLogout() {
             addToast("Déconnexion réussie", "success");
         },
         onError: () => {
-            // Même en cas d'erreur réseau, on déconnecte localement — l'UX est prioritaire
             clearAuth();
             queryClient.removeQueries({ queryKey: ["session"] });
             addToast("Déconnexion réussie", "success");
@@ -69,7 +61,7 @@ export function useLogout() {
 }
 
 export function useChangeEmail() {
-    const { setUser } = useAuthStore();
+    const setUser = useAuthStore((state) => state.setUser);
     const addToast = useToastStore((s) => s.addToast);
 
     return useMutation<MeResponse, Error, string>({
@@ -77,7 +69,7 @@ export function useChangeEmail() {
         mutationFn: () =>
             Promise.reject(new Error("changeEmail non implémenté")),
         onSuccess: (res) => {
-            setUser(res.user);
+            setUser(res.data);
             addToast("Email modifié avec succès", "success");
         },
         onError: () => {
@@ -87,13 +79,13 @@ export function useChangeEmail() {
 }
 
 export function useMe() {
-    const { setUser } = useAuthStore();
+    const setUser = useAuthStore((state) => state.setUser);
 
     return useQuery<MeResponse, Error>({
         queryKey: ["session"],
         queryFn: async () => {
             const res = await AuthApi.me();
-            setUser(res.user);
+            setUser(res.data);
             return res;
         },
         retry: false,

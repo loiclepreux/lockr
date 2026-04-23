@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router";
+import { useAuthInit } from "./hooks/useAuthInit";
 import "./index.css";
 
 // Layout
@@ -24,6 +25,8 @@ import NotificationPage from "./pages/NotificationPage";
 const queryClient = new QueryClient();
 
 function App() {
+    const { isLoading } = useAuthInit();
+    if (isLoading) return null;
     return (
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
