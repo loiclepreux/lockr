@@ -1,51 +1,82 @@
 // src/hooks/useGroups.ts
-// Hooks TanStack Query pour les groupes — LOC-189
-// Ces hooks font le pont entre les fonctions API et les composants React.
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+    getAllGroups,
     createGroup,
     deleteGroup,
-    getMyGroups,
-    getSharedGroups,
+    addMember,
 } from "../api/groups.api";
-//       ↑ On importe les fonctions du fichier API (le maillon précédent)
+import type { AddMemberData } from "../api/groups.api";
+import { useAuthStore } from "../stores/useAuthStore";
 
-// ─── LIRE MES GROUPES ──────────────────────────────────
+// ─── MES GROUPES ────────────────────────────────────────────────────────────
 export const useMyGroups = () => {
+    const userId = useAuthStore((state) => state.user?.id);
+
     return useQuery({
-        queryKey: ["groups", "mine"], // L'étiquette dans le cache
-        queryFn: getMyGroups, // La fonction API à appeler
+        queryKey: ["groups", "mine", userId],
+        queryFn: async () => {
+            const allGroups = await getAllGroups();
+            return allGroups.filter((g) => g.creatorId === userId);
+        },
+        enabled: !!userId,
     });
 };
 
-// ─── LIRE LES GROUPES PARTAGÉS ─────────────────────────
+// ─── GROUPES PARTAGÉS ───────────────────────────────────────────────────────
 export const useSharedGroups = () => {
+    const userId = useAuthStore((state) => state.user?.id);
+
     return useQuery({
-        queryKey: ["groups", "shared"],
-        queryFn: getSharedGroups,
+        queryKey: ["groups", "shared", userId],
+        queryFn: async () => {
+            const allGroups = await getAllGroups();
+            return allGroups.filter(
+                (g) =>
+                    g.creatorId !== userId &&
+                    g.users.some((m) => m.userId === userId),
+            );
+        },
+        enabled: !!userId,
     });
 };
 
-// ─── CRÉER UN GROUPE ────────────────────────────────────
+// ─── CRÉER UN GROUPE ────────────────────────────────────────────────────────
 export const useCreateGroup = () => {
-    const queryClient = useQueryClient(); // Le manager qui gère tout le cache
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: createGroup,
         onSuccess: () => {
-            // "Les groupes ont changé, tout le monde rafraîchit !"
             queryClient.invalidateQueries({ queryKey: ["groups"] });
         },
     });
 };
 
-// ─── SUPPRIMER UN GROUPE ────────────────────────────────
+// ─── SUPPRIMER UN GROUPE ────────────────────────────────────────────────────
 export const useDeleteGroup = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: deleteGroup,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["groups"] });
+        },
+    });
+};
+
+// ─── AJOUTER UN MEMBRE ──────────────────────────────────────────────────────
+export const useAddMember = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            groupId,
+            member,
+        }: {
+            groupId: string;
+            member: AddMemberData;
+        }) => addMember(groupId, member),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups"] });
         },

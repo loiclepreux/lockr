@@ -11,9 +11,17 @@ export const useAuthInit = () => {
 
   useEffect(() => {
     AuthApi.refresh()
-      .then(({ accessToken, user }) => {
+      .then(async ({ accessToken, user }) => {
         setAccessToken(accessToken);
-        setUser(user);
+        // Si le refresh retourne déjà un user complet, on l'utilise.
+        // Sinon on appelle /user/me pour hydrater le store.
+        if (user?.id) {
+          setUser(user);
+        } else {
+          // Le token est valide, on récupère le profil complet
+          const meRes = await AuthApi.me();
+          setUser(meRes.data);
+        }
       })
       .catch(() => {
         clearAuth();

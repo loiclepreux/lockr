@@ -4,6 +4,7 @@ export const feedbackMessages = {
         createError: "Impossible de créer le groupe.",
         emptyDescription: "La description du groupe est obligatoire.",
         emptyName: "Le nom du groupe est obligatoire.",
+        emptyCategory: "La catégorie du groupe est obligatoire.", // 👈
     },
     document: {
         renameSelected: "Aucun document a renommer n'est séléctionné.",

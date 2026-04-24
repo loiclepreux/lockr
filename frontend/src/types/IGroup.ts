@@ -1,22 +1,39 @@
+// On redéfinit les enums ici car Prisma n'est pas accessible côté front
+export type PrivacyEnum = "public" | "private";
+
+export type RoleEnum = "creator" | "moderator" | "user";
+
 export interface IGroupMember {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
+    userId: string;
+    role: RoleEnum;
+    user: {
+        id: string;
+        email: string;
+        profile: {
+            firstName: string;
+            lastName: string;
+            imgUrl: string | null;
+        } | null;
+    };
 }
 
 export interface IGroup {
     id: string;
     name: string;
     description: string;
-    membersCount: number;
-    members: IGroupMember[];
+    category: string;
+    privacy: PrivacyEnum;
+    imgUrl: string | null;
+    creatorId: string;
+    createdAt: string;
+    updatedAt: string;
+    users: IGroupMember[];
 }
 
-// Ce que le frontend envoie au serveur pour créer un groupe :
-// pas d'id (généré par le serveur), et les membres sans id non plus
 export type CreateGroupData = {
     name: string;
     description: string;
-    members: Omit<IGroupMember, "id">[]; // 👈 membres sans id, c'est normal ici
+    category: string;
+    privacy: PrivacyEnum;
+    imgUrl?: string;
 };

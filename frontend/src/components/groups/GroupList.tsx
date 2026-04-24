@@ -13,7 +13,6 @@ export default function GroupList({ title, groups }: GroupListProps) {
                 <h2 className="text-white font-semibold text-xl tracking-wide">
                     {title}
                 </h2>
-
                 <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold border border-cyan-500/20">
                     {groups.length} groupe{groups.length > 1 ? "s" : ""}
                 </span>
@@ -33,7 +32,8 @@ export default function GroupList({ title, groups }: GroupListProps) {
                             id={group.id}
                             name={group.name}
                             description={group.description}
-                            membersCount={group.membersCount}
+                            membersCount={group.users.length} // 👈 dérivé depuis users
+                            creatorId={group.creatorId}
                         />
                     ))}
                 </div>
