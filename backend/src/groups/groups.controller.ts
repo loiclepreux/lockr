@@ -35,11 +35,13 @@ export class GroupsController {
   }
 
   @Get()
-  findAll() {
+  @UseGuards(AuthGuard)
+  findAll(@Req() req: any) {
     return this.groupsService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
     return this.groupsService.findOne(id);
   }

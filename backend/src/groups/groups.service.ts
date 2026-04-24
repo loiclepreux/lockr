@@ -25,7 +25,19 @@ export class GroupsService {
   }
 
   async findAll() {
-    const result = await this.prisma.group.findMany({});
+    const result = await this.prisma.group.findMany({
+      include: {
+        users: {
+          include: {
+            user: {
+              include: {
+                profile: true,
+              },
+            },
+          },
+        },
+      },
+    });
     return result;
   }
 

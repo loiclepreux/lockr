@@ -16,6 +16,7 @@ import { IResponse } from 'src/utils/interfaces/response.interface';
 import { User } from 'prisma/generated/prisma/client';
 import { SigninDto } from './dto/signin.dto';
 import type { Request, Response } from 'express';
+import { log } from 'node:console';
 
 @Controller('auth')
 export class AuthController {
@@ -55,13 +56,15 @@ export class AuthController {
     }
     const tokens = await this.authService.createTokens(user.id);
     this.authService.setCookie('refreshToken', tokens.refreshToken, response);
+    console.log(tokens.accessToken);
+
     return {
       data: { accessToken: tokens.accessToken },
       dataType: 'Auth',
       timeStamp: new Date(),
     };
   }
-  @Get('refresh_token')
+  @Get('refresh')
   async refreshToken(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
@@ -87,7 +90,6 @@ export class AuthController {
       timeStamp: new Date(),
     };
   }
-
   @Post('logout')
   async logout(
     @Req() request: Request,

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from 'prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { PrismaModule } from 'prisma/prisma.module';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.modules';
 import { GroupsModule } from './groups/groups.module';
-import { DocumentsModule } from './documents/documents.module';
+import { ActivtyLogModule } from './activity-log/activity-log.module';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { DocumentsModule } from './documents/documents.module';
     UserModule,
     AuthModule,
     GroupsModule,
-    DocumentsModule,
+    ActivtyLogModule,
   ],
 })
 export class AppModule {}
