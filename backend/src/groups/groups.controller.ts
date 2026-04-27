@@ -4,6 +4,7 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { addMemberDTO } from './dto/add-member.dto';
+import { AddDocToGroupDto } from './dto/add-doc-to-group.dto';
 
 @Controller('groups')
 export class GroupsController {
@@ -32,6 +33,17 @@ export class GroupsController {
     const userId = req.user?.id || req.user?.sub;
 
     return this.groupsService.addMember(groupId, addMemberDTO, userId);
+  }
+
+  @Post(':id/documents')
+  @UseGuards(AuthGuard)
+  async addDocument(
+    @Param('id') groupId: string,
+    @Body() addDocToGroupDto: AddDocToGroupDto,
+    @Req() req: any,
+  ) {
+    const userId = req.user?.id || req.user?.sub;
+    return this.groupsService.addDocToGroup(groupId, addDocToGroupDto, userId);
   }
 
   @Get()

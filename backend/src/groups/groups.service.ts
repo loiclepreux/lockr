@@ -12,6 +12,7 @@ import { PrismaService } from 'prisma/prisma.service';
 import { Group } from './entities/group.entity';
 import { GroupInclude } from 'prisma/generated/prisma/models';
 import { addMemberDTO } from './dto/add-member.dto';
+import { AddDocToGroupDto } from './dto/add-doc-to-group.dto';
 
 @Injectable()
 export class GroupsService {
@@ -100,6 +101,42 @@ export class GroupsService {
       return result;
     } catch {
       throw new ConflictException();
+    }
+  }
+
+  async addDocToGroup(groupId: string, dto: AddDocToGroupDto, userId: string) {
+    // On vérifie que le groupe existe
+    const group = await this.findOne(groupId);
+    if (!group) {
+      throw new NotFoundException();
+    }
+
+    // Seul le créateur peut ajouter des documents au groupe
+    if (String(group.creatorId) !== String(userId)) {
+      throw new ForbiddenException();
+    }
+
+    // On vérifie que le document existe
+    const doc = await this.prisma.doc.findUnique({
+      where: { id: dto.docId },
+    });
+    if (!doc) {
+      throw new NotFoundException('Le document est introuvable');
+    }
+
+    // On tente la création — si le document est déjà dans le groupe
+    // Prisma lèvera une erreur d'unicité qu'on intercepte avec ConflictException
+    try {
+      const result = await this.prisma.docsInGroup.create({
+        data: {
+          groupId,
+          docId: dto.docId,
+          expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
+        },
+      });
+      return result;
+    } catch {
+      throw new ConflictException('Ce document est déjà dans ce groupe');
     }
   }
 }
