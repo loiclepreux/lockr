@@ -1,14 +1,18 @@
+import { useAddDocToGroup } from "../hooks/useDocuments";
+import { useMyGroups } from "../hooks/useGroups";
 import { useEffect, useRef, useState } from "react";
 import { Download, Edit2, Share2, Trash2 } from "lucide-react";
 import FeedbackMessage from "../components/ui/FeedbackMessage";
 import { feedbackMessages } from "../types/feedbackMessage";
 import { ShareModal } from "../components/documents/ShareModal";
-import { DeleteModal } from "../components/documents/DeleteModal";
 import { UploadModal } from "../components/documents/UploadModal";
+import { DeleteModal } from "../components/documents/DeleteModal";
 import { RenameModal } from "../components/documents/RenameModal";
 import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
-import { mockDocuments, mockGroups, mockUsers } from "../types/documentFiles";
+import { mockGroups, mockUsers } from "../types/documentFiles";
+import { useMyDocuments } from "../hooks/useDocuments";
+
 import type {
     DocumentFile,
     AccessGroup,
@@ -25,7 +29,10 @@ const MOCK_USERS = [
 ];
 
 export default function DocumentsPage() {
-    const [documents, setDocuments] = useState<DocumentFile[]>(mockDocuments);
+    const { data: documents = [], isLoading } = useMyDocuments();
+    const { data: myGroups = [] } = useMyGroups();
+    const { mutateAsync: addDocToGroup, isPending: isAddingDoc } =
+        useAddDocToGroup();
     const [selectedDoc, setSelectedDoc] = useState<DocumentFile | null>(null);
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -177,25 +184,12 @@ export default function DocumentsPage() {
         setOpenMenuId(doc.id);
     };
 
-    const handleUpload = (data: {
+    const handleUpload = (_data: {
         file: File;
         doctype: string;
         priority: "Haute" | "Moyenne" | "Basse";
     }) => {
-        const extension =
-            data.file.name.split(".").pop()?.toUpperCase() || "FILE";
-
-        const newDoc: DocumentFile = {
-            id: Date.now(),
-            name: data.file.name,
-            size: `${(data.file.size / 1024 / 1024).toFixed(2)} MB`,
-            date: "À l'instant",
-            type: extension,
-            doctype: data.doctype,
-            priority: data.priority,
-        };
-
-        setDocuments((prev) => [newDoc, ...prev]);
+        // LOC-152 — à câbler avec une vraie mutation API (POST /documents)
     };
 
     const handleDeleteClick = (doc: DocumentFile) => {
@@ -220,64 +214,14 @@ export default function DocumentsPage() {
         openDialog("share_modal");
     };
 
-    // error and success messages for delete.
     const confirmDelete = () => {
-        if (!selectedDoc) {
-            setFeedback({
-                type: "error",
-                message: feedbackMessages.document.deleteSelected,
-            });
-            return;
-        }
-
-        setDocuments((prev) => prev.filter((doc) => doc.id !== selectedDoc.id));
-
-        setFeedback({
-            type: "success",
-            message: feedbackMessages.document.deleteSuccess,
-        });
-
+        // LOC-152 — à câbler avec une vraie mutation API (DELETE /documents/:id)
         closeDialog("delete_modal");
     };
 
-    // error and success messages for rename.
     const confirmRename = () => {
-        if (!selectedDoc) {
-            setFeedback({
-                type: "error",
-                message: feedbackMessages.document.renameSelected,
-            });
-            return;
-        }
-
-        if (newName.trim() === "") {
-            setFeedback({
-                type: "error",
-                message: feedbackMessages.document.emptyName,
-            });
-            return;
-        }
-
-        try {
-            setDocuments((prev) =>
-                prev.map((doc) =>
-                    doc.id === selectedDoc.id ? { ...doc, name: newName } : doc,
-                ),
-            );
-
-            setFeedback({
-                type: "success",
-                message: feedbackMessages.document.renameSuccess,
-            });
-
-            closeDialog("rename_modal");
-        } catch (error) {
-            console.error(error);
-            setFeedback({
-                type: "error",
-                message: feedbackMessages.document.renameError,
-            });
-        }
+        // LOC-152 — à câbler avec une vraie mutation API (PATCH /documents/:id)
+        closeDialog("rename_modal");
     };
 
     // error and success messages for share.
@@ -290,7 +234,7 @@ export default function DocumentsPage() {
             return;
         }
 
-        if (selectedUsers.length === 0 && !selectedGroupId) {
+        if (selectedUsers.length === 0 && existingGroupAccess.length === 0) {
             setFeedback({
                 type: "error",
                 message: feedbackMessages.document.shareUsers,
@@ -343,19 +287,17 @@ export default function DocumentsPage() {
         setSelectedUsers((prev) => prev.filter((u) => u !== user));
     };
 
-    const addGroup = () => {
-        if (!selectedGroupId) return;
+    const addGroup = async () => {
+        if (!selectedGroupId || !selectedDoc) return;
 
-        const selectedGroup = mockGroups.find(
-            (group) => String(group.id) === selectedGroupId,
-        );
-
+        // On trouve le groupe sélectionné dans les vrais groupes
+        const selectedGroup = myGroups.find((g) => g.id === selectedGroupId);
         if (!selectedGroup) return;
 
+        // On vérifie que le groupe n'est pas déjà dans la liste locale
         const alreadyExists = existingGroupAccess.some(
-            (group) => String(group.id) === selectedGroupId,
+            (g) => g.id === selectedGroupId,
         );
-
         if (alreadyExists) {
             setFeedback({
                 type: "error",
@@ -364,16 +306,41 @@ export default function DocumentsPage() {
             return;
         }
 
-        setExistingGroupAccess((prev) => [
-            ...prev,
-            {
-                id: String(selectedGroup.id),
-                name: selectedGroup.name,
-            },
-        ]);
+        try {
+            // On appelle vraiment le back — POST /groups/:id/documents
+            await addDocToGroup({
+                groupId: selectedGroupId,
+                data: { docId: selectedDoc.id },
+            });
 
-        setSelectedGroupId("");
+            // On met à jour la liste locale pour feedback visuel immédiat
+            setExistingGroupAccess((prev) => [
+                ...prev,
+                { id: selectedGroup.id, name: selectedGroup.name },
+            ]);
+
+            setSelectedGroupId("");
+
+            setFeedback({
+                type: "success",
+                message: "Document partagé avec le groupe avec succès.",
+            });
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: feedbackMessages.document.shareError,
+            });
+        }
     };
+    if (isLoading)
+        return (
+            <main className="min-w-0 bg-[#0b0f14] text-white px-10 py-10">
+                <p className="text-gray-400 text-sm">
+                    Chargement des documents...
+                </p>
+            </main>
+        );
 
     return (
         <main className="min-w-0 bg-[#0b0f14] text-white">
@@ -566,8 +533,8 @@ export default function DocumentsPage() {
                     existingAccess,
                     selectedGroupId,
                     existingGroupAccess,
-                    groups: mockGroups.map((group) => ({
-                        id: Number(group.id),
+                    groups: myGroups.map((group) => ({
+                        id: Number(group.id), // ShareModal attend un number pour l'id
                         name: group.name,
                     })),
                 }}
