@@ -1,4 +1,9 @@
-import { useAddDocToGroup } from "../hooks/useDocuments";
+import {
+    useAddDocToGroup,
+    useDeleteDocument,
+    useRenameDocument,
+    useUploadDocument,
+} from "../hooks/useDocuments";
 import { useMyGroups } from "../hooks/useGroups";
 import { useEffect, useRef, useState } from "react";
 import { Download, Edit2, Share2, Trash2 } from "lucide-react";
@@ -31,10 +36,16 @@ const MOCK_USERS = [
 export default function DocumentsPage() {
     const { data: documents = [], isLoading } = useMyDocuments();
     const { data: myGroups = [] } = useMyGroups();
-    const { mutateAsync: addDocToGroup, isPending: isAddingDoc } =
-        useAddDocToGroup();
+
+    const { mutateAsync: addDocToGroup } = useAddDocToGroup();
+    const { mutateAsync: uploadDocument } = useUploadDocument();
+
+    const { mutateAsync: deleteDocument } = useDeleteDocument();
+
+    const { mutateAsync: renameDocument } = useRenameDocument();
+
     const [selectedDoc, setSelectedDoc] = useState<DocumentFile | null>(null);
-    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
     const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
     const [newName, setNewName] = useState("");
     const [doctypeFilter, setDoctypeFilter] = useState<string>("Tous");
@@ -184,12 +195,30 @@ export default function DocumentsPage() {
         setOpenMenuId(doc.id);
     };
 
-    const handleUpload = (_data: {
+    const handleUpload = async (data: {
         file: File;
         doctype: string;
         priority: "Haute" | "Moyenne" | "Basse";
     }) => {
-        // LOC-152 — à câbler avec une vraie mutation API (POST /documents)
+        try {
+            await uploadDocument({
+                file: data.file,
+                name: data.file.name,
+            });
+
+            closeDialog("upload_modal");
+
+            setFeedback({
+                type: "success",
+                message: "Document ajouté avec succès.",
+            });
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: "Erreur lors de l'ajout du document.",
+            });
+        }
     };
 
     const handleDeleteClick = (doc: DocumentFile) => {
@@ -214,14 +243,59 @@ export default function DocumentsPage() {
         openDialog("share_modal");
     };
 
-    const confirmDelete = () => {
-        // LOC-152 — à câbler avec une vraie mutation API (DELETE /documents/:id)
-        closeDialog("delete_modal");
+    const confirmDelete = async () => {
+        if (!selectedDoc) return;
+
+        try {
+            await deleteDocument(String(selectedDoc.id));
+
+            closeDialog("delete_modal");
+            setSelectedDoc(null);
+
+            setFeedback({
+                type: "success",
+                message: "Document supprimé avec succès.",
+            });
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: "Erreur lors de la suppression du document.",
+            });
+        }
     };
 
-    const confirmRename = () => {
-        // LOC-152 — à câbler avec une vraie mutation API (PATCH /documents/:id)
-        closeDialog("rename_modal");
+    const confirmRename = async () => {
+        if (!selectedDoc) return;
+
+        if (!newName.trim()) {
+            setFeedback({
+                type: "error",
+                message: "Le nom du document ne peut pas être vide.",
+            });
+            return;
+        }
+
+        try {
+            await renameDocument({
+                documentId: String(selectedDoc.id),
+                name: newName.trim(),
+            });
+
+            closeDialog("rename_modal");
+            setSelectedDoc(null);
+
+            setFeedback({
+                type: "success",
+                message: "Document renommé avec succès.",
+            });
+        } catch (error) {
+            console.error(error);
+            setFeedback({
+                type: "error",
+                message: "Erreur lors du renommage du document.",
+            });
+        }
     };
 
     // error and success messages for share.
