@@ -107,13 +107,12 @@ export class GroupsService {
   async addDocToGroup(groupId: string, dto: AddDocToGroupDto, userId: string) {
     // On vérifie que le groupe existe
     const group = await this.findOne(groupId);
-    if (!group) {
-      throw new NotFoundException();
-    }
 
     // Seul le créateur peut ajouter des documents au groupe
-    if (String(group.creatorId) !== String(userId)) {
-      throw new ForbiddenException();
+    const isCreator = String(group!.creatorId) === String(userId);
+
+    if (!isCreator) {
+      throw new ForbiddenException("Vous n'avez pas le droit d'ajouter un document à ce groupe");
     }
 
     // On vérifie que le document existe
@@ -127,16 +126,19 @@ export class GroupsService {
     // On tente la création — si le document est déjà dans le groupe
     // Prisma lèvera une erreur d'unicité qu'on intercepte avec ConflictException
     try {
-      const result = await this.prisma.docsInGroup.create({
+      return await this.prisma.docsInGroup.create({
         data: {
           groupId,
           docId: dto.docId,
-          expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
+          expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : undefined,
         },
       });
-      return result;
-    } catch {
-      throw new ConflictException('Ce document est déjà dans ce groupe');
+    } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Ce document est déjà dans ce groupe');
+      }
+
+      throw error;
     }
   }
 }
