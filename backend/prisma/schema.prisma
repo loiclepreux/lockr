@@ -9,12 +9,12 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  refreshToken String? 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   profile             Profile?
   docs                Doc[]
@@ -53,8 +53,8 @@ model Doc {
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
-  owner      User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  docType    DocType       @relation(fields: [docTypeId], references: [id], onDelete: Cascade)
+  owner      User          @relation(fields: [ownerId], references: [id])
+  docType    DocType       @relation(fields: [docTypeId], references: [id])
   sharedDocs SharedDoc[]
   groups     DocsInGroup[]
 }
@@ -83,7 +83,7 @@ model DocType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  creator User  @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator User  @relation(fields: [creatorId], references: [id])
   docs    Doc[]
 }
 
@@ -111,10 +111,9 @@ model Group {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  users               UserInGroup[]
-  docs                DocsInGroup[]
-  activityLogs        ActivityLog[]
-  notificationToUsers NotificationToUser[]
+  users        UserInGroup[]
+  docs         DocsInGroup[]
+  activityLogs ActivityLog[]
 }
 
 enum privacyEnum {
@@ -196,10 +195,12 @@ model Notification {
   id          String   @id @default(uuid())
   type        String
   message     String
-  relatedId   Int
+  relatedId   String
   relatedType String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  notificationToUsers NotificationToUser[]
 }
 
 model NotificationToUser {
@@ -207,10 +208,10 @@ model NotificationToUser {
   userId         String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  isRead         Boolean
+  isRead         Boolean  @default(false)
 
-  user         User  @relation(fields: [userId], references: [id])
-  notification Group @relation(fields: [notificationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  notification Notification @relation(fields: [notificationId], references: [id])
 
   @@id([notificationId, userId])
 }

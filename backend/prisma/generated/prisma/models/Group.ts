@@ -217,7 +217,6 @@ export type GroupWhereInput = {
   users?: Prisma.UserInGroupListRelationFilter
   docs?: Prisma.DocsInGroupListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
-  notificationToUsers?: Prisma.NotificationToUserListRelationFilter
 }
 
 export type GroupOrderByWithRelationInput = {
@@ -233,7 +232,6 @@ export type GroupOrderByWithRelationInput = {
   users?: Prisma.UserInGroupOrderByRelationAggregateInput
   docs?: Prisma.DocsInGroupOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
-  notificationToUsers?: Prisma.NotificationToUserOrderByRelationAggregateInput
   _relevance?: Prisma.GroupOrderByRelevanceInput
 }
 
@@ -253,7 +251,6 @@ export type GroupWhereUniqueInput = Prisma.AtLeast<{
   users?: Prisma.UserInGroupListRelationFilter
   docs?: Prisma.DocsInGroupListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
-  notificationToUsers?: Prisma.NotificationToUserListRelationFilter
 }, "id">
 
 export type GroupOrderByWithAggregationInput = {
@@ -299,7 +296,6 @@ export type GroupCreateInput = {
   users?: Prisma.UserInGroupCreateNestedManyWithoutGroupInput
   docs?: Prisma.DocsInGroupCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupUncheckedCreateInput = {
@@ -315,7 +311,6 @@ export type GroupUncheckedCreateInput = {
   users?: Prisma.UserInGroupUncheckedCreateNestedManyWithoutGroupInput
   docs?: Prisma.DocsInGroupUncheckedCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupUpdateInput = {
@@ -331,7 +326,6 @@ export type GroupUpdateInput = {
   users?: Prisma.UserInGroupUpdateManyWithoutGroupNestedInput
   docs?: Prisma.DocsInGroupUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupUncheckedUpdateInput = {
@@ -347,7 +341,6 @@ export type GroupUncheckedUpdateInput = {
   users?: Prisma.UserInGroupUncheckedUpdateManyWithoutGroupNestedInput
   docs?: Prisma.DocsInGroupUncheckedUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupCreateManyInput = {
@@ -486,20 +479,6 @@ export type GroupUpdateOneWithoutActivityLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.GroupUpdateWithoutActivityLogsInput>, Prisma.GroupUncheckedUpdateWithoutActivityLogsInput>
 }
 
-export type GroupCreateNestedOneWithoutNotificationToUsersInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutNotificationToUsersInput, Prisma.GroupUncheckedCreateWithoutNotificationToUsersInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutNotificationToUsersInput
-  connect?: Prisma.GroupWhereUniqueInput
-}
-
-export type GroupUpdateOneRequiredWithoutNotificationToUsersNestedInput = {
-  create?: Prisma.XOR<Prisma.GroupCreateWithoutNotificationToUsersInput, Prisma.GroupUncheckedCreateWithoutNotificationToUsersInput>
-  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutNotificationToUsersInput
-  upsert?: Prisma.GroupUpsertWithoutNotificationToUsersInput
-  connect?: Prisma.GroupWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutNotificationToUsersInput, Prisma.GroupUpdateWithoutNotificationToUsersInput>, Prisma.GroupUncheckedUpdateWithoutNotificationToUsersInput>
-}
-
 export type GroupCreateWithoutUsersInput = {
   id?: string
   creatorId: string
@@ -512,7 +491,6 @@ export type GroupCreateWithoutUsersInput = {
   updatedAt?: Date | string
   docs?: Prisma.DocsInGroupCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupUncheckedCreateWithoutUsersInput = {
@@ -527,7 +505,6 @@ export type GroupUncheckedCreateWithoutUsersInput = {
   updatedAt?: Date | string
   docs?: Prisma.DocsInGroupUncheckedCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupCreateOrConnectWithoutUsersInput = {
@@ -558,7 +535,6 @@ export type GroupUpdateWithoutUsersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   docs?: Prisma.DocsInGroupUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutUsersInput = {
@@ -573,7 +549,6 @@ export type GroupUncheckedUpdateWithoutUsersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   docs?: Prisma.DocsInGroupUncheckedUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupCreateWithoutDocsInput = {
@@ -588,7 +563,6 @@ export type GroupCreateWithoutDocsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserInGroupCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupUncheckedCreateWithoutDocsInput = {
@@ -603,7 +577,6 @@ export type GroupUncheckedCreateWithoutDocsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserInGroupUncheckedCreateNestedManyWithoutGroupInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupCreateOrConnectWithoutDocsInput = {
@@ -634,7 +607,6 @@ export type GroupUpdateWithoutDocsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserInGroupUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutDocsInput = {
@@ -649,7 +621,6 @@ export type GroupUncheckedUpdateWithoutDocsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserInGroupUncheckedUpdateManyWithoutGroupNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupCreateWithoutActivityLogsInput = {
@@ -664,7 +635,6 @@ export type GroupCreateWithoutActivityLogsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserInGroupCreateNestedManyWithoutGroupInput
   docs?: Prisma.DocsInGroupCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupUncheckedCreateWithoutActivityLogsInput = {
@@ -679,7 +649,6 @@ export type GroupUncheckedCreateWithoutActivityLogsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserInGroupUncheckedCreateNestedManyWithoutGroupInput
   docs?: Prisma.DocsInGroupUncheckedCreateNestedManyWithoutGroupInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedCreateNestedManyWithoutNotificationInput
 }
 
 export type GroupCreateOrConnectWithoutActivityLogsInput = {
@@ -710,7 +679,6 @@ export type GroupUpdateWithoutActivityLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserInGroupUpdateManyWithoutGroupNestedInput
   docs?: Prisma.DocsInGroupUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUpdateManyWithoutNotificationNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutActivityLogsInput = {
@@ -725,83 +693,6 @@ export type GroupUncheckedUpdateWithoutActivityLogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserInGroupUncheckedUpdateManyWithoutGroupNestedInput
   docs?: Prisma.DocsInGroupUncheckedUpdateManyWithoutGroupNestedInput
-  notificationToUsers?: Prisma.NotificationToUserUncheckedUpdateManyWithoutNotificationNestedInput
-}
-
-export type GroupCreateWithoutNotificationToUsersInput = {
-  id?: string
-  creatorId: string
-  name: string
-  description: string
-  category: string
-  privacy: $Enums.privacyEnum
-  imgUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  users?: Prisma.UserInGroupCreateNestedManyWithoutGroupInput
-  docs?: Prisma.DocsInGroupCreateNestedManyWithoutGroupInput
-  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutGroupInput
-}
-
-export type GroupUncheckedCreateWithoutNotificationToUsersInput = {
-  id?: string
-  creatorId: string
-  name: string
-  description: string
-  category: string
-  privacy: $Enums.privacyEnum
-  imgUrl?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  users?: Prisma.UserInGroupUncheckedCreateNestedManyWithoutGroupInput
-  docs?: Prisma.DocsInGroupUncheckedCreateNestedManyWithoutGroupInput
-  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutGroupInput
-}
-
-export type GroupCreateOrConnectWithoutNotificationToUsersInput = {
-  where: Prisma.GroupWhereUniqueInput
-  create: Prisma.XOR<Prisma.GroupCreateWithoutNotificationToUsersInput, Prisma.GroupUncheckedCreateWithoutNotificationToUsersInput>
-}
-
-export type GroupUpsertWithoutNotificationToUsersInput = {
-  update: Prisma.XOR<Prisma.GroupUpdateWithoutNotificationToUsersInput, Prisma.GroupUncheckedUpdateWithoutNotificationToUsersInput>
-  create: Prisma.XOR<Prisma.GroupCreateWithoutNotificationToUsersInput, Prisma.GroupUncheckedCreateWithoutNotificationToUsersInput>
-  where?: Prisma.GroupWhereInput
-}
-
-export type GroupUpdateToOneWithWhereWithoutNotificationToUsersInput = {
-  where?: Prisma.GroupWhereInput
-  data: Prisma.XOR<Prisma.GroupUpdateWithoutNotificationToUsersInput, Prisma.GroupUncheckedUpdateWithoutNotificationToUsersInput>
-}
-
-export type GroupUpdateWithoutNotificationToUsersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.StringFieldUpdateOperationsInput | string
-  privacy?: Prisma.EnumprivacyEnumFieldUpdateOperationsInput | $Enums.privacyEnum
-  imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserInGroupUpdateManyWithoutGroupNestedInput
-  docs?: Prisma.DocsInGroupUpdateManyWithoutGroupNestedInput
-  activityLogs?: Prisma.ActivityLogUpdateManyWithoutGroupNestedInput
-}
-
-export type GroupUncheckedUpdateWithoutNotificationToUsersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  creatorId?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  category?: Prisma.StringFieldUpdateOperationsInput | string
-  privacy?: Prisma.EnumprivacyEnumFieldUpdateOperationsInput | $Enums.privacyEnum
-  imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserInGroupUncheckedUpdateManyWithoutGroupNestedInput
-  docs?: Prisma.DocsInGroupUncheckedUpdateManyWithoutGroupNestedInput
-  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 
@@ -813,14 +704,12 @@ export type GroupCountOutputType = {
   users: number
   docs: number
   activityLogs: number
-  notificationToUsers: number
 }
 
 export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | GroupCountOutputTypeCountUsersArgs
   docs?: boolean | GroupCountOutputTypeCountDocsArgs
   activityLogs?: boolean | GroupCountOutputTypeCountActivityLogsArgs
-  notificationToUsers?: boolean | GroupCountOutputTypeCountNotificationToUsersArgs
 }
 
 /**
@@ -854,13 +743,6 @@ export type GroupCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ActivityLogWhereInput
 }
 
-/**
- * GroupCountOutputType without action
- */
-export type GroupCountOutputTypeCountNotificationToUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.NotificationToUserWhereInput
-}
-
 
 export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -875,7 +757,6 @@ export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   users?: boolean | Prisma.Group$usersArgs<ExtArgs>
   docs?: boolean | Prisma.Group$docsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.Group$activityLogsArgs<ExtArgs>
-  notificationToUsers?: boolean | Prisma.Group$notificationToUsersArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["group"]>
 
@@ -898,7 +779,6 @@ export type GroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   users?: boolean | Prisma.Group$usersArgs<ExtArgs>
   docs?: boolean | Prisma.Group$docsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.Group$activityLogsArgs<ExtArgs>
-  notificationToUsers?: boolean | Prisma.Group$notificationToUsersArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -908,7 +788,6 @@ export type $GroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     users: Prisma.$UserInGroupPayload<ExtArgs>[]
     docs: Prisma.$DocsInGroupPayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
-    notificationToUsers: Prisma.$NotificationToUserPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1263,7 +1142,6 @@ export interface Prisma__GroupClient<T, Null = never, ExtArgs extends runtime.Ty
   users<T extends Prisma.Group$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserInGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   docs<T extends Prisma.Group$docsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$docsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocsInGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.Group$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  notificationToUsers<T extends Prisma.Group$notificationToUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$notificationToUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationToUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1719,30 +1597,6 @@ export type Group$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
-}
-
-/**
- * Group.notificationToUsers
- */
-export type Group$notificationToUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the NotificationToUser
-   */
-  select?: Prisma.NotificationToUserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the NotificationToUser
-   */
-  omit?: Prisma.NotificationToUserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.NotificationToUserInclude<ExtArgs> | null
-  where?: Prisma.NotificationToUserWhereInput
-  orderBy?: Prisma.NotificationToUserOrderByWithRelationInput | Prisma.NotificationToUserOrderByWithRelationInput[]
-  cursor?: Prisma.NotificationToUserWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.NotificationToUserScalarFieldEnum | Prisma.NotificationToUserScalarFieldEnum[]
 }
 
 /**

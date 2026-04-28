@@ -4,6 +4,8 @@ import { PrismaModule } from 'prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.modules';
 import { GroupsModule } from './groups/groups.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ActivtyLogModule } from './activity-log/activity-log.module';
 
 @Module({
@@ -13,6 +15,8 @@ import { ActivtyLogModule } from './activity-log/activity-log.module';
     UserModule,
     AuthModule,
     GroupsModule,
+    NotificationsModule,
+    EventEmitterModule.forRoot(),
     ActivtyLogModule,
   ],
 })

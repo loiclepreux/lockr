@@ -358,6 +358,7 @@ export const NotificationOrderByRelevanceFieldEnum = {
   id: 'id',
   type: 'type',
   message: 'message',
+  relatedId: 'relatedId',
   relatedType: 'relatedType'
 } as const
 

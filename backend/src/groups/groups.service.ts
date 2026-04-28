@@ -10,13 +10,17 @@ import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { Group } from './entities/group.entity';
-import { GroupInclude } from 'prisma/generated/prisma/models';
 import { addMemberDTO } from './dto/add-member.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { removeMemberDTO } from './dto/remove-member.dto';
 import { AddDocToGroupDto } from './dto/add-doc-to-group.dto';
 
 @Injectable()
 export class GroupsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
   async create(data: CreateGroupDto & { creatorId: string }): Promise<Group> {
     const group = await this.prisma.group.create({
       data,
@@ -65,8 +69,24 @@ export class GroupsService {
     if (String(group.creatorId) !== String(userId)) {
       throw new ForbiddenException();
     }
+    const member = await this.prisma.userInGroup.findMany({
+      where: {
+        groupId: id,
+      },
+    });
     const result = await this.prisma.group.delete({
       where: { id },
+    });
+    member.forEach((m) => {
+      if (m.userId !== userId) {
+        this.eventEmitter.emit(
+          'notif.trigger',
+          id,
+          'deleteGroup',
+          m.userId,
+          `Le groupe ${group.name} a été supprimé`,
+        );
+      }
     });
     return result;
   }
@@ -98,10 +118,45 @@ export class GroupsService {
           role: addMemberDTO.role,
         },
       });
+      this.eventEmitter.emit(
+        'notif.trigger',
+        groupId,
+        'addUserInGroup',
+        addMemberDTO.userId,
+        `Vous avez été ajouté au groupe ${group.name}`,
+      );
       return result;
     } catch {
       throw new ConflictException();
     }
+  }
+
+  async removeMember(groupId: string, removeMemberDTO: removeMemberDTO, adminId: string) {
+    const group = await this.findOne(groupId);
+    if (!group) {
+      throw new NotFoundException("Le groupe n'existe pas");
+    }
+    if (String(group.creatorId) !== String(adminId)) {
+      throw new ForbiddenException('Seul le créateur peut retirer un membre');
+    }
+    const result = await this.prisma.userInGroup.deleteMany({
+      where: {
+        groupId: groupId,
+        userId: removeMemberDTO.userId,
+      },
+    });
+    if (result.count > 0) {
+      this.eventEmitter.emit(
+        'notif.trigger',
+        groupId,
+        'removeUserFromGroup',
+        removeMemberDTO.userId,
+        `Vous avez été retiré du groupe ${group.name}`,
+      );
+    } else {
+      throw new NotFoundException("L'utilisateur n'était pas dans ce groupe");
+    }
+    return result;
   }
 
   async addDocToGroup(groupId: string, dto: AddDocToGroupDto, userId: string) {
