@@ -72,6 +72,7 @@ const Signin = () => {
                             <input
                                 type="email"
                                 placeholder="Email"
+                                role="email"
                                 className={`input input-bordered ${errors.email ? "input-error" : ""}`}
                                 {...register("email", {
                                     required: "Email is required",
@@ -96,6 +97,7 @@ const Signin = () => {
                             <input
                                 type="password"
                                 placeholder="Password"
+                                role="password"
                                 className={`input input-bordered ${errors.password ? "input-error" : ""}`}
                                 {...register("password", {
                                     required: "Password is required",

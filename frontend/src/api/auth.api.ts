@@ -29,7 +29,7 @@ export class AuthApi {
     // pour éviter la boucle infinie si le refresh token est lui-même invalide
     static async refresh(): Promise<AuthPayload> {
         const { data: response } = await axios.get(
-            `${import.meta.env.VITE_API_URL}/auth/refresh`,
+            `${import.meta.env.VITE_API_URL}auth/refresh`,
             { withCredentials: true },
         );
         return response.data;

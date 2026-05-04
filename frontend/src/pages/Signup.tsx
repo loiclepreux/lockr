@@ -122,6 +122,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="text"
+                                        role="FirsName"
                                         className={`input input-bordered ${errors.firstName ? "input-error" : ""}`}
                                         {...register("firstName", {
                                             required: true,
@@ -147,6 +148,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="text"
+                                        role="LastName"
                                         className={`input input-bordered ${errors.lastName ? "input-error" : ""}`}
                                         {...register("lastName", {
                                             required: true,
@@ -169,6 +171,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="tel"
+                                        role="phone"
                                         className="input input-bordered"
                                         {...register("phone")}
                                     />
@@ -182,6 +185,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="text"
+                                        role="adress"
                                         className="input input-bordered"
                                         {...register("address")}
                                     />
@@ -204,6 +208,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="email"
+                                        role="Email"
                                         className={`input input-bordered ${errors.email ? "input-error" : ""}`}
                                         {...register("email", {
                                             required: true,
@@ -229,6 +234,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="password"
+                                        role="password"
                                         className={`input input-bordered ${errors.password ? "input-error" : ""}`}
                                         {...register("password", {
                                             required: true,
@@ -280,6 +286,7 @@ const Signup = () => {
                                     </label>
                                     <input
                                         type="password"
+                                        role="confirmPassword"
                                         className={`input input-bordered ${errors.confirmPassword ? "input-error" : ""}`}
                                         {...register("confirmPassword", {
                                             required: true,
