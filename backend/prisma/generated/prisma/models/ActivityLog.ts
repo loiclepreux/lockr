@@ -20,18 +20,8 @@ export type ActivityLogModel = runtime.Types.Result.DefaultSelection<Prisma.$Act
 
 export type AggregateActivityLog = {
   _count: ActivityLogCountAggregateOutputType | null
-  _avg: ActivityLogAvgAggregateOutputType | null
-  _sum: ActivityLogSumAggregateOutputType | null
   _min: ActivityLogMinAggregateOutputType | null
   _max: ActivityLogMaxAggregateOutputType | null
-}
-
-export type ActivityLogAvgAggregateOutputType = {
-  targetId: number | null
-}
-
-export type ActivityLogSumAggregateOutputType = {
-  targetId: number | null
 }
 
 export type ActivityLogMinAggregateOutputType = {
@@ -40,7 +30,7 @@ export type ActivityLogMinAggregateOutputType = {
   groupId: string | null
   actionType: $Enums.targetEnum | null
   targetType: string | null
-  targetId: number | null
+  targetId: string | null
   log: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,7 +42,7 @@ export type ActivityLogMaxAggregateOutputType = {
   groupId: string | null
   actionType: $Enums.targetEnum | null
   targetType: string | null
-  targetId: number | null
+  targetId: string | null
   log: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -71,14 +61,6 @@ export type ActivityLogCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ActivityLogAvgAggregateInputType = {
-  targetId?: true
-}
-
-export type ActivityLogSumAggregateInputType = {
-  targetId?: true
-}
 
 export type ActivityLogMinAggregateInputType = {
   id?: true
@@ -155,18 +137,6 @@ export type ActivityLogAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ActivityLogAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ActivityLogSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ActivityLogMinAggregateInputType
@@ -197,8 +167,6 @@ export type ActivityLogGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: ActivityLogCountAggregateInputType | true
-  _avg?: ActivityLogAvgAggregateInputType
-  _sum?: ActivityLogSumAggregateInputType
   _min?: ActivityLogMinAggregateInputType
   _max?: ActivityLogMaxAggregateInputType
 }
@@ -209,13 +177,11 @@ export type ActivityLogGroupByOutputType = {
   groupId: string | null
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt: Date
   updatedAt: Date
   _count: ActivityLogCountAggregateOutputType | null
-  _avg: ActivityLogAvgAggregateOutputType | null
-  _sum: ActivityLogSumAggregateOutputType | null
   _min: ActivityLogMinAggregateOutputType | null
   _max: ActivityLogMaxAggregateOutputType | null
 }
@@ -244,7 +210,7 @@ export type ActivityLogWhereInput = {
   groupId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   actionType?: Prisma.EnumtargetEnumFilter<"ActivityLog"> | $Enums.targetEnum
   targetType?: Prisma.StringFilter<"ActivityLog"> | string
-  targetId?: Prisma.IntFilter<"ActivityLog"> | number
+  targetId?: Prisma.StringFilter<"ActivityLog"> | string
   log?: Prisma.StringFilter<"ActivityLog"> | string
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
@@ -276,7 +242,7 @@ export type ActivityLogWhereUniqueInput = Prisma.AtLeast<{
   groupId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   actionType?: Prisma.EnumtargetEnumFilter<"ActivityLog"> | $Enums.targetEnum
   targetType?: Prisma.StringFilter<"ActivityLog"> | string
-  targetId?: Prisma.IntFilter<"ActivityLog"> | number
+  targetId?: Prisma.StringFilter<"ActivityLog"> | string
   log?: Prisma.StringFilter<"ActivityLog"> | string
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
@@ -295,10 +261,8 @@ export type ActivityLogOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ActivityLogCountOrderByAggregateInput
-  _avg?: Prisma.ActivityLogAvgOrderByAggregateInput
   _max?: Prisma.ActivityLogMaxOrderByAggregateInput
   _min?: Prisma.ActivityLogMinOrderByAggregateInput
-  _sum?: Prisma.ActivityLogSumOrderByAggregateInput
 }
 
 export type ActivityLogScalarWhereWithAggregatesInput = {
@@ -310,7 +274,7 @@ export type ActivityLogScalarWhereWithAggregatesInput = {
   groupId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
   actionType?: Prisma.EnumtargetEnumWithAggregatesFilter<"ActivityLog"> | $Enums.targetEnum
   targetType?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
-  targetId?: Prisma.IntWithAggregatesFilter<"ActivityLog"> | number
+  targetId?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
   log?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ActivityLog"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ActivityLog"> | Date | string
@@ -320,7 +284,7 @@ export type ActivityLogCreateInput = {
   id?: string
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,7 +298,7 @@ export type ActivityLogUncheckedCreateInput = {
   groupId?: string | null
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,7 +308,7 @@ export type ActivityLogUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,7 +322,7 @@ export type ActivityLogUncheckedUpdateInput = {
   groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +334,7 @@ export type ActivityLogCreateManyInput = {
   groupId?: string | null
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -380,7 +344,7 @@ export type ActivityLogUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,7 +356,7 @@ export type ActivityLogUncheckedUpdateManyInput = {
   groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -426,10 +390,6 @@ export type ActivityLogCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ActivityLogAvgOrderByAggregateInput = {
-  targetId?: Prisma.SortOrder
-}
-
 export type ActivityLogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
@@ -452,10 +412,6 @@ export type ActivityLogMinOrderByAggregateInput = {
   log?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type ActivityLogSumOrderByAggregateInput = {
-  targetId?: Prisma.SortOrder
 }
 
 export type ActivityLogCreateNestedManyWithoutUserInput = {
@@ -546,19 +502,11 @@ export type EnumtargetEnumFieldUpdateOperationsInput = {
   set?: $Enums.targetEnum
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ActivityLogCreateWithoutUserInput = {
   id?: string
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -570,7 +518,7 @@ export type ActivityLogUncheckedCreateWithoutUserInput = {
   groupId?: string | null
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -611,7 +559,7 @@ export type ActivityLogScalarWhereInput = {
   groupId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   actionType?: Prisma.EnumtargetEnumFilter<"ActivityLog"> | $Enums.targetEnum
   targetType?: Prisma.StringFilter<"ActivityLog"> | string
-  targetId?: Prisma.IntFilter<"ActivityLog"> | number
+  targetId?: Prisma.StringFilter<"ActivityLog"> | string
   log?: Prisma.StringFilter<"ActivityLog"> | string
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
@@ -621,7 +569,7 @@ export type ActivityLogCreateWithoutGroupInput = {
   id?: string
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -633,7 +581,7 @@ export type ActivityLogUncheckedCreateWithoutGroupInput = {
   userId: string
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -670,7 +618,7 @@ export type ActivityLogCreateManyUserInput = {
   groupId?: string | null
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -680,7 +628,7 @@ export type ActivityLogUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -692,7 +640,7 @@ export type ActivityLogUncheckedUpdateWithoutUserInput = {
   groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,7 +651,7 @@ export type ActivityLogUncheckedUpdateManyWithoutUserInput = {
   groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,7 +662,7 @@ export type ActivityLogCreateManyGroupInput = {
   userId: string
   actionType: $Enums.targetEnum
   targetType: string
-  targetId: number
+  targetId: string
   log: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -724,7 +672,7 @@ export type ActivityLogUpdateWithoutGroupInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -736,7 +684,7 @@ export type ActivityLogUncheckedUpdateWithoutGroupInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,7 +695,7 @@ export type ActivityLogUncheckedUpdateManyWithoutGroupInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   actionType?: Prisma.EnumtargetEnumFieldUpdateOperationsInput | $Enums.targetEnum
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   log?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -801,7 +749,7 @@ export type $ActivityLogPayload<ExtArgs extends runtime.Types.Extensions.Interna
     groupId: string | null
     actionType: $Enums.targetEnum
     targetType: string
-    targetId: number
+    targetId: string
     log: string
     createdAt: Date
     updatedAt: Date
@@ -1181,7 +1129,7 @@ export interface ActivityLogFieldRefs {
   readonly groupId: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly actionType: Prisma.FieldRef<"ActivityLog", 'targetEnum'>
   readonly targetType: Prisma.FieldRef<"ActivityLog", 'String'>
-  readonly targetId: Prisma.FieldRef<"ActivityLog", 'Int'>
+  readonly targetId: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly log: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly createdAt: Prisma.FieldRef<"ActivityLog", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ActivityLog", 'DateTime'>

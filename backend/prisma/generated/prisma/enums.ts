@@ -57,3 +57,12 @@ export const targetEnum = {
 } as const
 
 export type targetEnum = (typeof targetEnum)[keyof typeof targetEnum]
+
+
+export const AccessStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type AccessStatus = (typeof AccessStatus)[keyof typeof AccessStatus]

@@ -1,11 +1,24 @@
 -- CreateTable
+CREATE TABLE `User` (
+    `id` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `refreshToken` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `User_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Profile` (
     `firstName` VARCHAR(191) NOT NULL,
     `lastName` VARCHAR(191) NOT NULL,
     `imgUrl` VARCHAR(191) NULL,
     `phoneNumber` INTEGER NULL,
     `address` VARCHAR(191) NULL,
-    `userId` INTEGER NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -14,12 +27,13 @@ CREATE TABLE `Profile` (
 
 -- CreateTable
 CREATE TABLE `Doc` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `extension` ENUM('pdf', 'docx', 'mp3', 'webp', 'mp4', 'png', 'jpg', 'jpeg') NOT NULL,
-    `ownerId` INTEGER NOT NULL,
+    `ownerId` VARCHAR(191) NOT NULL,
     `size` BIGINT NOT NULL,
-    `docTypeId` INTEGER NOT NULL,
+    `docTypeId` VARCHAR(191) NOT NULL,
+    `status` ENUM('ACTIVE', 'ARCHIVED', 'DELETED') NOT NULL DEFAULT 'ACTIVE',
     `addedDate` DATETIME(3) NOT NULL,
     `filePath` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -30,9 +44,9 @@ CREATE TABLE `Doc` (
 
 -- CreateTable
 CREATE TABLE `DocType` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `creatorId` INTEGER NOT NULL,
+    `creatorId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -42,8 +56,8 @@ CREATE TABLE `DocType` (
 
 -- CreateTable
 CREATE TABLE `SharedDoc` (
-    `receiverId` INTEGER NOT NULL,
-    `docId` INTEGER NOT NULL,
+    `receiverId` VARCHAR(191) NOT NULL,
+    `docId` VARCHAR(191) NOT NULL,
     `expirationDate` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -53,8 +67,8 @@ CREATE TABLE `SharedDoc` (
 
 -- CreateTable
 CREATE TABLE `Group` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `creatorId` INTEGER NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `creatorId` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `category` VARCHAR(191) NOT NULL,
@@ -68,8 +82,8 @@ CREATE TABLE `Group` (
 
 -- CreateTable
 CREATE TABLE `UserInGroup` (
-    `userId` INTEGER NOT NULL,
-    `groupId` INTEGER NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `groupId` VARCHAR(191) NOT NULL,
     `role` ENUM('creator', 'moderator', 'user') NOT NULL DEFAULT 'user',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -79,8 +93,8 @@ CREATE TABLE `UserInGroup` (
 
 -- CreateTable
 CREATE TABLE `DocsInGroup` (
-    `groupId` INTEGER NOT NULL,
-    `docId` INTEGER NOT NULL,
+    `groupId` VARCHAR(191) NOT NULL,
+    `docId` VARCHAR(191) NOT NULL,
     `expirationDate` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -90,12 +104,12 @@ CREATE TABLE `DocsInGroup` (
 
 -- CreateTable
 CREATE TABLE `ActivityLog` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `userId` INTEGER NOT NULL,
-    `groupId` INTEGER NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `groupId` VARCHAR(191) NULL,
     `actionType` ENUM('addDocInGroup', 'deleteDocInGroup', 'addUserInGroup', 'removeUserInGroup') NOT NULL,
     `targetType` VARCHAR(191) NOT NULL,
-    `targetId` INTEGER NOT NULL,
+    `targetId` VARCHAR(191) NOT NULL,
     `log` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -105,13 +119,13 @@ CREATE TABLE `ActivityLog` (
 
 -- CreateTable
 CREATE TABLE `AccessRequest` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `status` VARCHAR(191) NOT NULL,
+    `id` VARCHAR(191) NOT NULL,
+    `status` ENUM('PENDING', 'ACCEPTED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
     `message` VARCHAR(191) NOT NULL,
-    `targetId` INTEGER NOT NULL,
+    `targetId` VARCHAR(191) NOT NULL,
     `targetType` VARCHAR(191) NOT NULL,
-    `requesterId` INTEGER NOT NULL,
-    `respondedId` INTEGER NOT NULL,
+    `requesterId` VARCHAR(191) NOT NULL,
+    `respondedId` VARCHAR(191) NOT NULL,
     `responseDate` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -121,10 +135,10 @@ CREATE TABLE `AccessRequest` (
 
 -- CreateTable
 CREATE TABLE `Notification` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(191) NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
-    `relatedId` INTEGER NOT NULL,
+    `relatedId` VARCHAR(191) NOT NULL,
     `relatedType` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -134,11 +148,11 @@ CREATE TABLE `Notification` (
 
 -- CreateTable
 CREATE TABLE `NotificationToUser` (
-    `notificationId` INTEGER NOT NULL,
-    `userId` INTEGER NOT NULL,
+    `notificationId` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `isRead` BOOLEAN NOT NULL,
+    `isRead` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`notificationId`, `userId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -189,4 +203,4 @@ ALTER TABLE `AccessRequest` ADD CONSTRAINT `AccessRequest_respondedId_fkey` FORE
 ALTER TABLE `NotificationToUser` ADD CONSTRAINT `NotificationToUser_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `NotificationToUser` ADD CONSTRAINT `NotificationToUser_notificationId_fkey` FOREIGN KEY (`notificationId`) REFERENCES `Group`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `NotificationToUser` ADD CONSTRAINT `NotificationToUser_notificationId_fkey` FOREIGN KEY (`notificationId`) REFERENCES `Notification`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

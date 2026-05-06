@@ -1501,6 +1501,7 @@ export const ActivityLogOrderByRelevanceFieldEnum = {
   userId: 'userId',
   groupId: 'groupId',
   targetType: 'targetType',
+  targetId: 'targetId',
   log: 'log'
 } as const
 
@@ -1509,8 +1510,8 @@ export type ActivityLogOrderByRelevanceFieldEnum = (typeof ActivityLogOrderByRel
 
 export const AccessRequestOrderByRelevanceFieldEnum = {
   id: 'id',
-  status: 'status',
   message: 'message',
+  targetId: 'targetId',
   targetType: 'targetType',
   requesterId: 'requesterId',
   respondedId: 'respondedId'
@@ -1604,6 +1605,13 @@ export type EnumRoleEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'targetEnum'
  */
 export type EnumtargetEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'targetEnum'>
+    
+
+
+/**
+ * Reference to a field of type 'AccessStatus'
+ */
+export type EnumAccessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessStatus'>
     
 
 

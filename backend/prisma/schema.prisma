@@ -9,12 +9,12 @@ generator client {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  password     String
-  refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  refreshToken String? 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   profile             Profile?
   docs                Doc[]
@@ -111,9 +111,9 @@ model Group {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  users        UserInGroup[]
-  docs         DocsInGroup[]
-  activityLogs ActivityLog[]
+  users               UserInGroup[]
+  docs                DocsInGroup[]
+  activityLogs        ActivityLog[]
 }
 
 enum privacyEnum {
@@ -176,7 +176,7 @@ enum targetEnum {
 }
 
 model AccessRequest {
-  id           String       @id @default(uuid())
+  id           String    @id @default(uuid())
   status       AccessStatus @default(PENDING)
   message      String
   targetId     String
@@ -184,8 +184,8 @@ model AccessRequest {
   requesterId  String
   respondedId  String
   responseDate DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   requester User @relation("requester", fields: [requesterId], references: [id])
   responded User @relation("responder", fields: [respondedId], references: [id])
@@ -205,7 +205,7 @@ model Notification {
   relatedType String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+  
   notificationToUsers NotificationToUser[]
 }
 
@@ -216,7 +216,7 @@ model NotificationToUser {
   updatedAt      DateTime @updatedAt
   isRead         Boolean  @default(false)
 
-  user         User         @relation(fields: [userId], references: [id])
+  user         User  @relation(fields: [userId], references: [id])
   notification Notification @relation(fields: [notificationId], references: [id])
 
   @@id([notificationId, userId])

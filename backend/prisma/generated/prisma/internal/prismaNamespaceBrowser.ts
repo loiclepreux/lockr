@@ -336,6 +336,7 @@ export const ActivityLogOrderByRelevanceFieldEnum = {
   userId: 'userId',
   groupId: 'groupId',
   targetType: 'targetType',
+  targetId: 'targetId',
   log: 'log'
 } as const
 
@@ -344,8 +345,8 @@ export type ActivityLogOrderByRelevanceFieldEnum = (typeof ActivityLogOrderByRel
 
 export const AccessRequestOrderByRelevanceFieldEnum = {
   id: 'id',
-  status: 'status',
   message: 'message',
+  targetId: 'targetId',
   targetType: 'targetType',
   requesterId: 'requesterId',
   respondedId: 'respondedId'

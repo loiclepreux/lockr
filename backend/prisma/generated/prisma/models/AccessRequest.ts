@@ -20,25 +20,15 @@ export type AccessRequestModel = runtime.Types.Result.DefaultSelection<Prisma.$A
 
 export type AggregateAccessRequest = {
   _count: AccessRequestCountAggregateOutputType | null
-  _avg: AccessRequestAvgAggregateOutputType | null
-  _sum: AccessRequestSumAggregateOutputType | null
   _min: AccessRequestMinAggregateOutputType | null
   _max: AccessRequestMaxAggregateOutputType | null
 }
 
-export type AccessRequestAvgAggregateOutputType = {
-  targetId: number | null
-}
-
-export type AccessRequestSumAggregateOutputType = {
-  targetId: number | null
-}
-
 export type AccessRequestMinAggregateOutputType = {
   id: string | null
-  status: string | null
+  status: $Enums.AccessStatus | null
   message: string | null
-  targetId: number | null
+  targetId: string | null
   targetType: string | null
   requesterId: string | null
   respondedId: string | null
@@ -49,9 +39,9 @@ export type AccessRequestMinAggregateOutputType = {
 
 export type AccessRequestMaxAggregateOutputType = {
   id: string | null
-  status: string | null
+  status: $Enums.AccessStatus | null
   message: string | null
-  targetId: number | null
+  targetId: string | null
   targetType: string | null
   requesterId: string | null
   respondedId: string | null
@@ -74,14 +64,6 @@ export type AccessRequestCountAggregateOutputType = {
   _all: number
 }
 
-
-export type AccessRequestAvgAggregateInputType = {
-  targetId?: true
-}
-
-export type AccessRequestSumAggregateInputType = {
-  targetId?: true
-}
 
 export type AccessRequestMinAggregateInputType = {
   id?: true
@@ -161,18 +143,6 @@ export type AccessRequestAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: AccessRequestAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: AccessRequestSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: AccessRequestMinAggregateInputType
@@ -203,17 +173,15 @@ export type AccessRequestGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: AccessRequestCountAggregateInputType | true
-  _avg?: AccessRequestAvgAggregateInputType
-  _sum?: AccessRequestSumAggregateInputType
   _min?: AccessRequestMinAggregateInputType
   _max?: AccessRequestMaxAggregateInputType
 }
 
 export type AccessRequestGroupByOutputType = {
   id: string
-  status: string
+  status: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   requesterId: string
   respondedId: string
@@ -221,8 +189,6 @@ export type AccessRequestGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: AccessRequestCountAggregateOutputType | null
-  _avg: AccessRequestAvgAggregateOutputType | null
-  _sum: AccessRequestSumAggregateOutputType | null
   _min: AccessRequestMinAggregateOutputType | null
   _max: AccessRequestMaxAggregateOutputType | null
 }
@@ -247,9 +213,9 @@ export type AccessRequestWhereInput = {
   OR?: Prisma.AccessRequestWhereInput[]
   NOT?: Prisma.AccessRequestWhereInput | Prisma.AccessRequestWhereInput[]
   id?: Prisma.StringFilter<"AccessRequest"> | string
-  status?: Prisma.StringFilter<"AccessRequest"> | string
+  status?: Prisma.EnumAccessStatusFilter<"AccessRequest"> | $Enums.AccessStatus
   message?: Prisma.StringFilter<"AccessRequest"> | string
-  targetId?: Prisma.IntFilter<"AccessRequest"> | number
+  targetId?: Prisma.StringFilter<"AccessRequest"> | string
   targetType?: Prisma.StringFilter<"AccessRequest"> | string
   requesterId?: Prisma.StringFilter<"AccessRequest"> | string
   respondedId?: Prisma.StringFilter<"AccessRequest"> | string
@@ -281,9 +247,9 @@ export type AccessRequestWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AccessRequestWhereInput | Prisma.AccessRequestWhereInput[]
   OR?: Prisma.AccessRequestWhereInput[]
   NOT?: Prisma.AccessRequestWhereInput | Prisma.AccessRequestWhereInput[]
-  status?: Prisma.StringFilter<"AccessRequest"> | string
+  status?: Prisma.EnumAccessStatusFilter<"AccessRequest"> | $Enums.AccessStatus
   message?: Prisma.StringFilter<"AccessRequest"> | string
-  targetId?: Prisma.IntFilter<"AccessRequest"> | number
+  targetId?: Prisma.StringFilter<"AccessRequest"> | string
   targetType?: Prisma.StringFilter<"AccessRequest"> | string
   requesterId?: Prisma.StringFilter<"AccessRequest"> | string
   respondedId?: Prisma.StringFilter<"AccessRequest"> | string
@@ -306,10 +272,8 @@ export type AccessRequestOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AccessRequestCountOrderByAggregateInput
-  _avg?: Prisma.AccessRequestAvgOrderByAggregateInput
   _max?: Prisma.AccessRequestMaxOrderByAggregateInput
   _min?: Prisma.AccessRequestMinOrderByAggregateInput
-  _sum?: Prisma.AccessRequestSumOrderByAggregateInput
 }
 
 export type AccessRequestScalarWhereWithAggregatesInput = {
@@ -317,9 +281,9 @@ export type AccessRequestScalarWhereWithAggregatesInput = {
   OR?: Prisma.AccessRequestScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AccessRequestScalarWhereWithAggregatesInput | Prisma.AccessRequestScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
-  status?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
+  status?: Prisma.EnumAccessStatusWithAggregatesFilter<"AccessRequest"> | $Enums.AccessStatus
   message?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
-  targetId?: Prisma.IntWithAggregatesFilter<"AccessRequest"> | number
+  targetId?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
   targetType?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
   requesterId?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
   respondedId?: Prisma.StringWithAggregatesFilter<"AccessRequest"> | string
@@ -330,9 +294,9 @@ export type AccessRequestScalarWhereWithAggregatesInput = {
 
 export type AccessRequestCreateInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   responseDate?: Date | string | null
   createdAt?: Date | string
@@ -343,9 +307,9 @@ export type AccessRequestCreateInput = {
 
 export type AccessRequestUncheckedCreateInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   requesterId: string
   respondedId: string
@@ -356,9 +320,9 @@ export type AccessRequestUncheckedCreateInput = {
 
 export type AccessRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,9 +333,9 @@ export type AccessRequestUpdateInput = {
 
 export type AccessRequestUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   respondedId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -382,9 +346,9 @@ export type AccessRequestUncheckedUpdateInput = {
 
 export type AccessRequestCreateManyInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   requesterId: string
   respondedId: string
@@ -395,9 +359,9 @@ export type AccessRequestCreateManyInput = {
 
 export type AccessRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -406,9 +370,9 @@ export type AccessRequestUpdateManyMutationInput = {
 
 export type AccessRequestUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   respondedId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -446,10 +410,6 @@ export type AccessRequestCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type AccessRequestAvgOrderByAggregateInput = {
-  targetId?: Prisma.SortOrder
-}
-
 export type AccessRequestMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -474,10 +434,6 @@ export type AccessRequestMinOrderByAggregateInput = {
   responseDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type AccessRequestSumOrderByAggregateInput = {
-  targetId?: Prisma.SortOrder
 }
 
 export type AccessRequestCreateNestedManyWithoutRequesterInput = {
@@ -564,11 +520,15 @@ export type AccessRequestUncheckedUpdateManyWithoutRespondedNestedInput = {
   deleteMany?: Prisma.AccessRequestScalarWhereInput | Prisma.AccessRequestScalarWhereInput[]
 }
 
+export type EnumAccessStatusFieldUpdateOperationsInput = {
+  set?: $Enums.AccessStatus
+}
+
 export type AccessRequestCreateWithoutRequesterInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   responseDate?: Date | string | null
   createdAt?: Date | string
@@ -578,9 +538,9 @@ export type AccessRequestCreateWithoutRequesterInput = {
 
 export type AccessRequestUncheckedCreateWithoutRequesterInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   respondedId: string
   responseDate?: Date | string | null
@@ -600,9 +560,9 @@ export type AccessRequestCreateManyRequesterInputEnvelope = {
 
 export type AccessRequestCreateWithoutRespondedInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   responseDate?: Date | string | null
   createdAt?: Date | string
@@ -612,9 +572,9 @@ export type AccessRequestCreateWithoutRespondedInput = {
 
 export type AccessRequestUncheckedCreateWithoutRespondedInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   requesterId: string
   responseDate?: Date | string | null
@@ -653,9 +613,9 @@ export type AccessRequestScalarWhereInput = {
   OR?: Prisma.AccessRequestScalarWhereInput[]
   NOT?: Prisma.AccessRequestScalarWhereInput | Prisma.AccessRequestScalarWhereInput[]
   id?: Prisma.StringFilter<"AccessRequest"> | string
-  status?: Prisma.StringFilter<"AccessRequest"> | string
+  status?: Prisma.EnumAccessStatusFilter<"AccessRequest"> | $Enums.AccessStatus
   message?: Prisma.StringFilter<"AccessRequest"> | string
-  targetId?: Prisma.IntFilter<"AccessRequest"> | number
+  targetId?: Prisma.StringFilter<"AccessRequest"> | string
   targetType?: Prisma.StringFilter<"AccessRequest"> | string
   requesterId?: Prisma.StringFilter<"AccessRequest"> | string
   respondedId?: Prisma.StringFilter<"AccessRequest"> | string
@@ -682,9 +642,9 @@ export type AccessRequestUpdateManyWithWhereWithoutRespondedInput = {
 
 export type AccessRequestCreateManyRequesterInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   respondedId: string
   responseDate?: Date | string | null
@@ -694,9 +654,9 @@ export type AccessRequestCreateManyRequesterInput = {
 
 export type AccessRequestCreateManyRespondedInput = {
   id?: string
-  status: string
+  status?: $Enums.AccessStatus
   message: string
-  targetId: number
+  targetId: string
   targetType: string
   requesterId: string
   responseDate?: Date | string | null
@@ -706,9 +666,9 @@ export type AccessRequestCreateManyRespondedInput = {
 
 export type AccessRequestUpdateWithoutRequesterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -718,9 +678,9 @@ export type AccessRequestUpdateWithoutRequesterInput = {
 
 export type AccessRequestUncheckedUpdateWithoutRequesterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   respondedId?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -730,9 +690,9 @@ export type AccessRequestUncheckedUpdateWithoutRequesterInput = {
 
 export type AccessRequestUncheckedUpdateManyWithoutRequesterInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   respondedId?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -742,9 +702,9 @@ export type AccessRequestUncheckedUpdateManyWithoutRequesterInput = {
 
 export type AccessRequestUpdateWithoutRespondedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -754,9 +714,9 @@ export type AccessRequestUpdateWithoutRespondedInput = {
 
 export type AccessRequestUncheckedUpdateWithoutRespondedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -766,9 +726,9 @@ export type AccessRequestUncheckedUpdateWithoutRespondedInput = {
 
 export type AccessRequestUncheckedUpdateManyWithoutRespondedInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAccessStatusFieldUpdateOperationsInput | $Enums.AccessStatus
   message?: Prisma.StringFieldUpdateOperationsInput | string
-  targetId?: Prisma.IntFieldUpdateOperationsInput | number
+  targetId?: Prisma.StringFieldUpdateOperationsInput | string
   targetType?: Prisma.StringFieldUpdateOperationsInput | string
   requesterId?: Prisma.StringFieldUpdateOperationsInput | string
   responseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -822,9 +782,9 @@ export type $AccessRequestPayload<ExtArgs extends runtime.Types.Extensions.Inter
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    status: string
+    status: $Enums.AccessStatus
     message: string
-    targetId: number
+    targetId: string
     targetType: string
     requesterId: string
     respondedId: string
@@ -1203,9 +1163,9 @@ export interface Prisma__AccessRequestClient<T, Null = never, ExtArgs extends ru
  */
 export interface AccessRequestFieldRefs {
   readonly id: Prisma.FieldRef<"AccessRequest", 'String'>
-  readonly status: Prisma.FieldRef<"AccessRequest", 'String'>
+  readonly status: Prisma.FieldRef<"AccessRequest", 'AccessStatus'>
   readonly message: Prisma.FieldRef<"AccessRequest", 'String'>
-  readonly targetId: Prisma.FieldRef<"AccessRequest", 'Int'>
+  readonly targetId: Prisma.FieldRef<"AccessRequest", 'String'>
   readonly targetType: Prisma.FieldRef<"AccessRequest", 'String'>
   readonly requesterId: Prisma.FieldRef<"AccessRequest", 'String'>
   readonly respondedId: Prisma.FieldRef<"AccessRequest", 'String'>
