@@ -159,7 +159,7 @@ model ActivityLog {
   groupId    String?
   actionType targetEnum
   targetType String
-  targetId   Int
+  targetId   String
   log        String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -176,19 +176,25 @@ enum targetEnum {
 }
 
 model AccessRequest {
-  id           String    @id @default(uuid())
-  status       String
+  id           String       @id @default(uuid())
+  status       AccessStatus @default(PENDING)
   message      String
-  targetId     Int
+  targetId     String
   targetType   String
   requesterId  String
   respondedId  String
   responseDate DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   requester User @relation("requester", fields: [requesterId], references: [id])
   responded User @relation("responder", fields: [respondedId], references: [id])
+}
+
+enum AccessStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 model Notification {
