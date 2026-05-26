@@ -28,4 +28,9 @@ export class NotificationsApi {
     static async markAllAsRead(): Promise<void> {
         await api.patch("notifications/read-all");
     }
+
+    static async countUnread(): Promise<number> {
+    const { data } = await api.get("notifications/count");
+    return data;
+}
 }

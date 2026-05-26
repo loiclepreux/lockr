@@ -5,6 +5,8 @@ import logo from "../../assets/images/logo.png";
 import foto from "../../assets/images/photo.png";
 import NotificationsModal from "../notification/NotificationsModal";
 import { useLogout } from "../../hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { NotificationsApi } from "../../api/notifications.api";
 
 const NavBarDashboard = () => {
     const navigate = useNavigate();
@@ -15,6 +17,11 @@ const NavBarDashboard = () => {
             onSuccess: () => navigate("/signin"), // redirige après déconnexion réussie
         });
     };
+
+    const { data: unreadCount = 0 } = useQuery({
+        queryKey: ["notifications-count"],
+        queryFn: NotificationsApi.countUnread,
+    });
 
     return (
         <div className="drawer lg:drawer-open">
@@ -52,9 +59,7 @@ const NavBarDashboard = () => {
                                 />
                             </div>
 
-                            <h2 className="text-lg font-semibold">
-                                John Doe
-                            </h2>
+                            <h2 className="text-lg font-semibold">John Doe</h2>
                         </div>
                     </div>
 
@@ -73,9 +78,11 @@ const NavBarDashboard = () => {
                             >
                                 <div className="relative">
                                     <Bell size={24} />
-                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                        3
-                                    </span>
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                            {unreadCount}
+                                        </span>
+                                    )}
                                 </div>
                                 <span>Notifications</span>
                             </button>
