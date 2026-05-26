@@ -1,145 +1,172 @@
-import { useState } from "react";
-import { Trash2, Eye } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell, CheckCircle } from "lucide-react";
+import { NotificationsApi } from "../../api/notifications.api";
 
-type Notification = {
-    id: number;
-    title: string;
-    message: string;
-    date: string;
-    isRead: boolean;
-};
+export default function NotificationCenter() {
+    const queryClient = useQueryClient();
 
-export default function NotificationsCenter() {
-    const [notifications, setNotifications] = useState<Notification[]>([
-        {
-            id: 1,
-            title: "Nouveau document partagé",
-            message: "Sarah a partagé un document avec vous.",
-            date: "2026-03-09 10:45",
-            isRead: false,
-        },
-        {
-            id: 2,
-            title: "Connexion détectée",
-            message: "Une nouvelle connexion a été détectée sur votre compte.",
-            date: "2026-03-09 09:15",
-            isRead: false,
-        },
-        {
-            id: 3,
-            title: "Mise à jour du groupe",
-            message: "Le groupe Projet Alpha a été mis à jour.",
-            date: "2026-03-08 18:30",
-            isRead: true,
-        },
-        {
-            id: 4,
-            title: "Stockage presque plein",
-            message: "Vous avez utilisé 85% de votre espace.",
-            date: "2026-03-08 14:10",
-            isRead: true,
-        },
-        {
-            id: 5,
-            title: "Mot de passe modifié",
-            message: "Votre mot de passe a bien été modifié.",
-            date: "2026-03-07 21:00",
-            isRead: true,
-        },
-    ]);
+    // =========================
+    // Récupération notifications
+    // =========================
+    const {
+        data: notifications = [],
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["notifications"],
+        queryFn: NotificationsApi.findAll,
+    });
 
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    // =========================
+    // Marquer UNE notification comme lue
+    // =========================
+    const markAsReadMutation = useMutation({
+        mutationFn: (notificationId: string) =>
+            NotificationsApi.markAsRead(notificationId),
 
-    const handleCheck = (id: number) => {
-        setSelectedIds((prev) =>
-            prev.includes(id)
-                ? prev.filter((notifId) => notifId !== id)
-                : [...prev, id],
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["notifications"],
+            });
+        },
+    });
+
+    // =========================
+    // Marquer TOUTES comme lues
+    // =========================
+    const markAllAsReadMutation = useMutation({
+        mutationFn: NotificationsApi.markAllAsRead,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["notifications"],
+            });
+        },
+    });
+
+    // =========================
+    // Etats de chargement / erreur
+    // =========================
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-10">
+                <p className="text-gray-400">Chargement des notifications...</p>
+            </div>
         );
-    };
+    }
 
-    const handleDeleteSelected = () => {
-        setNotifications((prev) =>
-            prev.filter((notif) => !selectedIds.includes(notif.id)),
+    if (isError) {
+        return (
+            <div className="flex items-center justify-center py-10">
+                <p className="text-red-500">
+                    Impossible de charger les notifications.
+                </p>
+            </div>
         );
-        setSelectedIds([]);
-    };
+    }
+
+    // =========================
+    // Comptage non lues
+    // =========================
+    const unreadCount = notifications.filter((item) => !item.isRead).length;
 
     return (
-        <div className="bg-[#0f1115] border border-cyan-500/10 rounded-2xl shadow-[0_0_30px_rgba(0,255,255,0.04)] p-6">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-white/5 pb-4 mb-6">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-wide text-white">
-                        Toutes les notifications
-                    </h2>
-                    <p className="text-sm text-gray-400 mt-1">
-                        Consultez et gérez l’ensemble de vos notifications.
-                    </p>
+        <div className="space-y-6">
+            {/* ========================= */}
+            {/* HEADER */}
+            {/* ========================= */}
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <Bell className="h-6 w-6 text-blue-500" />
+
+                    <div>
+                        <h2 className="text-2xl font-bold text-white">
+                            Notifications
+                        </h2>
+
+                        <p className="text-sm text-gray-400">
+                            {unreadCount} non lue(s)
+                        </p>
+                    </div>
                 </div>
 
-                <button
-                    onClick={handleDeleteSelected}
-                    disabled={selectedIds.length === 0}
-                    className="inline-flex items-center gap-2 rounded-xl px-4 py-3 bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                    <Trash2 size={18} />
-                    <span>Supprimer la sélection</span>
-                </button>
+                {notifications.length > 0 && unreadCount > 0 && (
+                    <button
+                        onClick={() => markAllAsReadMutation.mutate()}
+                        className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                    >
+                        Tout marquer comme lu
+                    </button>
+                )}
             </div>
 
-            {/* Liste */}
+            {/* ========================= */}
+            {/* LISTE */}
+            {/* ========================= */}
             <div className="space-y-4">
-                {notifications.map((notif) => (
-                    <div
-                        key={notif.id}
-                        className={`rounded-2xl border p-4 transition-all duration-300 ${
-                            notif.isRead
-                                ? "border-white/5 bg-white/[0.02]"
-                                : "border-cyan-500/20 bg-cyan-500/[0.04]"
-                        }`}
-                    >
-                        <div className="flex items-start gap-4">
-                            <input
-                                type="checkbox"
-                                checked={selectedIds.includes(notif.id)}
-                                onChange={() => handleCheck(notif.id)}
-                                className="checkbox checkbox-info mt-1"
-                            />
-
-                            <div className="flex-1">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                                    <div className="flex items-center gap-3">
-                                        <h3 className="text-lg font-semibold text-white">
-                                            {notif.title}
+                {notifications.length === 0 ? (
+                    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 text-center">
+                        <p className="text-gray-400">
+                            Aucune notification disponible.
+                        </p>
+                    </div>
+                ) : (
+                    notifications.map((item) => (
+                        <div
+                            key={item.notificationId}
+                            className={`
+                                rounded-2xl border p-5 transition
+                                ${
+                                    item.isRead
+                                        ? "border-zinc-800 bg-zinc-900/40 opacity-70"
+                                        : "border-blue-500/40 bg-blue-500/10"
+                                }
+                            `}
+                        >
+                            <div className="flex items-start justify-between gap-4">
+                                {/* CONTENU */}
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="font-semibold text-white">
+                                            {item.notification.type}
                                         </h3>
 
-                                        {!notif.isRead && (
-                                            <span className="px-2 py-1 text-xs rounded-full bg-red-500/15 text-red-400 border border-red-500/20">
-                                                Non lu
+                                        {!item.isRead && (
+                                            <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white">
+                                                Nouveau
                                             </span>
                                         )}
                                     </div>
 
-                                    <span className="text-sm text-gray-400">
-                                        {notif.date}
-                                    </span>
+                                    <p className="text-sm text-gray-300">
+                                        {item.notification.message}
+                                    </p>
+
+                                    <p className="text-xs text-gray-500">
+                                        {new Date(
+                                            item.notification.createdAt,
+                                        ).toLocaleString()}
+                                    </p>
                                 </div>
 
-                                <p className="text-sm text-gray-400 mt-2 leading-relaxed">
-                                    {notif.message}
-                                </p>
-
-                                <div className="mt-4 flex flex-wrap gap-3">
-                                    <button className="inline-flex items-center gap-2 rounded-xl px-4 py-2 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 transition-all duration-300">
-                                        <Eye size={18} />
-                                        <span>Consulter</span>
+                                {/* ACTION */}
+                                {!item.isRead && (
+                                    <button
+                                        onClick={() =>
+                                            markAsReadMutation.mutate(
+                                                item.notificationId,
+                                            )
+                                        }
+                                        className="flex items-center gap-2 rounded-xl bg-green-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-green-700"
+                                    >
+                                        <CheckCircle className="h-4 w-4" />
+                                        Lu
                                     </button>
-                                </div>
+                                )}
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                )}
             </div>
         </div>
     );

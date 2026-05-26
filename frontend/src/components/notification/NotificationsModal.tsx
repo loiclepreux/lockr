@@ -1,46 +1,26 @@
 import { Link } from "react-router-dom";
-
-type Notification = {
-    id: number;
-    title: string;
-    message: string;
-    time: string;
-};
-
-const notifications: Notification[] = [
-    {
-        id: 1,
-        title: "Nouveau document partagé",
-        message: "Sarah a partagé un document avec vous.",
-        time: "Il y a 2 min",
-    },
-    {
-        id: 2,
-        title: "Connexion détectée",
-        message: "Une nouvelle connexion à votre compte a été détectée.",
-        time: "Il y a 10 min",
-    },
-    {
-        id: 3,
-        title: "Groupe mis à jour",
-        message: "Le groupe 'Projet Alpha' a reçu une nouvelle mise à jour.",
-        time: "Il y a 25 min",
-    },
-    {
-        id: 4,
-        title: "Stockage presque plein",
-        message: "Vous avez utilisé 85% de votre espace disponible.",
-        time: "Il y a 1 h",
-    },
-    {
-        id: 5,
-        title: "Mot de passe modifié",
-        message: "Votre mot de passe a été mis à jour avec succès.",
-        time: "Il y a 3 h",
-    },
-];
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { NotificationsApi } from "../../api/notifications.api";
 
 export default function NotificationsModal() {
+    const queryClient = useQueryClient();
+
+    const {
+        data: notifications = [],
+        isLoading,
+        isError,
+    } = useQuery({
+        queryKey: ["notifications"],
+        queryFn: NotificationsApi.findAll,
+    });
+
+    const markAllAsReadMutation = useMutation({
+        mutationFn: NotificationsApi.markAllAsRead,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+        },
+    });
+
     return (
         <dialog id="notifications_modal" className="modal">
             <div className="modal-box max-w-2xl bg-[#0f1115] text-white border border-cyan-500/20 shadow-[0_0_30px_rgba(0,255,255,0.08)] rounded-2xl">
@@ -57,36 +37,69 @@ export default function NotificationsModal() {
                 </div>
 
                 <div className="max-h-80 overflow-y-auto pr-2 space-y-3">
-                    {notifications.map((notif) => (
-                        <label
-                            key={notif.id}
-                            className="flex items-start gap-4 p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-cyan-500/5 transition-all duration-300 cursor-pointer"
+                    {isLoading && (
+                        <p className="text-gray-400">
+                            Chargement des notifications...
+                        </p>
+                    )}
+
+                    {isError && (
+                        <p className="text-red-400">
+                            Impossible de charger les notifications.
+                        </p>
+                    )}
+
+                    {!isLoading && notifications.length === 0 && (
+                        <p className="text-gray-400">
+                            Aucune notification disponible.
+                        </p>
+                    )}
+
+                    {notifications.map((item) => (
+                        <div
+                            key={item.notificationId}
+                            className={`
+                                flex items-start gap-4 p-4 rounded-xl border transition-all duration-300
+                                ${
+                                    item.isRead
+                                        ? "border-white/5 bg-white/[0.02] opacity-60"
+                                        : "border-cyan-500/30 bg-cyan-500/5"
+                                }
+                            `}
                         >
                             <input
                                 type="checkbox"
+                                checked={item.isRead}
+                                readOnly
                                 className="checkbox checkbox-sm checkbox-info mt-1"
                             />
 
                             <div className="flex-1">
                                 <div className="flex items-center justify-between gap-4">
                                     <h3 className="text-base font-semibold text-white">
-                                        {notif.title}
+                                        {item.notification.type}
                                     </h3>
+
                                     <span className="text-xs text-gray-400 whitespace-nowrap">
-                                        {notif.time}
+                                        {new Date(
+                                            item.notification.createdAt,
+                                        ).toLocaleString()}
                                     </span>
                                 </div>
 
                                 <p className="text-sm text-gray-400 mt-1 leading-relaxed">
-                                    {notif.message}
+                                    {item.notification.message}
                                 </p>
                             </div>
-                        </label>
+                        </div>
                     ))}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:justify-end">
-                    <button className="px-5 py-3 rounded-xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all duration-300">
+                    <button
+                        onClick={() => markAllAsReadMutation.mutate()}
+                        className="px-5 py-3 rounded-xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 hover:text-cyan-300 transition-all duration-300"
+                    >
                         Marquer comme lu
                     </button>
 

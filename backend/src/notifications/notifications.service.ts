@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class NotificationsService {
-
   constructor(private readonly prisma: PrismaService) {}
 
   @OnEvent('notif.trigger')
   async listener(relatedId: string, relatedType: string, userId: string, message: string) {
-      try {
+    try {
       await this.prisma.$transaction(async (tx) => {
         const newNotif = await tx.notification.create({
           data: {
@@ -33,25 +32,38 @@ export class NotificationsService {
   }
 
   findAllByUser(userId: string) {
-    return this.prisma.notificationToUser.findMany({ 
+    return this.prisma.notificationToUser.findMany({
       where: {
-        userId: userId
+        userId: userId,
       },
       include: {
-        notification: true
+        notification: true,
       },
       orderBy: {
-        createdAt: 'desc'
-      }
-    })  
+        createdAt: 'desc',
+      },
+    });
   }
 
-  markAsRead(notificationId: string, userId: string) {
+  async markAsRead(notificationId: string, userId: string) {
+    const notification = await this.prisma.notificationToUser.findUnique({
+      where: {
+        notificationId_userId: {
+          notificationId,
+          userId,
+        },
+      },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Notification introuvable');
+    }
+
     return this.prisma.notificationToUser.update({
       where: {
         notificationId_userId: {
-          notificationId: notificationId,
-          userId: userId,
+          notificationId,
+          userId,
         },
       },
       data: {
@@ -60,38 +72,24 @@ export class NotificationsService {
     });
   }
 
-  findAllMyNotif(userId: string){
-    return this.prisma.notificationToUser.findMany({
-      where: {
-        userId: userId
-      },
-      include: {
-        notification: true
-      },
-      orderBy: {
-        createdAt: 'desc'
-      }
-    })
-  }
-
-  countUnread(userId: string){
+  countUnread(userId: string) {
     return this.prisma.notificationToUser.count({
       where: {
         userId: userId,
-        isRead: false
-      }
-    })
+        isRead: false,
+      },
+    });
   }
 
-  markAllAsRead(userId: string){
+  markAllAsRead(userId: string) {
     return this.prisma.notificationToUser.updateMany({
       where: {
         userId: userId,
-        isRead: false
+        isRead: false,
       },
       data: {
-        isRead: true
-      }
-    })
+        isRead: true,
+      },
+    });
   }
 }
