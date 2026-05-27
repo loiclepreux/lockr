@@ -96,12 +96,45 @@ export class UserService {
     });
   }
 
-  async update(id: string, data: UpdateUserDto): Promise<Omit<User, 'password'>> {
+  async update(id: string, data: UpdateUserDto) {
     const result = await this.prisma.user.update({
       where: { id },
-      data,
-      omit: { password: true },
+
+      data: {
+        ...(data.email && {
+          email: data.email,
+        }),
+
+        profile: {
+          update: {
+            ...(data.phoneNumber && {
+              phoneNumber: data.phoneNumber,
+            }),
+
+            ...(data.address && {
+              address: data.address,
+            }),
+          },
+        },
+      },
+
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+            imgUrl: true,
+            phoneNumber: true,
+            address: true,
+          },
+        },
+      },
     });
+
     return result;
   }
 

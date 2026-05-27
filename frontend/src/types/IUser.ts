@@ -9,7 +9,7 @@ export interface IUser {
         firstName?: string;
         lastName?: string;
         imgUrl?: string;
-        phoneNumber?: number;
+        phoneNumber?: string;
         address?: string;
     };
 }

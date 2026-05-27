@@ -22,7 +22,7 @@ const EditProfileModal = ({
 }: EditProfileModalProps) => {
     const [email, setEmail] = useState(user.email || "");
     const [telephone, setTelephone] = useState(
-        user.profile?.phoneNumber?.toString() || "",
+        user.profile?.phoneNumber || "",
     );
 
     const [adresse, setAdresse] = useState(user.profile?.address || "");

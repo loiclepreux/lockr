@@ -268,6 +268,7 @@ export const ProfileOrderByRelevanceFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   imgUrl: 'imgUrl',
+  phoneNumber: 'phoneNumber',
   address: 'address',
   userId: 'userId'
 } as const

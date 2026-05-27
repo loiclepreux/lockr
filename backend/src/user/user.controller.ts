@@ -37,21 +37,21 @@ export class UserController {
   }
 
   @Get('me')
-async getMe(@Req() req: RequestWithUser): Promise<IResponse<any>> {
-  const userId = req.user.sub;
+  async getMe(@Req() req: RequestWithUser): Promise<IResponse<any>> {
+    const userId = req.user.sub;
 
-  const user = await this.userService.findMe(userId);
+    const user = await this.userService.findMe(userId);
 
-  if (!user) {
-    throw new NotFoundException('Utilisateur non trouvé');
+    if (!user) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
+
+    return {
+      data: user,
+      dataType: 'User',
+      timeStamp: new Date(),
+    };
   }
-
-  return {
-    data: user,
-    dataType: 'User',
-    timeStamp: new Date(),
-  };
-}
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IResponse<Omit<User, 'password'>>> {
@@ -70,22 +70,25 @@ async getMe(@Req() req: RequestWithUser): Promise<IResponse<any>> {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<IResponse<Omit<User, 'password'>>> {
+  ): Promise<IResponse<any>> {
     const countUser = await this.userService.countById(id);
     if (!countUser) throw new NotFoundException();
 
     if (updateUserDto.email) {
       const userEmail = await this.userService.findEmailById(id);
+
       if (userEmail && userEmail.email !== updateUserDto.email) {
         const countByEmail = await this.userService.countByEmail(updateUserDto.email);
-        if (countByEmail)
+
+        if (countByEmail) {
           throw new HttpException(
             'email already in db || precondition failed',
             HttpStatus.PRECONDITION_FAILED,
           );
+        }
       }
     }
-    const updateUser = await this.userService.update(id, updateUserDto);
+
     return {
       data: await this.userService.update(id, updateUserDto),
       dataType: 'User',
@@ -96,7 +99,7 @@ async getMe(@Req() req: RequestWithUser): Promise<IResponse<any>> {
   @Delete(':id')
   @HttpCode(204)
   async remove(@Param('id') id: string) {
-    console.log("🚀 ~ UserController ~ remove ~ id:", id)
+    console.log('🚀 ~ UserController ~ remove ~ id:', id);
     try {
       await this.userService.remove(id);
     } catch (error) {

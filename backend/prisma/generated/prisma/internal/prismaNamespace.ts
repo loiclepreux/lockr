@@ -1433,6 +1433,7 @@ export const ProfileOrderByRelevanceFieldEnum = {
   firstName: 'firstName',
   lastName: 'lastName',
   imgUrl: 'imgUrl',
+  phoneNumber: 'phoneNumber',
   address: 'address',
   userId: 'userId'
 } as const
@@ -1560,13 +1561,6 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 
 
 /**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
  * Reference to a field of type 'extentionEnum'
  */
 export type EnumextentionEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'extentionEnum'>
@@ -1619,6 +1613,13 @@ export type EnumAccessStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 

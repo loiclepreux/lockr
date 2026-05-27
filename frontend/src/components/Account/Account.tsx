@@ -17,8 +17,12 @@ import ChangePhotoModal from "./ModalPhoto";
 import ConfirmAlert from "./ModalDelete";
 import { useQuery } from "@tanstack/react-query";
 import { AuthApi } from "../../api/auth.api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserApi } from "../../api/user.api";
 
 export default function Account() {
+    const queryClient = useQueryClient();
+
     const { data: meResponse, isLoading } = useQuery({
         queryKey: ["me"],
         queryFn: AuthApi.me,
@@ -27,17 +31,34 @@ export default function Account() {
     const user = meResponse?.data;
     const profile = user?.profile;
 
-    // ouvre la modal changement de photo
-    const handleChangePhoto = () => {
-        setIsPhotoOpen(true);
-        console.log("Changer la photo");
-    };
-
-    // constante qui ouvre ou ferme une action précise de la page
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isPasswordOpen, setIsPasswordOpen] = useState(false);
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const updateUserMutation = useMutation({
+        mutationFn: (data: {
+            email: string;
+            telephone: string;
+            adresse: string;
+        }) => {
+            if (!user?.id) {
+                throw new Error("Utilisateur introuvable");
+            }
+
+            return UserApi.updateUser(user.id, {
+                email: data.email,
+                phoneNumber: data.telephone,
+                address: data.adresse,
+            });
+        },
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["me"],
+            });
+        },
+    });
 
     if (isLoading) {
         return (
@@ -47,6 +68,10 @@ export default function Account() {
         );
     }
 
+    const handleChangePhoto = () => {
+        setIsPhotoOpen(true);
+    };
+    
     return (
         <section className="w-full h-full">
             <div className="w-full h-full bg-[#0f1115] border border-cyan-500/10 rounded-2xl shadow-[0_0_30px_rgba(0,255,255,0.04)] p-6 md:p-8">
@@ -266,7 +291,7 @@ export default function Account() {
                             user={user}
                             onClose={() => setIsEditOpen(false)}
                             onSubmit={(data) => {
-                                console.log("Données modifiées :", data);
+                                updateUserMutation.mutate(data);
                             }}
                         />
                     )}

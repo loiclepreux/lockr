@@ -20,25 +20,15 @@ export type ProfileModel = runtime.Types.Result.DefaultSelection<Prisma.$Profile
 
 export type AggregateProfile = {
   _count: ProfileCountAggregateOutputType | null
-  _avg: ProfileAvgAggregateOutputType | null
-  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
-}
-
-export type ProfileAvgAggregateOutputType = {
-  phoneNumber: number | null
-}
-
-export type ProfileSumAggregateOutputType = {
-  phoneNumber: number | null
 }
 
 export type ProfileMinAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   imgUrl: string | null
-  phoneNumber: number | null
+  phoneNumber: string | null
   address: string | null
   userId: string | null
   createdAt: Date | null
@@ -49,7 +39,7 @@ export type ProfileMaxAggregateOutputType = {
   firstName: string | null
   lastName: string | null
   imgUrl: string | null
-  phoneNumber: number | null
+  phoneNumber: string | null
   address: string | null
   userId: string | null
   createdAt: Date | null
@@ -68,14 +58,6 @@ export type ProfileCountAggregateOutputType = {
   _all: number
 }
 
-
-export type ProfileAvgAggregateInputType = {
-  phoneNumber?: true
-}
-
-export type ProfileSumAggregateInputType = {
-  phoneNumber?: true
-}
 
 export type ProfileMinAggregateInputType = {
   firstName?: true
@@ -149,18 +131,6 @@ export type ProfileAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: ProfileAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: ProfileSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: ProfileMinAggregateInputType
@@ -191,8 +161,6 @@ export type ProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ProfileCountAggregateInputType | true
-  _avg?: ProfileAvgAggregateInputType
-  _sum?: ProfileSumAggregateInputType
   _min?: ProfileMinAggregateInputType
   _max?: ProfileMaxAggregateInputType
 }
@@ -201,14 +169,12 @@ export type ProfileGroupByOutputType = {
   firstName: string
   lastName: string
   imgUrl: string | null
-  phoneNumber: number | null
+  phoneNumber: string | null
   address: string | null
   userId: string
   createdAt: Date
   updatedAt: Date
   _count: ProfileCountAggregateOutputType | null
-  _avg: ProfileAvgAggregateOutputType | null
-  _sum: ProfileSumAggregateOutputType | null
   _min: ProfileMinAggregateOutputType | null
   _max: ProfileMaxAggregateOutputType | null
 }
@@ -235,7 +201,7 @@ export type ProfileWhereInput = {
   firstName?: Prisma.StringFilter<"Profile"> | string
   lastName?: Prisma.StringFilter<"Profile"> | string
   imgUrl?: Prisma.StringNullableFilter<"Profile"> | string | null
-  phoneNumber?: Prisma.IntNullableFilter<"Profile"> | number | null
+  phoneNumber?: Prisma.StringNullableFilter<"Profile"> | string | null
   address?: Prisma.StringNullableFilter<"Profile"> | string | null
   userId?: Prisma.StringFilter<"Profile"> | string
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
@@ -264,7 +230,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   firstName?: Prisma.StringFilter<"Profile"> | string
   lastName?: Prisma.StringFilter<"Profile"> | string
   imgUrl?: Prisma.StringNullableFilter<"Profile"> | string | null
-  phoneNumber?: Prisma.IntNullableFilter<"Profile"> | number | null
+  phoneNumber?: Prisma.StringNullableFilter<"Profile"> | string | null
   address?: Prisma.StringNullableFilter<"Profile"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
@@ -281,10 +247,8 @@ export type ProfileOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ProfileCountOrderByAggregateInput
-  _avg?: Prisma.ProfileAvgOrderByAggregateInput
   _max?: Prisma.ProfileMaxOrderByAggregateInput
   _min?: Prisma.ProfileMinOrderByAggregateInput
-  _sum?: Prisma.ProfileSumOrderByAggregateInput
 }
 
 export type ProfileScalarWhereWithAggregatesInput = {
@@ -294,7 +258,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   firstName?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   lastName?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   imgUrl?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
-  phoneNumber?: Prisma.IntNullableWithAggregatesFilter<"Profile"> | number | null
+  phoneNumber?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
@@ -305,7 +269,7 @@ export type ProfileCreateInput = {
   firstName: string
   lastName: string
   imgUrl?: string | null
-  phoneNumber?: number | null
+  phoneNumber?: string | null
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -316,7 +280,7 @@ export type ProfileUncheckedCreateInput = {
   firstName: string
   lastName: string
   imgUrl?: string | null
-  phoneNumber?: number | null
+  phoneNumber?: string | null
   address?: string | null
   userId: string
   createdAt?: Date | string
@@ -327,7 +291,7 @@ export type ProfileUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -338,7 +302,7 @@ export type ProfileUncheckedUpdateInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -349,7 +313,7 @@ export type ProfileCreateManyInput = {
   firstName: string
   lastName: string
   imgUrl?: string | null
-  phoneNumber?: number | null
+  phoneNumber?: string | null
   address?: string | null
   userId: string
   createdAt?: Date | string
@@ -360,7 +324,7 @@ export type ProfileUpdateManyMutationInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +334,7 @@ export type ProfileUncheckedUpdateManyInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,10 +363,6 @@ export type ProfileCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ProfileAvgOrderByAggregateInput = {
-  phoneNumber?: Prisma.SortOrder
-}
-
 export type ProfileMaxOrderByAggregateInput = {
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
@@ -423,10 +383,6 @@ export type ProfileMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-}
-
-export type ProfileSumOrderByAggregateInput = {
-  phoneNumber?: Prisma.SortOrder
 }
 
 export type ProfileCreateNestedOneWithoutUserInput = {
@@ -461,19 +417,11 @@ export type ProfileUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutUserInput, Prisma.ProfileUpdateWithoutUserInput>, Prisma.ProfileUncheckedUpdateWithoutUserInput>
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ProfileCreateWithoutUserInput = {
   firstName: string
   lastName: string
   imgUrl?: string | null
-  phoneNumber?: number | null
+  phoneNumber?: string | null
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -483,7 +431,7 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   firstName: string
   lastName: string
   imgUrl?: string | null
-  phoneNumber?: number | null
+  phoneNumber?: string | null
   address?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -509,7 +457,7 @@ export type ProfileUpdateWithoutUserInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -519,7 +467,7 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   imgUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -566,7 +514,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     firstName: string
     lastName: string
     imgUrl: string | null
-    phoneNumber: number | null
+    phoneNumber: string | null
     address: string | null
     userId: string
     createdAt: Date
@@ -944,7 +892,7 @@ export interface ProfileFieldRefs {
   readonly firstName: Prisma.FieldRef<"Profile", 'String'>
   readonly lastName: Prisma.FieldRef<"Profile", 'String'>
   readonly imgUrl: Prisma.FieldRef<"Profile", 'String'>
-  readonly phoneNumber: Prisma.FieldRef<"Profile", 'Int'>
+  readonly phoneNumber: Prisma.FieldRef<"Profile", 'String'>
   readonly address: Prisma.FieldRef<"Profile", 'String'>
   readonly userId: Prisma.FieldRef<"Profile", 'String'>
   readonly createdAt: Prisma.FieldRef<"Profile", 'DateTime'>
