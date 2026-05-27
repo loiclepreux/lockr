@@ -2,29 +2,30 @@ import { Mail, MapPin, Pencil, Phone, X } from "lucide-react";
 import { useState } from "react";
 import FeedbackMessage from "../ui/FeedbackMessage";
 import { feedbackMessages } from "../../types/feedbackMessage";
+import type { IUser } from "../../types/IUser";
 
 interface EditProfileModalProps {
     onClose: () => void;
-    user: {
-        email: string;
-        telephone: string;
-        adresse: string;
-    };
+
+    user: IUser;
+
     onSubmit: (data: {
         email: string;
         telephone: string;
         adresse: string;
     }) => void;
 }
-
 const EditProfileModal = ({
     onClose,
     user,
     onSubmit,
 }: EditProfileModalProps) => {
     const [email, setEmail] = useState(user.email || "");
-    const [telephone, setTelephone] = useState(user.telephone || "");
-    const [adresse, setAdresse] = useState(user.adresse || "");
+    const [telephone, setTelephone] = useState(
+        user.profile?.phoneNumber?.toString() || "",
+    );
+
+    const [adresse, setAdresse] = useState(user.profile?.address || "");
 
     const [feedback, setFeedback] = useState<{
         type: "success" | "error";

@@ -7,6 +7,7 @@ import { GroupsModule } from './groups/groups.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ActivtyLogModule } from './activity-log/activity-log.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ActivtyLogModule } from './activity-log/activity-log.module';
     NotificationsModule,
     EventEmitterModule.forRoot(),
     ActivtyLogModule,
+    DashboardModule
   ],
 })
 export class AppModule {}

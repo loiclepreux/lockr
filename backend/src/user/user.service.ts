@@ -39,35 +39,62 @@ export class UserService {
       where: { id },
     });
   }
+
   async countByEmail(email: string): Promise<number> {
     return this.prisma.user.count({
       where: { email },
     });
   }
+
   async findOne(id: string): Promise<Omit<User, 'password'> | null> {
     const result = await this.prisma.user.findUnique({
       where: { id },
       omit: { password: true },
     });
+
     return result;
   }
+
+  async findMe(id: string) {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+            imgUrl: true,
+            phoneNumber: true,
+            address: true,
+          },
+        },
+      },
+    });
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { email },
     });
   }
+
   async findEmailById(id: string): Promise<Pick<User, 'email'> | null> {
     return this.prisma.user.findUnique({
       where: { id },
       select: { email: true },
     });
   }
+
   async updateRefreshToken(id: string, refreshToken: string | null): Promise<void> {
-  await this.prisma.user.update({
-    where: { id },
-    data: { refreshToken },
-  });
-}
+    await this.prisma.user.update({
+      where: { id },
+      data: { refreshToken },
+    });
+  }
 
   async update(id: string, data: UpdateUserDto): Promise<Omit<User, 'password'>> {
     const result = await this.prisma.user.update({

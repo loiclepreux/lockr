@@ -15,19 +15,17 @@ import EditProfileModal from "./ModalProfile";
 import ChangePasswordModal from "./ModalPassword";
 import ChangePhotoModal from "./ModalPhoto";
 import ConfirmAlert from "./ModalDelete";
+import { useQuery } from "@tanstack/react-query";
+import { AuthApi } from "../../api/auth.api";
 
 export default function Account() {
-    const user = {
-        nom: "Doe",
-        prenom: "John",
-        email: "John.doe@mail.com",
-        telephone: "06 12 34 56 78",
-        adresse: "12 rue des Lilas, 75000 Paris",
-        password: "************",
-        photo: foto,
-        createdAt: "12 mars 2026",
-        twoFactorEnabled: true,
-    };
+    const { data: meResponse, isLoading } = useQuery({
+        queryKey: ["me"],
+        queryFn: AuthApi.me,
+    });
+
+    const user = meResponse?.data;
+    const profile = user?.profile;
 
     // ouvre la modal changement de photo
     const handleChangePhoto = () => {
@@ -40,6 +38,14 @@ export default function Account() {
     const [isPasswordOpen, setIsPasswordOpen] = useState(false);
     const [isPhotoOpen, setIsPhotoOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-full text-white">
+                Chargement du profil...
+            </div>
+        );
+    }
 
     return (
         <section className="w-full h-full">
@@ -58,7 +64,7 @@ export default function Account() {
                     <div className="flex flex-col items-center lg:items-start">
                         <div className="relative w-32 h-32">
                             <img
-                                src={user.photo}
+                                src={profile?.imgUrl ?? foto}
                                 alt="Photo de profil"
                                 className="w-full h-full rounded-full object-cover border-2 border-cyan-400"
                             />
@@ -82,7 +88,8 @@ export default function Account() {
 
                         <div className="mt-4 text-center lg:text-left">
                             <h3 className="text-2xl font-bold text-white">
-                                {user.prenom} {user.nom}
+                                {profile?.firstName ?? "Prénom"}{" "}
+                                {profile?.lastName ?? "Nom"}
                             </h3>
                             <p className="text-sm text-cyan-400 mt-1">
                                 Espace personnel Lockr
@@ -105,7 +112,9 @@ export default function Account() {
                                 </div>
                                 <Lock size={18} className="text-gray-500" />
                             </div>
-                            <p className="text-white">{user.nom}</p>
+                            <p className="text-white">
+                                {profile?.lastName ?? "Non renseigné"}
+                            </p>
                         </div>
 
                         {/* Carte: Prénom */}
@@ -119,7 +128,9 @@ export default function Account() {
                                 </div>
                                 <Lock size={18} className="text-gray-500" />
                             </div>
-                            <p className="text-white">{user.prenom}</p>
+                            <p className="text-white">
+                                {profile?.firstName ?? "Non renseigné"}
+                            </p>
                         </div>
 
                         {/* Carte: Email */}
@@ -130,7 +141,9 @@ export default function Account() {
                                     Email
                                 </span>
                             </div>
-                            <p className="text-white break-all">{user.email}</p>
+                            <p className="text-white break-all">
+                                {user?.email ?? "Non renseigné"}
+                            </p>
                         </div>
 
                         {/* Carte: Téléphone */}
@@ -141,7 +154,9 @@ export default function Account() {
                                     Téléphone
                                 </span>
                             </div>
-                            <p className="text-white">{user.telephone}</p>
+                            <p className="text-white">
+                                {profile?.phoneNumber ?? "Non renseigné"}
+                            </p>
                         </div>
 
                         {/* Carte: Adresse */}
@@ -152,7 +167,9 @@ export default function Account() {
                                     Adresse
                                 </span>
                             </div>
-                            <p className="text-white">{user.adresse}</p>
+                            <p className="text-white">
+                                {profile?.address ?? "Non renseignée"}
+                            </p>
                         </div>
 
                         {/* Carte: mot de passe */}
@@ -180,7 +197,7 @@ export default function Account() {
                                 }}
                             />
                             <p className="text-white tracking-widest">
-                                {user.password}
+                                **************
                             </p>
                         </div>
 
@@ -198,7 +215,13 @@ export default function Account() {
                                     className="text-gray-500 opacity-70"
                                 />
                             </div>
-                            <p className="text-white">{user.createdAt}</p>
+                            <p className="text-white">
+                                {user?.createdAt
+                                    ? new Date(
+                                          user.createdAt,
+                                      ).toLocaleDateString("fr-FR")
+                                    : "Non renseignée"}
+                            </p>
                         </div>
 
                         {/* Carte: Status d'authentification a 2 facteurs */}
@@ -238,7 +261,7 @@ export default function Account() {
                     </button>
 
                     {/* Modale de modification des informations personnelles */}
-                    {isEditOpen && (
+                    {isEditOpen && user && (
                         <EditProfileModal
                             user={user}
                             onClose={() => setIsEditOpen(false)}

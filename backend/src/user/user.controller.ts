@@ -37,18 +37,21 @@ export class UserController {
   }
 
   @Get('me')
-  async getMe(@Req() req: RequestWithUser): Promise<IResponse<Omit<User, 'password'>>> {
-    const userId = req.user.sub;
+async getMe(@Req() req: RequestWithUser): Promise<IResponse<any>> {
+  const userId = req.user.sub;
 
-    const user = await this.userService.findOne(userId);
-    if (!user) throw new NotFoundException('Utilisateur non trouvé');
+  const user = await this.userService.findMe(userId);
 
-    return {
-      data: user,
-      dataType: 'User',
-      timeStamp: new Date(),
-    };
+  if (!user) {
+    throw new NotFoundException('Utilisateur non trouvé');
   }
+
+  return {
+    data: user,
+    dataType: 'User',
+    timeStamp: new Date(),
+  };
+}
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IResponse<Omit<User, 'password'>>> {
