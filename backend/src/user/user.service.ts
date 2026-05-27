@@ -97,6 +97,8 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserDto) {
+    console.log('UPDATE DTO =>', data);
+
     const result = await this.prisma.user.update({
       where: { id },
 
@@ -107,13 +109,8 @@ export class UserService {
 
         profile: {
           update: {
-            ...(data.phoneNumber && {
-              phoneNumber: data.phoneNumber,
-            }),
-
-            ...(data.address && {
-              address: data.address,
-            }),
+            phoneNumber: data.phoneNumber,
+            address: data.address,
           },
         },
       },

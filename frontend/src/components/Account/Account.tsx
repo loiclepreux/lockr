@@ -39,18 +39,14 @@ export default function Account() {
     const updateUserMutation = useMutation({
         mutationFn: (data: {
             email: string;
-            telephone: string;
-            adresse: string;
+            phoneNumber: string;
+            address: string;
         }) => {
             if (!user?.id) {
                 throw new Error("Utilisateur introuvable");
             }
 
-            return UserApi.updateUser(user.id, {
-                email: data.email,
-                phoneNumber: data.telephone,
-                address: data.adresse,
-            });
+            return UserApi.updateUser(user.id, data);
         },
 
         onSuccess: () => {
@@ -71,7 +67,7 @@ export default function Account() {
     const handleChangePhoto = () => {
         setIsPhotoOpen(true);
     };
-    
+
     return (
         <section className="w-full h-full">
             <div className="w-full h-full bg-[#0f1115] border border-cyan-500/10 rounded-2xl shadow-[0_0_30px_rgba(0,255,255,0.04)] p-6 md:p-8">
@@ -291,7 +287,11 @@ export default function Account() {
                             user={user}
                             onClose={() => setIsEditOpen(false)}
                             onSubmit={(data) => {
-                                updateUserMutation.mutate(data);
+                                updateUserMutation.mutate({
+                                    email: data.email,
+                                    phoneNumber: data.telephone,
+                                    address: data.adresse,
+                                });
                             }}
                         />
                     )}
