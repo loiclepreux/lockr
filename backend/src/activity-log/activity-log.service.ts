@@ -5,7 +5,7 @@ import { PaginatedResponse } from 'src/utils/interfaces/paginated-response.inter
 import { ActivityLog } from 'prisma/generated/prisma/client';
 
 @Injectable()
-export class ActivtyLogService {
+export class ActivityLogService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(dto: GetHistoryDto): Promise<PaginatedResponse<ActivityLog>> {
@@ -64,5 +64,37 @@ export class ActivtyLogService {
       limit,
       totalPages: Math.ceil(total / limit),
     };
+  }
+
+  async findRecentByUser(userId: string) {
+    return this.prisma.activityLog.findMany({
+      where: {
+        userId,
+      },
+      take: 10,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        group: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
   }
 }
