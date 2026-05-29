@@ -8,6 +8,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ActivtyLogModule } from './activity-log/activity-log.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AccessRequestsModule } from './access-requests/access-requests.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { DashboardModule } from './dashboard/dashboard.module';
     NotificationsModule,
     EventEmitterModule.forRoot(),
     ActivtyLogModule,
-    DashboardModule
+    DashboardModule,
+    AccessRequestsModule,
   ],
 })
 export class AppModule {}
