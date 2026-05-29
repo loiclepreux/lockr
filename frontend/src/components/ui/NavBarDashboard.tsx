@@ -1,17 +1,13 @@
 import { Bell, FileText, Home, LogOut, UserCircle, Users } from "lucide-react";
-
 import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
-
 import { useQuery } from "@tanstack/react-query";
-
 import logo from "../../assets/images/logo.png";
 import foto from "../../assets/images/photo.png";
-
 import NotificationsModal from "../notification/NotificationsModal";
-
 import { useLogout } from "../../hooks/useAuth";
 import { NotificationsApi } from "../../api/notifications.api";
+import { AuthApi } from "../../api/auth.api";
 
 type NavBarDashboardProps = {
     onOpenNotifications?: () => void;
@@ -43,6 +39,28 @@ const NavBarDashboard = ({
         queryFn: NotificationsApi.countUnread,
     });
 
+    // ===================
+    // Profil connecté
+    // ===================
+
+    const { data: meResponse } = useQuery({
+        queryKey: ["me"],
+        queryFn: AuthApi.me,
+    });
+
+    const profile = meResponse?.data?.profile;
+
+    const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
+
+    const profileImage = profile?.imgUrl
+        ? `${API_URL}${profile.imgUrl}?v=${meResponse?.data?.updatedAt ?? ""}`
+        : foto;
+
+    const displayName =
+        `${profile?.firstName ?? ""} ${profile?.lastName ?? ""}`.trim() ||
+        meResponse?.data?.email ||
+        "Utilisateur";
+
     return (
         <>
             <aside className="h-screen w-full bg-[#0f1115] text-white border-r border-cyan-500/10 shadow-[0_0_30px_rgba(0,255,255,0.04)] flex flex-col">
@@ -71,13 +89,13 @@ const NavBarDashboard = ({
                     <div className="flex items-center gap-3">
                         <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-cyan-400">
                             <img
-                                src={foto}
+                                src={profileImage}
                                 alt="Photo profil"
                                 className="w-full h-full object-cover"
                             />
                         </div>
 
-                        <h2 className="text-lg font-semibold">John Doe</h2>
+                        <h2 className="text-lg font-semibold">{displayName}</h2>
                     </div>
                 </div>
 
