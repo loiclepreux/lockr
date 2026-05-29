@@ -12,6 +12,8 @@ import {
   Req,
   Put,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { User } from 'prisma/generated/prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,6 +21,8 @@ import { UserService } from './user.service';
 import { IResponse } from '../utils/interfaces/response.interface';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import type { Request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { createMulterConfig } from 'src/config/config.multer';
 
 type RequestWithUser = Request & { user: { sub: string } };
 
@@ -52,6 +56,39 @@ export class UserController {
       timeStamp: new Date(),
     };
   }
+
+  @Post('me/photo')
+@UseInterceptors(
+  FileInterceptor(
+    'file',
+    createMulterConfig({
+      folder: 'profiles',
+      allowedMimeTypes: [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/webp',
+      ],
+      maxSizeMb: 5,
+    }),
+  ),
+)
+async uploadMyPhoto(
+  @Req() req: RequestWithUser,
+  @UploadedFile() file: Express.Multer.File,
+): Promise<IResponse<any>> {
+  const userId = req.user.sub;
+
+  if (!file) {
+    throw new HttpException('Aucun fichier reçu', HttpStatus.BAD_REQUEST);
+  }
+
+  return {
+    data: await this.userService.updateProfilePhoto(userId, file),
+    dataType: 'Profile',
+    timeStamp: new Date(),
+  };
+}
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<IResponse<Omit<User, 'password'>>> {

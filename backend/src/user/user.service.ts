@@ -135,6 +135,26 @@ export class UserService {
     return result;
   }
 
+  async updateProfilePhoto(userId: string, file: Express.Multer.File) {
+  const imgUrl = `/uploads/profiles/${file.filename}`;
+
+  return this.prisma.profile.update({
+    where: {
+      userId,
+    },
+    data: {
+      imgUrl,
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      imgUrl: true,
+      phoneNumber: true,
+      address: true,
+    },
+  });
+}
+
   async remove(id: string) {
     const result = await this.prisma.user.delete({
       where: { id },

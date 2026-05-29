@@ -56,6 +56,18 @@ export default function Account() {
         },
     });
 
+    const uploadPhotoMutation = useMutation({
+        mutationFn: UserApi.uploadPhoto,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["me"],
+            });
+
+            setIsPhotoOpen(false);
+        },
+    });
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-full text-white">
@@ -67,6 +79,12 @@ export default function Account() {
     const handleChangePhoto = () => {
         setIsPhotoOpen(true);
     };
+
+    const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
+
+    const profileImage = profile?.imgUrl
+        ? `${API_URL}${profile.imgUrl}?v=${user?.updatedAt ?? ""}`
+        : foto;
 
     return (
         <section className="w-full h-full">
@@ -85,7 +103,7 @@ export default function Account() {
                     <div className="flex flex-col items-center lg:items-start">
                         <div className="relative w-32 h-32">
                             <img
-                                src={profile?.imgUrl ?? foto}
+                                src={profileImage}
                                 alt="Photo de profil"
                                 className="w-full h-full rounded-full object-cover border-2 border-cyan-400"
                             />
@@ -103,7 +121,9 @@ export default function Account() {
                             isOpen={isPhotoOpen}
                             onClose={() => setIsPhotoOpen(false)}
                             onSubmit={(file) => {
-                                console.log("Nouvelle photo :", file);
+                                if (!file) return;
+
+                                uploadPhotoMutation.mutate(file);
                             }}
                         />
 
