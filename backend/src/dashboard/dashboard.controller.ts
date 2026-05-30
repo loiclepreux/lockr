@@ -17,4 +17,14 @@ export class DashboardController {
       timeStamp: new Date(),
     };
   }
+
+  @Get('monthly-imports')
+  getMonthlyImports(@Req() req: any) {
+    return this.dashboardService.getMonthlyImports(req.user.sub);
+  }
+
+  @Get('documents-by-type')
+  getDocumentsByType(@Req() req: any) {
+    return this.dashboardService.getDocumentsByType(req.user.sub);
+  }
 }
