@@ -9,6 +9,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ActivtyLogModule } from './activity-log/activity-log.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AccessRequestsModule } from './access-requests/access-requests.module';
+import { AuditLogModule } from './audit-log/audit-log.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './common/interceptors/logging-interceptor';
 
 @Module({
   imports: [
@@ -22,6 +25,13 @@ import { AccessRequestsModule } from './access-requests/access-requests.module';
     ActivtyLogModule,
     DashboardModule,
     AccessRequestsModule,
+    AuditLogModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
 export class AppModule {}

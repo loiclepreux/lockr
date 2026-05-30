@@ -62,7 +62,8 @@ export const ModelName = {
   ActivityLog: 'ActivityLog',
   AccessRequest: 'AccessRequest',
   Notification: 'Notification',
-  NotificationToUser: 'NotificationToUser'
+  NotificationToUser: 'NotificationToUser',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -239,6 +240,21 @@ export const NotificationToUserScalarFieldEnum = {
 export type NotificationToUserScalarFieldEnum = (typeof NotificationToUserScalarFieldEnum)[keyof typeof NotificationToUserScalarFieldEnum]
 
 
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  method: 'method',
+  url: 'url',
+  status: 'status',
+  userId: 'userId',
+  duration: 'duration',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -374,4 +390,16 @@ export const NotificationToUserOrderByRelevanceFieldEnum = {
 } as const
 
 export type NotificationToUserOrderByRelevanceFieldEnum = (typeof NotificationToUserOrderByRelevanceFieldEnum)[keyof typeof NotificationToUserOrderByRelevanceFieldEnum]
+
+
+export const AuditLogOrderByRelevanceFieldEnum = {
+  id: 'id',
+  method: 'method',
+  url: 'url',
+  userId: 'userId',
+  ip: 'ip',
+  userAgent: 'userAgent'
+} as const
+
+export type AuditLogOrderByRelevanceFieldEnum = (typeof AuditLogOrderByRelevanceFieldEnum)[keyof typeof AuditLogOrderByRelevanceFieldEnum]
 

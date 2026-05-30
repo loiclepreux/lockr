@@ -24,7 +24,6 @@ export class ActivityLogController {
 
   @Get('recent')
   async findRecent(@Req() req: any): Promise<IResponse<ActivityLog[]>> {
-    console.log('REQ USER ACTIVITY LOG =>', req.user);
     const userId = req.user.sub;
 
     return {

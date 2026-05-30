@@ -99,3 +99,8 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type NotificationToUser = Prisma.NotificationToUserModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

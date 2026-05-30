@@ -228,3 +228,15 @@ model NotificationToUser {
 
   @@id([notificationId, userId])
 }
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  method    String
+  url       String
+  status    Int?
+  userId    String?
+  duration  Int
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
