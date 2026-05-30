@@ -48,6 +48,7 @@ model Doc {
   size      BigInt
   docTypeId String
   status    DocStatus     @default(ACTIVE)
+  priority  DocPriority   @default(MEDIUM)
   addedDate DateTime
   filePath  String
   createdAt DateTime      @default(now())
@@ -68,6 +69,12 @@ enum extentionEnum {
   png
   jpg
   jpeg
+}
+
+enum DocPriority {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 enum DocStatus {

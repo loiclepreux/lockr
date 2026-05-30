@@ -1280,6 +1280,7 @@ export const DocScalarFieldEnum = {
   size: 'size',
   docTypeId: 'docTypeId',
   status: 'status',
+  priority: 'priority',
   addedDate: 'addedDate',
   filePath: 'filePath',
   createdAt: 'createdAt',
@@ -1578,6 +1579,13 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'DocStatus'
  */
 export type EnumDocStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DocPriority'
+ */
+export type EnumDocPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocPriority'>
     
 
 

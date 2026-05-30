@@ -1,6 +1,15 @@
 // src/hooks/useDocuments.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllDocuments, addDocToGroup } from "../api/documents.api";
+import {
+    getAllDocuments,
+    addDocToGroup,
+    updateDocumentStatus,
+    updateDocumentPriority,
+    shareDocument,
+    type DocumentStatus,
+    type ShareDocumentData,
+    type DocumentPriority,
+} from "../api/documents.api";
 import type { AddDocToGroupData } from "../api/documents.api";
 import { useAuthStore } from "../stores/useAuthStore";
 import type { DocumentFile } from "../types/documentFiles";
@@ -10,6 +19,20 @@ import {
     uploadDocument,
     type UploadDocumentData,
 } from "../api/documents.api";
+
+const mapPriorityToFrench = (
+    priority?: DocumentPriority,
+): DocumentFile["priority"] => {
+    switch (priority) {
+        case "HIGH":
+            return "Haute";
+        case "LOW":
+            return "Basse";
+        case "MEDIUM":
+        default:
+            return "Moyenne";
+    }
+};
 
 // ─── MES DOCUMENTS ──────────────────────────────────────────────────────────
 // On récupère tous les documents et on filtre ceux dont je suis le propriétaire.
@@ -34,7 +57,7 @@ export const useMyDocuments = () => {
                             ),
                             type: doc.extension.toUpperCase(),
                             doctype: "", // LOC-152 — champ non présent dans IDocument
-                            priority: "Moyenne", // LOC-152 — champ non présent dans IDocument
+                            priority: mapPriorityToFrench(doc.priority), // LOC-152 — champ non présent dans IDocument
                         }),
                     )
             );
@@ -100,6 +123,63 @@ export const useAddDocToGroup = () => {
         onSuccess: () => {
             // On invalide les groupes pour que la liste se rafraîchisse
             queryClient.invalidateQueries({ queryKey: ["groups"] });
+        },
+    });
+};
+
+// ─── CHANGER LE STATUT D'UN DOCUMENT ────────────────────────────────────────
+export const useUpdateDocumentStatus = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            documentId,
+            status,
+        }: {
+            documentId: string;
+            status: DocumentStatus;
+        }) => updateDocumentStatus(documentId, status),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["documents"] });
+        },
+    });
+};
+
+// ─── CHANGER LA PRIORITÉ D'UN DOCUMENT ──────────────────────────────────────
+export const useUpdateDocumentPriority = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            documentId,
+            priority,
+        }: {
+            documentId: string;
+            priority: DocumentPriority;
+        }) => updateDocumentPriority(documentId, priority),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["documents"] });
+        },
+    });
+};
+
+// ─── PARTAGER UN DOCUMENT AVEC UN UTILISATEUR ───────────────────────────────
+export const useShareDocument = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            documentId,
+            data,
+        }: {
+            documentId: string;
+            data: ShareDocumentData;
+        }) => shareDocument(documentId, data),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["documents"] });
         },
     });
 };

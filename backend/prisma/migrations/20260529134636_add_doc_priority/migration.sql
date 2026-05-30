@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Doc` ADD COLUMN `priority` ENUM('LOW', 'MEDIUM', 'HIGH') NOT NULL DEFAULT 'MEDIUM';

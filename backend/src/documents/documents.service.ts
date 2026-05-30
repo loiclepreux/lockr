@@ -1,9 +1,16 @@
-import { ForbiddenException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
 import { DocStatus } from 'prisma/generated/prisma/client';
+import { DocPriority } from 'prisma/generated/prisma/client';
 
 @Injectable()
 export class DocumentsService {
@@ -11,9 +18,7 @@ export class DocumentsService {
 
   // je transforme les BigInt en string pour éviter des erreurs JSON
   private TransformBigInt = (data: any) =>
-    JSON.parse(
-      JSON.stringify(data, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
-    );
+    JSON.parse(JSON.stringify(data, (_, v) => (typeof v === 'bigint' ? v.toString() : v)));
 
   // je récupère un document ou j'envoie une erreur s'il n'existe pas
   private async getDocument(id: string) {
@@ -88,7 +93,7 @@ export class DocumentsService {
     return this.TransformBigInt(deletedDocument);
   }
 
- // mise a jours du status d'un document
+  // mise a jours du status d'un document
   async updateStatus(id: string, status: DocStatus, userId: string) {
     const document = await this.getDocument(id);
     this.Owner(document, userId);
@@ -97,6 +102,26 @@ export class DocumentsService {
       data: { status },
     });
     return this.TransformBigInt(updatedDocument);
+  }
+
+  // mise a jours de la priorité d'un document
+  async updatePriority(id: string, priority: DocPriority, userId: string) {
+    const document = await this.prisma.doc.findUnique({
+      where: { id },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
+    }
+
+    if (document.ownerId !== userId) {
+      throw new UnauthorizedException("Vous n'êtes pas autorisé à modifier ce document");
+    }
+
+    return this.prisma.doc.update({
+      where: { id },
+      data: { priority },
+    });
   }
 
   // modification d'un document
@@ -158,6 +183,6 @@ export class DocumentsService {
         expirationDate: expirationDate ? new Date(expirationDate) : null,
       },
     });
-    return (newShare);
+    return newShare;
   }
 }

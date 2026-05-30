@@ -11,6 +11,8 @@ export type ExtensionEnum =
   | "jpeg";
 export type DocStatus = "ACTIVE" | "ARCHIVED" | "DELETED";
 
+export type DocPriority = "LOW" | "MEDIUM" | "HIGH";
+
 export interface IDocument {
   id: string; // UUID — pas un nombre comme dans mockDocuments
   name: string;
@@ -19,6 +21,7 @@ export interface IDocument {
   size: string; // BigInt sérialisé en string par le back
   docTypeId: string;
   status: DocStatus;
+  priority: DocPriority;
   addedDate: string;
   filePath: string;
   createdAt: string;

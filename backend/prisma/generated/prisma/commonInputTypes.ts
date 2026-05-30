@@ -135,6 +135,13 @@ export type EnumDocStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumDocStatusFilter<$PrismaModel> | $Enums.DocStatus
 }
 
+export type EnumDocPriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocPriority | Prisma.EnumDocPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocPriority[]
+  notIn?: $Enums.DocPriority[]
+  not?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel> | $Enums.DocPriority
+}
+
 export type EnumextentionEnumWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.extentionEnum | Prisma.EnumextentionEnumFieldRefInput<$PrismaModel>
   in?: $Enums.extentionEnum[]
@@ -169,6 +176,16 @@ export type EnumDocStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDocStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDocStatusFilter<$PrismaModel>
+}
+
+export type EnumDocPriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocPriority | Prisma.EnumDocPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocPriority[]
+  notIn?: $Enums.DocPriority[]
+  not?: Prisma.NestedEnumDocPriorityWithAggregatesFilter<$PrismaModel> | $Enums.DocPriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel>
 }
 
 export type DateTimeNullableFilter<$PrismaModel = never> = {
@@ -415,6 +432,13 @@ export type NestedEnumDocStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumDocStatusFilter<$PrismaModel> | $Enums.DocStatus
 }
 
+export type NestedEnumDocPriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocPriority | Prisma.EnumDocPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocPriority[]
+  notIn?: $Enums.DocPriority[]
+  not?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel> | $Enums.DocPriority
+}
+
 export type NestedEnumextentionEnumWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.extentionEnum | Prisma.EnumextentionEnumFieldRefInput<$PrismaModel>
   in?: $Enums.extentionEnum[]
@@ -460,6 +484,16 @@ export type NestedEnumDocStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDocStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDocStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumDocPriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocPriority | Prisma.EnumDocPriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocPriority[]
+  notIn?: $Enums.DocPriority[]
+  not?: Prisma.NestedEnumDocPriorityWithAggregatesFilter<$PrismaModel> | $Enums.DocPriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocPriorityFilter<$PrismaModel>
 }
 
 export type NestedDateTimeNullableFilter<$PrismaModel = never> = {

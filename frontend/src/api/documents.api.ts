@@ -56,13 +56,30 @@ export async function renameDocument(
 }
 
 // ─── CHANGER LE STATUT D'UN DOCUMENT ────────────────────────────────────────
+export type DocumentStatus = "ACTIVE" | "ARCHIVED" | "DELETED";
+
 export async function updateDocumentStatus(
     documentId: string,
-    status: string,
+    status: DocumentStatus,
 ): Promise<IDocument> {
     const response = await api.patch<IDocument>(
         `/documents/${documentId}/status`,
         { status },
+    );
+
+    return response.data;
+}
+
+// ─── CHANGER LA PRIORITÉ D'UN DOCUMENT ──────────────────────────────────────
+export type DocumentPriority = "LOW" | "MEDIUM" | "HIGH";
+
+export async function updateDocumentPriority(
+    documentId: string,
+    priority: DocumentPriority,
+): Promise<IDocument> {
+    const response = await api.patch<IDocument>(
+        `/documents/${documentId}/priority`,
+        { priority },
     );
 
     return response.data;
@@ -80,4 +97,17 @@ export async function addDocToGroup(
     data: AddDocToGroupData,
 ): Promise<void> {
     await api.post(`/groups/${groupId}/documents`, data);
+}
+
+// ─── PARTAGER UN DOCUMENT AVEC UN UTILISATEUR ───────────────────────────────
+export type ShareDocumentData = {
+    receiverId: string;
+    expirationDate?: string;
+};
+
+export async function shareDocument(
+    documentId: string,
+    data: ShareDocumentData,
+): Promise<void> {
+    await api.post(`/documents/${documentId}/share`, data);
 }

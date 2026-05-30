@@ -11,24 +11,26 @@ import {
 } from "lucide-react";
 import FeedbackMessage from "../ui/FeedbackMessage";
 import type { AccessGroup, AccessUser } from "../../types/documentFiles";
+import type { UserOption } from "../../api/user.api";
 
 interface ShareModalState {
     selectedDoc: { name: string } | null;
     feedback: { type: "success" | "error"; message: string } | null;
     selectedUsers: string[];
     emailInput: string;
-    suggestedUsers: string[];
+    suggestedUsers: UserOption[];
     existingAccess: AccessUser[];
     selectedGroupId: string;
     existingGroupAccess: AccessGroup[];
     groups: { id: number; name: string }[];
+    users: UserOption[];
 }
 
 interface ShareModalActions {
     setEmailInput: (val: string) => void;
     setExistingAccess: (users: AccessUser[]) => void;
-    removeUser: (user: string) => void;
-    addUser: (user: string) => void;
+    removeUser: (userId: string) => void;
+    addUser: (user: UserOption) => void;
     confirmShare: () => void;
     setSelectedGroupId: (val: string) => void;
     setExistingGroupAccess: (groups: AccessGroup[]) => void;
@@ -51,6 +53,7 @@ export function ShareModal({ state, actions }: ShareModalProps) {
         selectedGroupId,
         existingGroupAccess,
         groups,
+        users,
     } = state;
     const {
         setEmailInput,
@@ -98,19 +101,24 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                     </label>
 
                     <div className="flex flex-wrap gap-2 rounded-xl border border-cyan-500/10 bg-[#0f1115] p-3 transition focus-within:border-cyan-400">
-                        {selectedUsers.map((user) => (
-                            <div
-                                key={user}
-                                className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-300"
-                            >
-                                <span>{user}</span>
-                                <X
-                                    size={14}
-                                    className="cursor-pointer transition hover:text-white"
-                                    onClick={() => removeUser(user)}
-                                />
-                            </div>
-                        ))}
+                        {selectedUsers.map((userId) => {
+                            const user = users.find((u) => u.id === userId);
+                            const label = user?.email ?? userId;
+
+                            return (
+                                <div
+                                    key={userId}
+                                    className="flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-300"
+                                >
+                                    <span>{label}</span>
+                                    <X
+                                        size={14}
+                                        className="cursor-pointer transition hover:text-white"
+                                        onClick={() => removeUser(userId)}
+                                    />
+                                </div>
+                            );
+                        })}
 
                         <input
                             type="text"
@@ -119,28 +127,42 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                             value={emailInput}
                             onChange={(e) => setEmailInput(e.target.value)}
                         />
-                    </div>
 
-                    {suggestedUsers.length > 0 && (
-                        <ul className="absolute left-0 top-[100%] z-[100] mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-cyan-500/10 bg-[#111318] shadow-[0_12px_30px_rgba(0,0,0,0.45)]">
-                            {suggestedUsers.map((user) => (
-                                <li
-                                    key={user}
-                                    className="cursor-pointer px-4 py-3 transition hover:bg-cyan-500/5"
-                                    onClick={() => addUser(user)}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
-                                            <User size={18} />
+                        {suggestedUsers.length > 0 && (
+                            <ul className="absolute left-0 top-[100%] z-[100] mt-2 max-h-60 w-full overflow-y-auto rounded-2xl border border-cyan-500/10 bg-[#111318] shadow-[0_12px_30px_rgba(0,0,0,0.45)]">
+                                {suggestedUsers.map((user) => (
+                                    <li
+                                        key={user.id}
+                                        className="cursor-pointer px-4 py-3 transition hover:bg-cyan-500/5"
+                                        onClick={() => addUser(user)}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                                                <User size={18} />
+                                            </div>
+
+                                            <div>
+                                                <span className="text-sm font-medium text-white">
+                                                    {user.profile?.firstName ||
+                                                    user.profile?.lastName
+                                                        ? `${user.profile?.firstName ?? ""} ${
+                                                              user.profile
+                                                                  ?.lastName ??
+                                                              ""
+                                                          }`.trim()
+                                                        : user.email}
+                                                </span>
+
+                                                <p className="text-xs text-gray-500">
+                                                    {user.email}
+                                                </p>
+                                            </div>
                                         </div>
-                                        <span className="text-sm font-medium text-white">
-                                            {user}
-                                        </span>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
 
                 <div className="mt-8">

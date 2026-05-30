@@ -3,6 +3,9 @@ import {
     useDeleteDocument,
     useRenameDocument,
     useUploadDocument,
+    useUpdateDocumentPriority,
+    useUpdateDocumentStatus,
+    useShareDocument,
 } from "../hooks/useDocuments";
 import { useMyGroups } from "../hooks/useGroups";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +20,9 @@ import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
 import { mockGroups, mockUsers } from "../types/documentFiles";
 import { useMyDocuments } from "../hooks/useDocuments";
+import { useQuery } from "@tanstack/react-query";
+import { UserApi } from "../api/user.api";
+import type { UserOption } from "../api/user.api";
 
 import type {
     DocumentFile,
@@ -24,18 +30,13 @@ import type {
     AccessUser,
 } from "../types/documentFiles";
 
-const MOCK_USERS = [
-    "alexandre.dubois@gmail.com",
-    "sarah.martin@outlook.fr",
-    "thomas.legrand@lockr.io",
-    "julie.vignaud@yahoo.com",
-    "kevin.durant@gmail.com",
-    "sophie.bernadotte@gmail.com",
-];
-
 export default function DocumentsPage() {
     const { data: documents = [], isLoading } = useMyDocuments();
     const { data: myGroups = [] } = useMyGroups();
+    const { data: users = [] } = useQuery({
+        queryKey: ["users"],
+        queryFn: UserApi.findAll,
+    });
 
     const { mutateAsync: addDocToGroup } = useAddDocToGroup();
     const { mutateAsync: uploadDocument } = useUploadDocument();
@@ -43,6 +44,12 @@ export default function DocumentsPage() {
     const { mutateAsync: deleteDocument } = useDeleteDocument();
 
     const { mutateAsync: renameDocument } = useRenameDocument();
+
+    const { mutateAsync: updateDocumentPriority } = useUpdateDocumentPriority();
+
+    const { mutateAsync: updateDocumentStatus } = useUpdateDocumentStatus();
+
+    const { mutateAsync: shareDocument } = useShareDocument();
 
     const [selectedDoc, setSelectedDoc] = useState<DocumentFile | null>(null);
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -79,23 +86,26 @@ export default function DocumentsPage() {
     const [existingGroupAccess, setExistingGroupAccess] =
         useState<AccessGroup[]>(mockGroups);
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-    const [suggestedUsers, setSuggestedUsers] = useState<string[]>([]);
+    const [suggestedUsers, setSuggestedUsers] = useState<UserOption[]>([]);
     const [existingAccess, setExistingAccess] =
         useState<AccessUser[]>(mockUsers);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (emailInput.trim().length > 0) {
-            const filtered = MOCK_USERS.filter(
+            const filtered = users.filter(
                 (user) =>
-                    user.toLowerCase().includes(emailInput.toLowerCase()) &&
-                    !selectedUsers.includes(user),
+                    user.email
+                        .toLowerCase()
+                        .includes(emailInput.toLowerCase()) &&
+                    !selectedUsers.includes(user.id),
             );
+
             setSuggestedUsers(filtered);
         } else {
             setSuggestedUsers([]);
         }
-    }, [emailInput, selectedUsers]);
+    }, [emailInput, selectedUsers, users]);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -299,7 +309,7 @@ export default function DocumentsPage() {
     };
 
     // error and success messages for share.
-    const confirmShare = () => {
+    const confirmShare = async () => {
         if (!selectedDoc) {
             setFeedback({
                 type: "error",
@@ -317,6 +327,17 @@ export default function DocumentsPage() {
         }
 
         try {
+            if (!selectedDoc) return;
+
+            for (const userId of selectedUsers) {
+                await shareDocument({
+                    documentId: selectedDoc.id,
+                    data: {
+                        receiverId: userId,
+                    },
+                });
+            }
+
             setFeedback({
                 type: "success",
                 message: feedbackMessages.document.shareSuccess,
@@ -325,6 +346,7 @@ export default function DocumentsPage() {
             closeDialog("share_modal");
         } catch (error) {
             console.error(error);
+
             setFeedback({
                 type: "error",
                 message: feedbackMessages.document.shareError,
@@ -352,13 +374,13 @@ export default function DocumentsPage() {
         setOpenMenuId(null);
     };
 
-    const addUser = (user: string) => {
-        setSelectedUsers((prev) => [...prev, user]);
+    const addUser = (user: UserOption) => {
+        setSelectedUsers((prev) => [...prev, user.id]);
         setEmailInput("");
     };
 
-    const removeUser = (user: string) => {
-        setSelectedUsers((prev) => prev.filter((u) => u !== user));
+    const removeUser = (userId: string) => {
+        setSelectedUsers((prev) => prev.filter((id) => id !== userId));
     };
 
     const addGroup = async () => {
@@ -404,6 +426,58 @@ export default function DocumentsPage() {
             setFeedback({
                 type: "error",
                 message: feedbackMessages.document.shareError,
+            });
+        }
+    };
+
+    const handlePriorityChange = async (
+        documentId: string,
+        priority: "LOW" | "MEDIUM" | "HIGH",
+    ) => {
+        try {
+            await updateDocumentPriority({
+                documentId,
+                priority,
+            });
+
+            setOpenMenuId(null);
+
+            setFeedback({
+                type: "success",
+                message: "Priorité du document mise à jour.",
+            });
+        } catch (error) {
+            console.error(error);
+
+            setFeedback({
+                type: "error",
+                message: "Erreur lors de la mise à jour de la priorité.",
+            });
+        }
+    };
+
+    const handleStatusChange = async (
+        documentId: string,
+        status: "ACTIVE" | "ARCHIVED" | "DELETED",
+    ) => {
+        try {
+            await updateDocumentStatus({
+                documentId,
+                status,
+            });
+
+            setOpenMenuId(null);
+
+            setFeedback({
+                type: "success",
+                message: "Statut du document mis à jour.",
+            });
+        } catch (error) {
+            console.error(error);
+
+            setFeedback({
+                type: "error",
+                message: "Erreur lors de la mise à jour du statut.",
             });
         }
     };
@@ -572,6 +646,95 @@ export default function DocumentsPage() {
 
                         <div className="mx-4 h-px bg-white/5" />
 
+                        <li className="px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-gray-500">
+                            Priorité
+                        </li>
+
+                        <li>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (openMenuId)
+                                        handlePriorityChange(
+                                            openMenuId,
+                                            "HIGH",
+                                        );
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-red-400 transition hover:bg-red-500/10"
+                            >
+                                Haute
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (openMenuId)
+                                        handlePriorityChange(
+                                            openMenuId,
+                                            "MEDIUM",
+                                        );
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-orange-400 transition hover:bg-orange-500/10"
+                            >
+                                Moyenne
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (openMenuId)
+                                        handlePriorityChange(openMenuId, "LOW");
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-emerald-400 transition hover:bg-emerald-500/10"
+                            >
+                                Basse
+                            </button>
+                        </li>
+
+                        <div className="mx-4 h-px bg-white/5" />
+
+                        <li className="px-4 py-2 text-[11px] uppercase tracking-[0.18em] text-gray-500">
+                            Statut
+                        </li>
+
+                        <li>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (openMenuId)
+                                        handleStatusChange(
+                                            openMenuId,
+                                            "ACTIVE",
+                                        );
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-cyan-400 transition hover:bg-cyan-500/10"
+                            >
+                                Actif
+                            </button>
+                        </li>
+
+                        <li>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (openMenuId)
+                                        handleStatusChange(
+                                            openMenuId,
+                                            "ARCHIVED",
+                                        );
+                                }}
+                                className="w-full px-4 py-2 text-left text-sm text-yellow-400 transition hover:bg-yellow-500/10"
+                            >
+                                Archivé
+                            </button>
+                        </li>
+
+                        <div className="mx-4 h-px bg-white/5" />
+
                         <li>
                             <button
                                 type="button"
@@ -608,9 +771,10 @@ export default function DocumentsPage() {
                     selectedGroupId,
                     existingGroupAccess,
                     groups: myGroups.map((group) => ({
-                        id: Number(group.id), // ShareModal attend un number pour l'id
+                        id: Number(group.id),
                         name: group.name,
                     })),
+                    users,
                 }}
                 actions={{
                     setEmailInput,

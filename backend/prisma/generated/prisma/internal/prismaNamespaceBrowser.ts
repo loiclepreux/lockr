@@ -115,6 +115,7 @@ export const DocScalarFieldEnum = {
   size: 'size',
   docTypeId: 'docTypeId',
   status: 'status',
+  priority: 'priority',
   addedDate: 'addedDate',
   filePath: 'filePath',
   createdAt: 'createdAt',

@@ -1,4 +1,18 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Req, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UnauthorizedException,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { DocumentsService } from './documents.service';
@@ -8,6 +22,13 @@ import { CreateShareDto } from './dto/create-share.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UpdateDocumentStatusDto } from './dto/status-document.dto';
 import { createMulterConfig } from 'src/config/config.multer';
+import { IsEnum } from 'class-validator';
+import { DocPriority } from 'prisma/generated/prisma/client';
+
+export class UpdateDocumentPriorityDto {
+  @IsEnum(DocPriority)
+  priority: DocPriority;
+}
 
 interface AuthentifRequest extends Request {
   user: {
@@ -34,23 +55,23 @@ export class DocumentsController {
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(
-  FileInterceptor(
-    'file',
-    createMulterConfig({
-      folder: 'documents',
-      allowedMimeTypes: [
-        'application/pdf',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'audio/mpeg',
-        'video/mp4',
-        'image/png',
-        'image/jpeg',
-        'image/webp',
-      ],
-      maxSizeMb: 20,
-    }),
-  ),
-)
+    FileInterceptor(
+      'file',
+      createMulterConfig({
+        folder: 'documents',
+        allowedMimeTypes: [
+          'application/pdf',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'audio/mpeg',
+          'video/mp4',
+          'image/png',
+          'image/jpeg',
+          'image/webp',
+        ],
+        maxSizeMb: 20,
+      }),
+    ),
+  )
   create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
@@ -83,7 +104,7 @@ export class DocumentsController {
     return this.documentsService.findOne(id);
   }
 
-// je supprime un document existant
+  // je supprime un document existant
   @Delete(':id')
   @UseGuards(AuthGuard)
   remove(@Param('id') id: string, @Req() req: AuthentifRequest) {
@@ -125,5 +146,18 @@ export class DocumentsController {
   ) {
     const userId = this.getUserId(req);
     return this.documentsService.updateStatus(id, updateStatusDto.status, userId);
+  }
+
+  // je mets à jour la priorité d'un document
+  @Patch(':id/priority')
+  @UseGuards(AuthGuard)
+  updatePriority(
+    @Param('id') id: string,
+    @Body() updatePriorityDto: UpdateDocumentPriorityDto,
+    @Req() req: AuthentifRequest,
+  ) {
+    const userId = this.getUserId(req);
+
+    return this.documentsService.updatePriority(id, updatePriorityDto.priority, userId);
   }
 }

@@ -1,6 +1,21 @@
 import { api } from "../utils/axios-client";
 
+export type UserOption = {
+    id: string;
+    email: string;
+    profile?: {
+        firstName?: string;
+        lastName?: string;
+        imgUrl?: string;
+    };
+};
+
 export class UserApi {
+    static async findAll(): Promise<UserOption[]> {
+        const response = await api.get("user");
+        return response.data.data;
+    }
+
     static async updateUser(
         id: string,
         data: {

@@ -23,6 +23,15 @@ export const extentionEnum = {
 export type extentionEnum = (typeof extentionEnum)[keyof typeof extentionEnum]
 
 
+export const DocPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type DocPriority = (typeof DocPriority)[keyof typeof DocPriority]
+
+
 export const DocStatus = {
   ACTIVE: 'ACTIVE',
   ARCHIVED: 'ARCHIVED',
