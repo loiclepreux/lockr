@@ -3,7 +3,7 @@ import {
     X,
     User,
     Clock,
-    Infinity,
+    Infinity as InfinityIcon,
     Settings2,
     Plus,
     ChevronRight,
@@ -249,7 +249,7 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                                             </>
                                         ) : (
                                             <>
-                                                <Infinity size={11} />
+                                                <InfinityIcon size={11} />
                                                 Accès indéfini
                                             </>
                                         )}
@@ -373,7 +373,7 @@ export function ShareModal({ state, actions }: ShareModalProps) {
                                                 );
                                             }}
                                         >
-                                            <Infinity size={16} />
+                                            <InfinityIcon size={16} />
                                             Rendre indéfini
                                         </button>
                                     </li>

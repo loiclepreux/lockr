@@ -3,18 +3,20 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
-import { DocStatus } from 'prisma/generated/prisma/client';
-import { DocPriority } from 'prisma/generated/prisma/client';
+import { DocStatus, DocPriority, targetEnum } from 'prisma/generated/prisma/client';
+import { ActivityLogService } from 'src/activity-log/activity-log.service';
 
 @Injectable()
 export class DocumentsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly activityLogService: ActivityLogService,
+  ) {}
 
   // je transforme les BigInt en string pour éviter des erreurs JSON
   private TransformBigInt = (data: any) =>
@@ -22,12 +24,17 @@ export class DocumentsService {
 
   // je récupère un document ou j'envoie une erreur s'il n'existe pas
   private async getDocument(id: string) {
-    const document = await this.prisma.doc.findUnique({
-      where: { id },
+    const document = await this.prisma.doc.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
     });
+
     if (!document) {
       throw new NotFoundException('Document introuvable');
     }
+
     return document;
   }
 
@@ -54,42 +61,72 @@ export class DocumentsService {
         addedDate: data.addedDate ? new Date(data.addedDate) : new Date(),
       },
     });
+    await this.activityLogService.create({
+      userId: data.ownerId,
+      actionType: targetEnum.CREATE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: newDocument.id,
+      log: `Document "${newDocument.name}" créé`,
+    });
     return this.TransformBigInt(newDocument);
   }
 
   // récupèration de tout les documents
-  async findAll() {
+  async findAll(userId: string) {
     const documents = await this.prisma.doc.findMany({
+      where: {
+        ownerId: userId,
+        deletedAt: null,
+      },
       include: {
-        owner: true,
         docType: true,
       },
     });
+
     return this.TransformBigInt(documents);
   }
 
   // récupèration d'un document
-  async findOne(id: string) {
-    const document = await this.prisma.doc.findUnique({
-      where: { id },
+  async findOne(id: string, userId: string) {
+    const document = await this.prisma.doc.findFirst({
+      where: {
+        id,
+        ownerId: userId,
+        deletedAt: null,
+      },
       include: {
-        owner: true,
         docType: true,
       },
     });
+
     if (!document) {
       throw new NotFoundException('Document introuvable');
     }
+
     return this.TransformBigInt(document);
   }
 
   // suppression d'un document
   async remove(id: string, userId: string) {
     const document = await this.getDocument(id);
+
     this.Owner(document, userId);
-    const deletedDocument = await this.prisma.doc.delete({
+
+    const deletedDocument = await this.prisma.doc.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+        status: 'DELETED',
+      },
     });
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.DELETE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Document "${document.name}" supprimé`,
+    });
+
     return this.TransformBigInt(deletedDocument);
   }
 
@@ -101,27 +138,36 @@ export class DocumentsService {
       where: { id },
       data: { status },
     });
+
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.UPDATE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Statut du document "${document.name}" modifié vers ${status}`,
+    });
     return this.TransformBigInt(updatedDocument);
   }
 
   // mise a jours de la priorité d'un document
   async updatePriority(id: string, priority: DocPriority, userId: string) {
-    const document = await this.prisma.doc.findUnique({
-      where: { id },
-    });
+    const document = await this.getDocument(id);
 
-    if (!document) {
-      throw new NotFoundException('Document introuvable');
-    }
+    this.Owner(document, userId);
 
-    if (document.ownerId !== userId) {
-      throw new UnauthorizedException("Vous n'êtes pas autorisé à modifier ce document");
-    }
-
-    return this.prisma.doc.update({
+    const updatedDocument = await this.prisma.doc.update({
       where: { id },
       data: { priority },
     });
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.UPDATE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Priorité du document "${document.name}" modifiée vers ${priority}`,
+    });
+
+    return this.TransformBigInt(updatedDocument);
   }
 
   // modification d'un document
@@ -144,6 +190,13 @@ export class DocumentsService {
     const updatedDocument = await this.prisma.doc.update({
       where: { id },
       data: updateData,
+    });
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.UPDATE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Document "${document.name}" modifié`,
     });
     return this.TransformBigInt(updatedDocument);
   }
@@ -183,6 +236,72 @@ export class DocumentsService {
         expirationDate: expirationDate ? new Date(expirationDate) : null,
       },
     });
+
+    await this.activityLogService.create({
+      userId: requesterId,
+      actionType: targetEnum.SHARE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: documentId,
+      log: `Document "${document.name}" partagé avec ${receiver.email}`,
+    });
     return newShare;
+  }
+
+  // recupération d'un partage de document
+  async findSharedWithMe(userId: string) {
+    const sharedDocuments = await this.prisma.sharedDoc.findMany({
+      where: {
+        receiverId: userId,
+        OR: [{ expirationDate: null }, { expirationDate: { gt: new Date() } }],
+        doc: {
+          deletedAt: null,
+        },
+      },
+      include: {
+        doc: {
+          include: {
+            docType: true,
+          },
+        },
+      },
+    });
+
+    return this.TransformBigInt(sharedDocuments);
+  }
+
+  // suppression d'un partage de document
+  async revokeShare(documentId: string, receiverId: string, userId: string) {
+    const document = await this.getDocument(documentId);
+
+    this.Owner(document, userId);
+
+    const existingShare = await this.prisma.sharedDoc.findUnique({
+      where: {
+        docId_receiverId: {
+          docId: documentId,
+          receiverId,
+        },
+      },
+    });
+
+    if (!existingShare) {
+      throw new NotFoundException('Partage introuvable');
+    }
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.REVOKE_SHARE,
+      targetType: 'DOCUMENT',
+      targetId: documentId,
+      log: `Partage du document "${document.name}" révoqué`,
+    });
+
+    return this.prisma.sharedDoc.delete({
+      where: {
+        docId_receiverId: {
+          docId: documentId,
+          receiverId,
+        },
+      },
+    });
   }
 }

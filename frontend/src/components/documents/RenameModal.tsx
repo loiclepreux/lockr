@@ -22,6 +22,13 @@ export function RenameModal({
                 </h3>
 
                 <p className="mt-2 text-sm text-gray-400">
+                    Document actuel :
+                    <span className="ml-1 font-medium text-cyan-400">
+                        {selectedDoc?.name}
+                    </span>
+                </p>
+
+                <p className="mt-2 text-sm text-gray-400">
                     Entrez un nouveau nom pour votre fichier.
                 </p>
 
@@ -31,7 +38,7 @@ export function RenameModal({
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
                         className="w-full rounded-xl border border-cyan-500/10 bg-[#0f1115] px-4 py-3 text-white outline-none transition placeholder:text-gray-500 focus:border-cyan-400"
-                        placeholder="Nouveau nom"
+                        placeholder={selectedDoc?.name || "Nouveau nom"}
                     />
                 </div>
 

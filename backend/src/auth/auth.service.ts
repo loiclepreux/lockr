@@ -53,12 +53,10 @@ export class AuthService {
   }
 
   clearCookie(name: string, response: Response): void {
-    // Le path doit être identique à setCookie — sinon le navigateur
-    // considère que c'est un cookie différent et ne l'efface pas
     response.clearCookie(name, {
       httpOnly: true,
       sameSite: 'strict',
-      path: '/auth',
+      path: '/auth/refresh_token',
       secure: process.env.NODE_ENV === 'production',
     });
   }
@@ -66,15 +64,19 @@ export class AuthService {
   async verifyRefreshToken(token: string): Promise<JwtPayload> {
     const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
       secret: process.env.REFRESHSECRET,
-      algorithms: process.env.JWTALGORITHM as any,
+      algorithms: [process.env.JWTALGORITHM ?? 'HS512'] as any,
     });
     const user = await this.userService.findOne(payload.sub);
+
     if (!user?.refreshToken) throw new Error('Token révoqué');
+
     const isValid = await this.compare(token, user.refreshToken);
+
     if (!isValid) throw new Error('Token invalide');
-    // Chercher le refresh token et compare token hasher et pas hasher
+
     return payload;
   }
+
   decodeToken(token: string): JwtPayload {
     return this.jwtService.decode<JwtPayload>(token);
   }

@@ -7,7 +7,6 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
-  Param,
   Post,
   Req,
   Put,
@@ -58,58 +57,59 @@ export class UserController {
   }
 
   @Post('me/photo')
-@UseInterceptors(
-  FileInterceptor(
-    'file',
-    createMulterConfig({
-      folder: 'profiles',
-      allowedMimeTypes: [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/webp',
-      ],
-      maxSizeMb: 5,
-    }),
-  ),
-)
-async uploadMyPhoto(
-  @Req() req: RequestWithUser,
-  @UploadedFile() file: Express.Multer.File,
-): Promise<IResponse<any>> {
-  const userId = req.user.sub;
+  @UseInterceptors(
+    FileInterceptor(
+      'file',
+      createMulterConfig({
+        folder: 'profiles',
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'],
+        maxSizeMb: 5,
+      }),
+    ),
+  )
+  async uploadMyPhoto(
+    @Req() req: RequestWithUser,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<IResponse<any>> {
+    const userId = req.user.sub;
 
-  if (!file) {
-    throw new HttpException('Aucun fichier reçu', HttpStatus.BAD_REQUEST);
-  }
-
-  return {
-    data: await this.userService.updateProfilePhoto(userId, file),
-    dataType: 'Profile',
-    timeStamp: new Date(),
-  };
-}
-
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<IResponse<Omit<User, 'password'>>> {
-    const user = await this.userService.findOne(id);
-    if (!user) {
-      throw new NotFoundException('Utilisateur non trouvé');
+    if (!file) {
+      throw new HttpException('Aucun fichier reçu', HttpStatus.BAD_REQUEST);
     }
+
     return {
-      data: user,
-      dataType: 'User',
+      data: await this.userService.updateProfilePhoto(userId, file),
+      dataType: 'Profile',
       timeStamp: new Date(),
     };
   }
 
-  @Put(':id')
-  async update(
-    @Param('id') id: string,
+  // @UseGuards(AdminGuard)
+  // @Get(':id')
+  // async findOne(@Param('id') id: string): Promise<IResponse<Omit<User, 'password'>>> {
+  //   const user = await this.userService.findOne(id);
+  //   if (!user) {
+  //     throw new NotFoundException('Utilisateur non trouvé');
+  //   }
+  //   return {
+  //     data: user,
+  //     dataType: 'User',
+  //     timeStamp: new Date(),
+  //   };
+  // }
+
+  @Put('me')
+  async updateMe(
+    @Req() req: RequestWithUser,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<IResponse<any>> {
+    const id = req.user.sub;
+
     const countUser = await this.userService.countById(id);
-    if (!countUser) throw new NotFoundException();
+
+    if (!countUser) {
+      throw new NotFoundException('Utilisateur non trouvé');
+    }
 
     if (updateUserDto.email) {
       const userEmail = await this.userService.findEmailById(id);
@@ -118,10 +118,7 @@ async uploadMyPhoto(
         const countByEmail = await this.userService.countByEmail(updateUserDto.email);
 
         if (countByEmail) {
-          throw new HttpException(
-            'email already in db || precondition failed',
-            HttpStatus.PRECONDITION_FAILED,
-          );
+          throw new HttpException('Email déjà utilisé', HttpStatus.PRECONDITION_FAILED);
         }
       }
     }
@@ -133,15 +130,15 @@ async uploadMyPhoto(
     };
   }
 
-  @Delete(':id')
+  @Delete('me')
   @HttpCode(204)
-  async remove(@Param('id') id: string) {
-    console.log('🚀 ~ UserController ~ remove ~ id:', id);
+  async removeMe(@Req() req: RequestWithUser): Promise<void> {
+    const id = req.user.sub;
+
     try {
       await this.userService.remove(id);
-    } catch (error) {
-      console.error('DELETE USER ERROR:', error);
-      throw new NotFoundException();
+    } catch {
+      throw new NotFoundException('Utilisateur non trouvé');
     }
   }
 }

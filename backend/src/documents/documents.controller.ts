@@ -37,6 +37,7 @@ interface AuthentifRequest extends Request {
   };
 }
 
+@UseGuards(AuthGuard)
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
@@ -53,7 +54,6 @@ export class DocumentsController {
 
   // j'upload un document et l'associe a l'utilisateur authentifié
   @Post()
-  @UseGuards(AuthGuard)
   @UseInterceptors(
     FileInterceptor(
       'file',
@@ -94,19 +94,38 @@ export class DocumentsController {
 
   // je recupére tous les documents de la bdd
   @Get()
-  findAll() {
-    return this.documentsService.findAll();
+  findAll(@Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.findAll(userId);
+  }
+
+  // je peut voir un partage de documents
+  @Get('shared-with-me')
+  findSharedWithMe(@Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.findSharedWithMe(userId);
+  }
+
+  // je supprime un partage de documents
+  @Delete(':id/share/:receiverId')
+  revokeShare(
+    @Param('id') documentId: string,
+    @Param('receiverId') receiverId: string,
+    @Req() req: AuthentifRequest,
+  ) {
+    const userId = this.getUserId(req);
+    return this.documentsService.revokeShare(documentId, receiverId, userId);
   }
 
   // je recupére un doucment de la bdd
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.documentsService.findOne(id);
+  findOne(@Param('id') id: string, @Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.findOne(id, userId);
   }
 
   // je supprime un document existant
   @Delete(':id')
-  @UseGuards(AuthGuard)
   remove(@Param('id') id: string, @Req() req: AuthentifRequest) {
     const userId = this.getUserId(req);
     return this.documentsService.remove(id, userId);
@@ -114,7 +133,6 @@ export class DocumentsController {
 
   // je mets a jours un document existant
   @Patch(':id')
-  @UseGuards(AuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateDocumentDto: UpdateDocumentDto,
@@ -126,7 +144,6 @@ export class DocumentsController {
 
   // je partage un document avec d'autre users
   @Post(':id/share')
-  @UseGuards(AuthGuard)
   shareDocument(
     @Param('id') documentId: string,
     @Body() createShareDto: CreateShareDto,
@@ -138,7 +155,6 @@ export class DocumentsController {
 
   // je mets a jours le status d'un document
   @Patch(':id/status')
-  @UseGuards(AuthGuard)
   updateStatus(
     @Param('id') id: string,
     @Body() updateStatusDto: UpdateDocumentStatusDto,
@@ -150,7 +166,6 @@ export class DocumentsController {
 
   // je mets à jour la priorité d'un document
   @Patch(':id/priority')
-  @UseGuards(AuthGuard)
   updatePriority(
     @Param('id') id: string,
     @Body() updatePriorityDto: UpdateDocumentPriorityDto,

@@ -51,6 +51,7 @@ model Doc {
   priority  DocPriority   @default(MEDIUM)
   addedDate DateTime
   filePath  String
+  deletedAt DateTime?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -58,6 +59,9 @@ model Doc {
   docType    DocType       @relation(fields: [docTypeId], references: [id])
   sharedDocs SharedDoc[]
   groups     DocsInGroup[]
+
+  @@index([ownerId])
+  @@index([docTypeId])
 }
 
 enum extentionEnum {
@@ -105,6 +109,7 @@ model SharedDoc {
   receiver User @relation(fields: [receiverId], references: [id])
 
   @@id([docId, receiverId])
+  @@index([receiverId])
 }
 
 model Group {
@@ -139,6 +144,7 @@ model UserInGroup {
   group Group @relation(fields: [groupId], references: [id])
 
   @@id([groupId, userId])
+  @@index([userId])
 }
 
 enum RoleEnum {
@@ -158,6 +164,7 @@ model DocsInGroup {
   doc   Doc   @relation(fields: [docId], references: [id])
 
   @@id([groupId, docId])
+  @@index([docId])
 }
 
 model ActivityLog {
@@ -176,10 +183,22 @@ model ActivityLog {
 }
 
 enum targetEnum {
-  addDocInGroup
-  deleteDocInGroup
-  addUserInGroup
-  removeUserInGroup
+  CREATE_DOCUMENT
+  UPDATE_DOCUMENT
+  DELETE_DOCUMENT
+
+  SHARE_DOCUMENT
+  REVOKE_SHARE
+
+  ADD_DOC_IN_GROUP
+  REMOVE_DOC_IN_GROUP
+
+  ADD_USER_IN_GROUP
+  REMOVE_USER_IN_GROUP
+
+  CREATE_GROUP
+  UPDATE_GROUP
+  DELETE_GROUP
 }
 
 model AccessRequest {
@@ -196,6 +215,9 @@ model AccessRequest {
 
   requester User @relation("requester", fields: [requesterId], references: [id])
   responded User @relation("responder", fields: [respondedId], references: [id])
+
+  @@index([requesterId])
+  @@index([respondedId])
 }
 
 enum AccessStatus {
@@ -227,6 +249,7 @@ model NotificationToUser {
   notification Notification @relation(fields: [notificationId], references: [id])
 
   @@id([notificationId, userId])
+  @@index([userId])
 }
 
 model AuditLog {

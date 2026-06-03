@@ -45,6 +45,7 @@ export type DocMinAggregateOutputType = {
   priority: $Enums.DocPriority | null
   addedDate: Date | null
   filePath: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +61,7 @@ export type DocMaxAggregateOutputType = {
   priority: $Enums.DocPriority | null
   addedDate: Date | null
   filePath: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -75,6 +77,7 @@ export type DocCountAggregateOutputType = {
   priority: number
   addedDate: number
   filePath: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -100,6 +103,7 @@ export type DocMinAggregateInputType = {
   priority?: true
   addedDate?: true
   filePath?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -115,6 +119,7 @@ export type DocMaxAggregateInputType = {
   priority?: true
   addedDate?: true
   filePath?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -130,6 +135,7 @@ export type DocCountAggregateInputType = {
   priority?: true
   addedDate?: true
   filePath?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -232,6 +238,7 @@ export type DocGroupByOutputType = {
   priority: $Enums.DocPriority
   addedDate: Date
   filePath: string
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: DocCountAggregateOutputType | null
@@ -270,6 +277,7 @@ export type DocWhereInput = {
   priority?: Prisma.EnumDocPriorityFilter<"Doc"> | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Doc"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -289,6 +297,7 @@ export type DocOrderByWithRelationInput = {
   priority?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
@@ -312,6 +321,7 @@ export type DocWhereUniqueInput = Prisma.AtLeast<{
   priority?: Prisma.EnumDocPriorityFilter<"Doc"> | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Doc"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
   owner?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -331,6 +341,7 @@ export type DocOrderByWithAggregationInput = {
   priority?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DocCountOrderByAggregateInput
@@ -354,6 +365,7 @@ export type DocScalarWhereWithAggregatesInput = {
   priority?: Prisma.EnumDocPriorityWithAggregatesFilter<"Doc"> | $Enums.DocPriority
   addedDate?: Prisma.DateTimeWithAggregatesFilter<"Doc"> | Date | string
   filePath?: Prisma.StringWithAggregatesFilter<"Doc"> | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Doc"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Doc"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Doc"> | Date | string
 }
@@ -367,6 +379,7 @@ export type DocCreateInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutDocsInput
@@ -386,6 +399,7 @@ export type DocUncheckedCreateInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sharedDocs?: Prisma.SharedDocUncheckedCreateNestedManyWithoutDocInput
@@ -401,6 +415,7 @@ export type DocUpdateInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutDocsNestedInput
@@ -420,6 +435,7 @@ export type DocUncheckedUpdateInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sharedDocs?: Prisma.SharedDocUncheckedUpdateManyWithoutDocNestedInput
@@ -437,6 +453,7 @@ export type DocCreateManyInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -450,6 +467,7 @@ export type DocUpdateManyMutationInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -465,6 +483,7 @@ export type DocUncheckedUpdateManyInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -496,6 +515,7 @@ export type DocCountOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -515,6 +535,7 @@ export type DocMaxOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -530,6 +551,7 @@ export type DocMinOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   addedDate?: Prisma.SortOrder
   filePath?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -603,6 +625,10 @@ export type EnumDocStatusFieldUpdateOperationsInput = {
 
 export type EnumDocPriorityFieldUpdateOperationsInput = {
   set?: $Enums.DocPriority
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type DocCreateNestedManyWithoutDocTypeInput = {
@@ -684,6 +710,7 @@ export type DocCreateWithoutOwnerInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   docType: Prisma.DocTypeCreateNestedOneWithoutDocsInput
@@ -701,6 +728,7 @@ export type DocUncheckedCreateWithoutOwnerInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sharedDocs?: Prisma.SharedDocUncheckedCreateNestedManyWithoutDocInput
@@ -747,6 +775,7 @@ export type DocScalarWhereInput = {
   priority?: Prisma.EnumDocPriorityFilter<"Doc"> | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFilter<"Doc"> | Date | string
   filePath?: Prisma.StringFilter<"Doc"> | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Doc"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Doc"> | Date | string
 }
@@ -760,6 +789,7 @@ export type DocCreateWithoutDocTypeInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutDocsInput
@@ -777,6 +807,7 @@ export type DocUncheckedCreateWithoutDocTypeInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sharedDocs?: Prisma.SharedDocUncheckedCreateNestedManyWithoutDocInput
@@ -818,6 +849,7 @@ export type DocCreateWithoutSharedDocsInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutDocsInput
@@ -836,6 +868,7 @@ export type DocUncheckedCreateWithoutSharedDocsInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   groups?: Prisma.DocsInGroupUncheckedCreateNestedManyWithoutDocInput
@@ -866,6 +899,7 @@ export type DocUpdateWithoutSharedDocsInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutDocsNestedInput
@@ -884,6 +918,7 @@ export type DocUncheckedUpdateWithoutSharedDocsInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   groups?: Prisma.DocsInGroupUncheckedUpdateManyWithoutDocNestedInput
@@ -898,6 +933,7 @@ export type DocCreateWithoutGroupsInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutDocsInput
@@ -916,6 +952,7 @@ export type DocUncheckedCreateWithoutGroupsInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sharedDocs?: Prisma.SharedDocUncheckedCreateNestedManyWithoutDocInput
@@ -946,6 +983,7 @@ export type DocUpdateWithoutGroupsInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutDocsNestedInput
@@ -964,6 +1002,7 @@ export type DocUncheckedUpdateWithoutGroupsInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sharedDocs?: Prisma.SharedDocUncheckedUpdateManyWithoutDocNestedInput
@@ -979,6 +1018,7 @@ export type DocCreateManyOwnerInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -992,6 +1032,7 @@ export type DocUpdateWithoutOwnerInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   docType?: Prisma.DocTypeUpdateOneRequiredWithoutDocsNestedInput
@@ -1009,6 +1050,7 @@ export type DocUncheckedUpdateWithoutOwnerInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sharedDocs?: Prisma.SharedDocUncheckedUpdateManyWithoutDocNestedInput
@@ -1025,6 +1067,7 @@ export type DocUncheckedUpdateManyWithoutOwnerInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1039,6 +1082,7 @@ export type DocCreateManyDocTypeInput = {
   priority?: $Enums.DocPriority
   addedDate: Date | string
   filePath: string
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1052,6 +1096,7 @@ export type DocUpdateWithoutDocTypeInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutDocsNestedInput
@@ -1069,6 +1114,7 @@ export type DocUncheckedUpdateWithoutDocTypeInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sharedDocs?: Prisma.SharedDocUncheckedUpdateManyWithoutDocNestedInput
@@ -1085,6 +1131,7 @@ export type DocUncheckedUpdateManyWithoutDocTypeInput = {
   priority?: Prisma.EnumDocPriorityFieldUpdateOperationsInput | $Enums.DocPriority
   addedDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   filePath?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1140,6 +1187,7 @@ export type DocSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   priority?: boolean
   addedDate?: boolean
   filePath?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1162,11 +1210,12 @@ export type DocSelectScalar = {
   priority?: boolean
   addedDate?: boolean
   filePath?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DocOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "extension" | "ownerId" | "size" | "docTypeId" | "status" | "priority" | "addedDate" | "filePath" | "createdAt" | "updatedAt", ExtArgs["result"]["doc"]>
+export type DocOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "extension" | "ownerId" | "size" | "docTypeId" | "status" | "priority" | "addedDate" | "filePath" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["doc"]>
 export type DocInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   docType?: boolean | Prisma.DocTypeDefaultArgs<ExtArgs>
@@ -1194,6 +1243,7 @@ export type $DocPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     priority: $Enums.DocPriority
     addedDate: Date
     filePath: string
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["doc"]>
@@ -1579,6 +1629,7 @@ export interface DocFieldRefs {
   readonly priority: Prisma.FieldRef<"Doc", 'DocPriority'>
   readonly addedDate: Prisma.FieldRef<"Doc", 'DateTime'>
   readonly filePath: Prisma.FieldRef<"Doc", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Doc", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Doc", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Doc", 'DateTime'>
 }

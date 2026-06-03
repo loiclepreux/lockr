@@ -416,10 +416,6 @@ export type SharedDocUncheckedUpdateManyWithoutDocNestedInput = {
   deleteMany?: Prisma.SharedDocScalarWhereInput | Prisma.SharedDocScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type SharedDocCreateWithoutReceiverInput = {
   expirationDate?: Date | string | null
   createdAt?: Date | string

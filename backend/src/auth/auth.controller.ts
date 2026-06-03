@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   Post,
-  PreconditionFailedException,
   Req,
   Res,
   UnauthorizedException,
@@ -16,7 +15,6 @@ import { IResponse } from 'src/utils/interfaces/response.interface';
 import { User } from 'prisma/generated/prisma/client';
 import { SigninDto } from './dto/signin.dto';
 import type { Request, Response } from 'express';
-import { log } from 'node:console';
 
 @Controller('auth')
 export class AuthController {
@@ -26,14 +24,18 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  async signup(@Body() signupData: CreateUserDto): Promise<IResponse<Omit<User, 'password'>>> {
+  async signup(
+    @Body() signupData: CreateUserDto,
+  ): Promise<IResponse<Omit<User, 'password' | 'refreshToken'>>> {
     if (await this.userService.countByEmail(signupData.email)) {
-      throw new ConflictException('Email déja utilisé');
+      throw new ConflictException('Email déjà utilisé');
     }
 
     signupData.password = await this.authService.hash(signupData.password);
 
     const newUser = await this.userService.create(signupData);
+
+    const safeUser = newUser;
 
     return {
       data: newUser,
@@ -41,22 +43,27 @@ export class AuthController {
       timeStamp: new Date(),
     };
   }
+
   @Post('signin')
   async signin(
     @Body() loginData: SigninDto,
     @Res({ passthrough: true }) response: Response,
   ): Promise<IResponse<{ accessToken: string }>> {
     const user = await this.userService.findByEmail(loginData.email);
+
     if (!user) {
-      throw new PreconditionFailedException(' user or password incorect');
+      throw new UnauthorizedException('Identifiants incorrects');
     }
+
     const isPasswordValid = await this.authService.compare(loginData.password, user.password);
+
     if (!isPasswordValid) {
-      throw new PreconditionFailedException('user or password incorect');
+      throw new UnauthorizedException('Identifiants incorrects');
     }
+
     const tokens = await this.authService.createTokens(user.id);
+
     this.authService.setCookie('refreshToken', tokens.refreshToken, response);
-    console.log(tokens.accessToken);
 
     return {
       data: { accessToken: tokens.accessToken },
@@ -64,24 +71,28 @@ export class AuthController {
       timeStamp: new Date(),
     };
   }
+
   @Get('refresh')
   async refreshToken(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<IResponse<{ accessToken: string }>> {
-    const refresh_token = request.cookies.refreshToken;
-    if (!refresh_token) {
+    const refreshToken = request.cookies.refreshToken;
+
+    if (!refreshToken) {
       throw new UnauthorizedException();
     }
+
     let decodedToken;
-    // Vérifier la validité du token
+
     try {
-      decodedToken = await this.authService.verifyRefreshToken(refresh_token);
+      decodedToken = await this.authService.verifyRefreshToken(refreshToken);
     } catch {
       throw new UnauthorizedException();
     }
-    // Créer de nouveaux tokens et mettre à jour le cookie
+
     const newTokens = await this.authService.createTokens(decodedToken.sub);
+
     this.authService.setCookie('refreshToken', newTokens.refreshToken, response);
 
     return {
@@ -90,6 +101,7 @@ export class AuthController {
       timeStamp: new Date(),
     };
   }
+
   @Post('logout')
   async logout(
     @Req() request: Request,
@@ -99,15 +111,13 @@ export class AuthController {
 
     if (refreshToken) {
       try {
-        const decoded = this.authService.decodeToken(refreshToken);
+        const decoded = await this.authService.verifyRefreshToken(refreshToken);
+
         if (decoded?.sub) {
           await this.userService.updateRefreshToken(decoded.sub, null);
         }
-      } catch (error: unknown) {
-        console.log(
-          'Logout - erreur verifyRefreshToken:',
-          error instanceof Error ? error.message : error,
-        );
+      } catch {
+        // Même si le token est invalide, on nettoie quand même le cookie côté navigateur
       }
     }
 

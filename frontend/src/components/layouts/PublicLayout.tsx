@@ -2,35 +2,19 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
 import NavBarLanding from "../ui/NavBarLanding";
 
-// --------------------------------------------------------------------------
-// PublicLayout (LOC-103) — Layout des pages NON connectées
-//
-// Ce composant enveloppe : Home (landing), Signin, Signup
-//
-// Il fait deux choses :
-//   1. Si l'utilisateur est DÉJÀ connecté → redirige vers /dashboard
-//      (pas besoin de revoir la page login quand on est déjà connecté)
-//   2. Sinon → affiche la page enfant via <Outlet />
-//
-// Note : on n'ajoute PAS la NavBarLanding ici car chaque page
-// l'importe peut-être déjà de son côté
-// On pourra centraliser ça plus tard quand toute l'équipe sera alignée.
-// --------------------------------------------------------------------------
-
 const PublicLayout = () => {
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const user = useAuthStore((state) => state.user);
 
-    // Si déjà connecté, pas besoin de voir login/register
-    if (isAuthenticated) {
+    if (user) {
         return <Navigate to="/dashboard" replace />;
     }
 
-    // Outlet = la page enfant (Home, Signin, ou Signup)
     return (
-        <div className="bg-[#0b0f14] text-white min-h-screen">
+        <div className="min-h-screen bg-[#0b0f14] text-white">
             <NavBarLanding />
             <Outlet />
         </div>
     );
 };
+
 export default PublicLayout;

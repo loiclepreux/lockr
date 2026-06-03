@@ -59,10 +59,18 @@ export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum]
 
 
 export const targetEnum = {
-  addDocInGroup: 'addDocInGroup',
-  deleteDocInGroup: 'deleteDocInGroup',
-  addUserInGroup: 'addUserInGroup',
-  removeUserInGroup: 'removeUserInGroup'
+  CREATE_DOCUMENT: 'CREATE_DOCUMENT',
+  UPDATE_DOCUMENT: 'UPDATE_DOCUMENT',
+  DELETE_DOCUMENT: 'DELETE_DOCUMENT',
+  SHARE_DOCUMENT: 'SHARE_DOCUMENT',
+  REVOKE_SHARE: 'REVOKE_SHARE',
+  ADD_DOC_IN_GROUP: 'ADD_DOC_IN_GROUP',
+  REMOVE_DOC_IN_GROUP: 'REMOVE_DOC_IN_GROUP',
+  ADD_USER_IN_GROUP: 'ADD_USER_IN_GROUP',
+  REMOVE_USER_IN_GROUP: 'REMOVE_USER_IN_GROUP',
+  CREATE_GROUP: 'CREATE_GROUP',
+  UPDATE_GROUP: 'UPDATE_GROUP',
+  DELETE_GROUP: 'DELETE_GROUP'
 } as const
 
 export type targetEnum = (typeof targetEnum)[keyof typeof targetEnum]

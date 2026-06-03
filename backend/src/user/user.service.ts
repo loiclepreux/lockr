@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { User } from 'prisma/generated/prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,12 +8,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateUserDto): Promise<Omit<User, 'password'>> {
+  async create(data: CreateUserDto): Promise<Omit<User, 'password' | 'refreshToken'>> {
     const user = await this.prisma.user.create({
       data: {
         email: data.email,
         password: data.password,
-        // On crée le profil lié en même temps — nested write Prisma
         profile: {
           create: {
             firstName: data.firstName,
@@ -22,8 +20,12 @@ export class UserService {
           },
         },
       },
-      omit: { password: true },
+      omit: {
+        password: true,
+        refreshToken: true,
+      },
     });
+
     return user;
   }
 
@@ -97,7 +99,6 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserDto) {
-    console.log('UPDATE DTO =>', data);
 
     const result = await this.prisma.user.update({
       where: { id },
@@ -136,24 +137,24 @@ export class UserService {
   }
 
   async updateProfilePhoto(userId: string, file: Express.Multer.File) {
-  const imgUrl = `/uploads/profiles/${file.filename}`;
+    const imgUrl = `/uploads/profiles/${file.filename}`;
 
-  return this.prisma.profile.update({
-    where: {
-      userId,
-    },
-    data: {
-      imgUrl,
-    },
-    select: {
-      firstName: true,
-      lastName: true,
-      imgUrl: true,
-      phoneNumber: true,
-      address: true,
-    },
-  });
-}
+    return this.prisma.profile.update({
+      where: {
+        userId,
+      },
+      data: {
+        imgUrl,
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+        imgUrl: true,
+        phoneNumber: true,
+        address: true,
+      },
+    });
+  }
 
   async remove(id: string) {
     const result = await this.prisma.user.delete({

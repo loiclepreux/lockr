@@ -1,13 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from 'prisma/prisma.service';
 
+type NotificationPayload = {
+  relatedId: string;
+  relatedType: string;
+  userId: string;
+  message: string;
+};
+
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   @OnEvent('notif.trigger')
-  async listener(relatedId: string, relatedType: string, userId: string, message: string) {
+  async listener(payload: NotificationPayload) {
+    const { relatedId, relatedType, userId, message } = payload;
+
     try {
       await this.prisma.$transaction(async (tx) => {
         const newNotif = await tx.notification.create({
@@ -22,12 +33,15 @@ export class NotificationsService {
         await tx.notificationToUser.create({
           data: {
             notificationId: newNotif.id,
-            userId: userId,
+            userId,
           },
         });
       });
     } catch (error) {
-      console.error('Erreur lors de la création de la notification:', error);
+      this.logger.error(
+        'Erreur lors de la création de la notification',
+        error instanceof Error ? error.stack : String(error),
+      );
     }
   }
 

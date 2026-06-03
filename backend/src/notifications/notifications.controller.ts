@@ -1,15 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('notifications')
 @UseGuards(AuthGuard)
 export class NotificationsController {
-  constructor(
-    private readonly notificationsService: NotificationsService,
-    private readonly eventEmitter: EventEmitter2,
-  ) {}
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
   findAll(@Req() req: any) {
@@ -37,18 +33,5 @@ export class NotificationsController {
     const userId = req.user['sub'];
 
     return this.notificationsService.markAsRead(notificationId, userId);
-  }
-
-  @Post('test-event')
-  testEvent(@Body() body: { userId: string }) {
-    this.eventEmitter.emit(
-      'notif.trigger',
-      '1',
-      'TEST',
-      body.userId,
-      'Ceci est un test de notification !',
-    );
-
-    return { message: 'Événement émis !' };
   }
 }
