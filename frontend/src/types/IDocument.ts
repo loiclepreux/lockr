@@ -1,5 +1,3 @@
-// src/types/IDocument.ts
-// Shape réel retourné par GET /documents — on retire mockDocuments et ses types numériques
 export type ExtensionEnum =
   | "pdf"
   | "docx"
@@ -14,7 +12,7 @@ export type DocStatus = "ACTIVE" | "ARCHIVED" | "DELETED";
 export type DocPriority = "LOW" | "MEDIUM" | "HIGH";
 
 export interface IDocument {
-  id: string; // UUID — pas un nombre comme dans mockDocuments
+  id: string; // UUID — 
   name: string;
   extension: ExtensionEnum;
   ownerId: string;

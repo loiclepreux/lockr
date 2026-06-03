@@ -1,4 +1,3 @@
-// Remplace les imports existants par ceux-ci
 import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";

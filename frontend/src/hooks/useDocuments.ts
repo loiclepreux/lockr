@@ -1,4 +1,3 @@
-// src/hooks/useDocuments.ts
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     getAllDocuments,
@@ -35,7 +34,6 @@ const mapPriorityToFrench = (
 };
 
 // ─── MES DOCUMENTS ──────────────────────────────────────────────────────────
-// On récupère tous les documents et on filtre ceux dont je suis le propriétaire.
 export const useMyDocuments = () => {
     const userId = useAuthStore((state) => state.user?.id);
 
@@ -56,8 +54,8 @@ export const useMyDocuments = () => {
                                 "fr-FR",
                             ),
                             type: doc.extension.toUpperCase(),
-                            doctype: "", // LOC-152 — champ non présent dans IDocument
-                            priority: mapPriorityToFrench(doc.priority), // LOC-152 — champ non présent dans IDocument
+                            doctype: "",
+                            priority: mapPriorityToFrench(doc.priority), 
                         }),
                     )
             );

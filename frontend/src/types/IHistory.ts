@@ -1,5 +1,3 @@
-// src/types/IHistory.ts
-
 export type HistoryAction =
     | "create"
     | "update"

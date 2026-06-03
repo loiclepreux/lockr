@@ -1,4 +1,3 @@
-// src/types/IResponse.ts
 export interface IResponse<T> {
     data: T;
     dataType: string;

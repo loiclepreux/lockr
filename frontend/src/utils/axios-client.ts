@@ -8,7 +8,6 @@ function axiosClient(): AxiosInstance {
         withCredentials: true, // ← indispensable pour que le cookie HttpOnly parte avec chaque requête
     });
 
-    // Le verrou ET la file d'attente en une seule variable
     // null = personne ne refresh
     // Promise<string> = un refresh est en cours, tout le monde attend cette même Promise
     let refreshPromise: Promise<string> | null = null;

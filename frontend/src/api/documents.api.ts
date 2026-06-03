@@ -1,10 +1,7 @@
-// src/api/documents.api.ts
 import { api } from "../utils/axios-client";
 import type { IDocument } from "../types/IDocument";
 
 // ─── RÉCUPÉRER MES DOCUMENTS ────────────────────────────────────────────────
-// Le back retourne tous les documents via GET /documents.
-// On filtre côté front sur ownerId === userId pour n'afficher que les siens.
 export async function getAllDocuments(): Promise<IDocument[]> {
     const { data } = await api.get<IDocument[]>("/documents");
     return data;

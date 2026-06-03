@@ -1,5 +1,3 @@
-// src/hooks/useHistory.ts
-
 import { useQuery } from "@tanstack/react-query";
 import { getGroupHistory } from "../api/history.api";
 

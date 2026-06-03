@@ -1,5 +1,3 @@
-// src/api/history.api.ts
-
 import type { IHistory } from "../types/IHistory";
 
 // const API_URL = "http://localhost:3000/api";
@@ -15,8 +13,7 @@ const fakeHistory: IHistory[] = [
     { id: "h8", groupId: "1", action: "create",  targetName: "Design UI",         performedBy: "Wesley Martin", createdAt: "2026-04-09T08:30:00Z" },
 ];
 
-// On filtre par groupId — quand le backend sera branché,
-// ce sera un paramètre de query : GET /groups/:id/history
+
 export async function getGroupHistory(groupId: string): Promise<IHistory[]> {
     // const { data } = await api.get<IHistory[]>(`${API_URL}/groups/${groupId}/history`);
     // return data;
