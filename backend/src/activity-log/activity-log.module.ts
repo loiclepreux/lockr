@@ -8,5 +8,6 @@ import { ActivityLogController } from './activity-log.controller';
   imports: [PrismaModule, AuthModule],
   controllers: [ActivityLogController],
   providers: [ActivityLogService],
+  exports: [ActivityLogService],
 })
-export class ActivtyLogModule {}
+export class ActivityLogModule {}

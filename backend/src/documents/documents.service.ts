@@ -5,6 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
@@ -16,6 +17,7 @@ export class DocumentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly activityLogService: ActivityLogService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   // je transforme les BigInt en string pour éviter des erreurs JSON
@@ -244,6 +246,13 @@ export class DocumentsService {
       targetId: documentId,
       log: `Document "${document.name}" partagé avec ${receiver.email}`,
     });
+
+    this.eventEmitter.emit('notif.trigger', {
+      relatedId: documentId,
+      relatedType: 'DOCUMENT_SHARE',
+      userId: receiverId,
+      message: `Le document "${document.name}" vous a été partagé`,
+    });
     return newShare;
   }
 
@@ -303,5 +312,88 @@ export class DocumentsService {
         },
       },
     });
+  }
+
+  async findTrash(userId: string) {
+    const documents = await this.prisma.doc.findMany({
+      where: {
+        ownerId: userId,
+        deletedAt: {
+          not: null,
+        },
+      },
+      include: {
+        docType: true,
+      },
+      orderBy: {
+        deletedAt: 'desc',
+      },
+    });
+
+    return this.TransformBigInt(documents);
+  }
+
+  async restore(id: string, userId: string) {
+    const document = await this.prisma.doc.findFirst({
+      where: {
+        id,
+        ownerId: userId,
+        deletedAt: {
+          not: null,
+        },
+      },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable dans la corbeille');
+    }
+
+    const restoredDocument = await this.prisma.doc.update({
+      where: { id },
+      data: {
+        deletedAt: null,
+        status: DocStatus.ACTIVE,
+      },
+    });
+
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.RESTORE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Document "${document.name}" restauré`,
+    });
+
+    return this.TransformBigInt(restoredDocument);
+  }
+
+  async permanentDelete(id: string, userId: string) {
+    const document = await this.prisma.doc.findFirst({
+      where: {
+        id,
+        ownerId: userId,
+        deletedAt: {
+          not: null,
+        },
+      },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable dans la corbeille');
+    }
+
+    await this.activityLogService.create({
+      userId,
+      actionType: targetEnum.PERMANENT_DELETE_DOCUMENT,
+      targetType: 'DOCUMENT',
+      targetId: id,
+      log: `Document "${document.name}" supprimé définitivement`,
+    });
+
+    const deletedDocument = await this.prisma.doc.delete({
+      where: { id },
+    });
+
+    return this.TransformBigInt(deletedDocument);
   }
 }

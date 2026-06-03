@@ -1,4 +1,12 @@
-import { Bell, FileText, Home, LogOut, UserCircle, Users } from "lucide-react";
+import {
+    Bell,
+    FileText,
+    Home,
+    LogOut,
+    UserCircle,
+    Users,
+    Trash2,
+} from "lucide-react";
 import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -136,6 +144,18 @@ const NavBarDashboard = ({
                         >
                             <FileText size={24} />
                             <span>Documents</span>
+                        </Link>
+                    </li>
+
+                    {/* Corbeille */}
+                    <li>
+                        <Link
+                            to="/trash"
+                            onClick={onNavigate}
+                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-all duration-300"
+                        >
+                            <Trash2 size={24} />
+                            <span>Corbeille</span>
                         </Link>
                     </li>
 

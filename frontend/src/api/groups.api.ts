@@ -30,3 +30,31 @@ export async function addMember(
 ): Promise<void> {
     await api.post(`/groups/${groupId}/members`, member);
 }
+
+// ─── RÉCUPÉRER UN GROUPE ───────────────────────────────────────────────────
+export async function getGroupById(groupId: string): Promise<IGroup> {
+    const { data } = await api.get<IGroup>(`/groups/${groupId}`);
+    return data;
+}
+
+// ─── RÉCUPÉRER LES DOCUMENTS D'UN GROUPE ───────────────────────────────────
+export async function getGroupDocuments(groupId: string) {
+    const { data } = await api.get(`/groups/${groupId}/documents`);
+    return data;
+}
+
+// ─── RETIRER UN DOCUMENT D'UN GROUPE ───────────────────────────────────────
+export async function removeDocFromGroup(
+    groupId: string,
+    docId: string,
+): Promise<void> {
+    await api.delete(`/groups/${groupId}/documents/${docId}`);
+}
+
+// ─── RETIRER UN MEMBRE ─────────────────────────────────────────────────────
+export async function removeMember(
+    groupId: string,
+    userId: string,
+): Promise<void> {
+    await api.delete(`/groups/${groupId}/members/${userId}`);
+}

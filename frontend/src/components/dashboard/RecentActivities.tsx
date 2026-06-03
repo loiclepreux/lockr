@@ -5,6 +5,7 @@ type ActivityLogItem = {
     id: string;
     actionType: string;
     createdAt: string;
+    log: string;
     user?: {
         email: string;
         profile?: {
@@ -67,7 +68,7 @@ export default function RecentActivities() {
 
                             <div className="flex flex-col">
                                 <span className="text-slate-300 text-sm">
-                                    {formatActivityMessage(activity)}
+                                    {activity.log}
                                 </span>
 
                                 <span className="text-slate-500 text-xs mt-1">
@@ -90,34 +91,4 @@ function formatDate(date: string) {
         hour: "2-digit",
         minute: "2-digit",
     });
-}
-
-function formatActivityMessage(activity: ActivityLogItem) {
-    const groupName = activity.group?.name ?? "un groupe";
-
-    switch (activity.actionType) {
-        case "JOIN_GROUP":
-            return `Vous avez rejoint le groupe ${groupName}`;
-
-        case "CREATE_GROUP":
-            return `Vous avez créé le groupe ${groupName}`;
-
-        case "LEAVE_GROUP":
-            return `Vous avez quitté le groupe ${groupName}`;
-
-        case "REMOVE_FROM_GROUP":
-            return `Vous avez été expulsé du groupe ${groupName}`;
-
-        case "UPLOAD_DOCUMENT":
-            return "Vous avez ajouté un document";
-
-        case "DELETE_DOCUMENT":
-            return "Vous avez supprimé un document";
-
-        case "SHARE_DOCUMENT":
-            return "Vous avez partagé un document";
-
-        default:
-            return activity.actionType;
-    }
 }

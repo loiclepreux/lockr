@@ -99,6 +99,12 @@ export class DocumentsController {
     return this.documentsService.findAll(userId);
   }
 
+  @Get('trash')
+  findTrash(@Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.findTrash(userId);
+  }
+
   // je peut voir un partage de documents
   @Get('shared-with-me')
   findSharedWithMe(@Req() req: AuthentifRequest) {
@@ -115,6 +121,18 @@ export class DocumentsController {
   ) {
     const userId = this.getUserId(req);
     return this.documentsService.revokeShare(documentId, receiverId, userId);
+  }
+
+  @Post(':id/restore')
+  restore(@Param('id') id: string, @Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.restore(id, userId);
+  }
+
+  @Delete(':id/permanent')
+  permanentDelete(@Param('id') id: string, @Req() req: AuthentifRequest) {
+    const userId = this.getUserId(req);
+    return this.documentsService.permanentDelete(id, userId);
   }
 
   // je recupére un doucment de la bdd

@@ -4,6 +4,10 @@ import {
     createGroup,
     deleteGroup,
     addMember,
+    getGroupById,
+    getGroupDocuments,
+    removeDocFromGroup,
+    removeMember,
 } from "../api/groups.api";
 import type { AddMemberData } from "../api/groups.api";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -77,6 +81,61 @@ export const useAddMember = () => {
             member: AddMemberData;
         }) => addMember(groupId, member),
         onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["groups"] });
+        },
+    });
+};
+
+// ─── RÉCUPÉRER UN GROUPE ───────────────────────────────────────────────────
+export const useGroupById = (groupId: string | null) => {
+    return useQuery({
+        queryKey: ["groups", groupId],
+        queryFn: () => getGroupById(groupId as string),
+        enabled: !!groupId,
+    });
+};
+
+// ─── RÉCUPÉRER LES DOCUMENTS D'UN GROUPE ───────────────────────────────────
+export const useGroupDocuments = (groupId: string | null) => {
+    return useQuery({
+        queryKey: ["groups", groupId, "documents"],
+        queryFn: () => getGroupDocuments(groupId as string),
+        enabled: !!groupId,
+    });
+};
+
+// ─── RETIRER UN DOCUMENT D'UN GROUPE ───────────────────────────────────────
+export const useRemoveDocFromGroup = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ groupId, docId }: { groupId: string; docId: string }) =>
+            removeDocFromGroup(groupId, docId),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["groups", variables.groupId, "documents"],
+            });
+            queryClient.invalidateQueries({ queryKey: ["groups"] });
+        },
+    });
+};
+
+// ─── RETIRER UN MEMBRE ─────────────────────────────────────────────────────
+export const useRemoveMember = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            groupId,
+            userId,
+        }: {
+            groupId: string;
+            userId: string;
+        }) => removeMember(groupId, userId),
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["groups", variables.groupId],
+            });
             queryClient.invalidateQueries({ queryKey: ["groups"] });
         },
     });

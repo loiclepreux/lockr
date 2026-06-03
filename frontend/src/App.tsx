@@ -21,6 +21,7 @@ import DocumentsPage from "./pages/DocumentsPage";
 import GroupPage from "./pages/GroupPage";
 import MyAccount from "./pages/MyAccount";
 import NotificationPage from "./pages/NotificationPage";
+import TrashPage from "./pages/TrashPage";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ function App() {
                                 path="/documents"
                                 element={<DocumentsPage />}
                             />
+                            <Route path="/trash" element={<TrashPage />} />
                             <Route path="/myAccount" element={<MyAccount />} />
                             <Route
                                 path="/notifications"

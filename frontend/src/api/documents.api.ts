@@ -23,7 +23,7 @@ export async function uploadDocument(
     formData.append("name", data.name);
 
     if (data.typeId) {
-        formData.append("typeId", data.typeId);
+        formData.append("docTypeId", data.typeId);
     }
 
     const response = await api.post<IDocument>("/documents", formData, {

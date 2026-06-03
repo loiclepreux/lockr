@@ -2,9 +2,11 @@ import { useState } from "react";
 import CreateGroupModal from "../components/groups/CreateGroupModal";
 import GroupList from "../components/groups/GroupList";
 import { useMyGroups, useSharedGroups } from "../hooks/useGroups";
+import GroupDetails from "../components/groups/GroupDetail";
 
 export default function GroupPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
 
     const { data: myGroups, isLoading: loadingMine } = useMyGroups();
     const { data: sharedGroups, isLoading: loadingShared } = useSharedGroups();
@@ -33,6 +35,7 @@ export default function GroupPage() {
                         <GroupList
                             title="Mes groupes"
                             groups={myGroups ?? []}
+                            onSelectGroup={setSelectedGroupId}
                         />
                     )}
                 </section>
@@ -47,9 +50,12 @@ export default function GroupPage() {
                         <GroupList
                             title="Groupes partagés avec moi"
                             groups={sharedGroups ?? []}
+                            onSelectGroup={setSelectedGroupId}
                         />
                     )}
                 </section>
+
+                {selectedGroupId && <GroupDetails groupId={selectedGroupId} />}
             </div>
 
             {/* Bouton flottant */}

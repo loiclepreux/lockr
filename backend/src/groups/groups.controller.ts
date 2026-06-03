@@ -5,6 +5,13 @@ import { UpdateGroupDto } from './dto/update-group.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { addMemberDTO } from './dto/add-member.dto';
 import { AddDocToGroupDto } from './dto/add-doc-to-group.dto';
+import type { Request } from 'express';
+
+type RequestWithUser = Request & {
+  user: {
+    sub: string;
+  };
+};
 
 @Controller('groups')
 export class GroupsController {
@@ -69,5 +76,19 @@ export class GroupsController {
     const userId = req.user?.id || req.user?.sub;
 
     return this.groupsService.remove(id, userId);
+  }
+
+  @Delete(':groupId/documents/:docId')
+  removeDocFromGroup(
+    @Param('groupId') groupId: string,
+    @Param('docId') docId: string,
+    @Req() req: RequestWithUser,
+  ) {
+    return this.groupsService.removeDocFromGroup(groupId, docId, req.user.sub);
+  }
+
+  @Get(':groupId/documents')
+  getGroupDocuments(@Param('groupId') groupId: string) {
+    return this.groupsService.getGroupDocuments(groupId);
   }
 }

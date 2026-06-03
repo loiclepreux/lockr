@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.modules';
 import { GroupsModule } from './groups/groups.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ActivtyLogModule } from './activity-log/activity-log.module';
+import { ActivityLogModule } from './activity-log/activity-log.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AccessRequestsModule } from './access-requests/access-requests.module';
 import { AuditLogModule } from './audit-log/audit-log.module';
@@ -22,7 +22,7 @@ import { LoggingInterceptor } from './common/interceptors/logging-interceptor';
     GroupsModule,
     NotificationsModule,
     EventEmitterModule.forRoot(),
-    ActivtyLogModule,
+    ActivityLogModule,
     DashboardModule,
     AccessRequestsModule,
     AuditLogModule,

@@ -4,9 +4,14 @@ import type { IGroup } from "../../types/IGroup";
 interface GroupListProps {
     title: string;
     groups: IGroup[];
+    onSelectGroup?: (groupId: string) => void;
 }
 
-export default function GroupList({ title, groups }: GroupListProps) {
+export default function GroupList({
+    title,
+    groups,
+    onSelectGroup,
+}: GroupListProps) {
     return (
         <section className="flex flex-col gap-5">
             <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-4">
@@ -27,14 +32,19 @@ export default function GroupList({ title, groups }: GroupListProps) {
             ) : (
                 <div className="flex flex-col gap-4">
                     {groups.map((group) => (
-                        <GroupCard
+                        <div
                             key={group.id}
-                            id={group.id}
-                            name={group.name}
-                            description={group.description}
-                            membersCount={group.users.length} // 👈 dérivé depuis users
-                            creatorId={group.creatorId}
-                        />
+                            onClick={() => onSelectGroup?.(group.id)}
+                            className="cursor-pointer"
+                        >
+                            <GroupCard
+                                id={group.id}
+                                name={group.name}
+                                description={group.description}
+                                membersCount={group.users.length}
+                                creatorId={group.creatorId}
+                            />
+                        </div>
                     ))}
                 </div>
             )}
