@@ -14,4 +14,11 @@ export class ActivityLogApi {
 
         return response.data?.data ?? [];
     }
+
+    // Historique d'un groupe
+    static async getGroupHistory(groupId: string) {
+        const response = await api.get(`activitylog?groupId=${groupId}`);
+
+        return response.data?.data?.items ?? [];
+    }
 }

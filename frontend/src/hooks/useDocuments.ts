@@ -12,6 +12,7 @@ import {
 import type { AddDocToGroupData } from "../api/documents.api";
 import { useAuthStore } from "../stores/useAuthStore";
 import type { DocumentFile } from "../types/documentFiles";
+import type { IDocument } from "../types/IDocument";
 import {
     deleteDocument,
     renameDocument,
@@ -55,7 +56,7 @@ export const useMyDocuments = () => {
                             ),
                             type: doc.extension.toUpperCase(),
                             doctype: "",
-                            priority: mapPriorityToFrench(doc.priority), 
+                            priority: mapPriorityToFrench(doc.priority),
                         }),
                     )
             );
@@ -118,9 +119,14 @@ export const useAddDocToGroup = () => {
             groupId: string;
             data: AddDocToGroupData;
         }) => addDocToGroup(groupId, data),
-        onSuccess: () => {
-            // On invalide les groupes pour que la liste se rafraîchisse
-            queryClient.invalidateQueries({ queryKey: ["groups"] });
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({
+                queryKey: ["groups"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["groups", variables.groupId, "documents"],
+            });
         },
     });
 };
@@ -179,5 +185,13 @@ export const useShareDocument = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["documents"] });
         },
+    });
+};
+
+// ─── DOCUMENTS BRUTS POUR LES SELECTS ───────────────────────────────────────
+export const useRawDocuments = () => {
+    return useQuery<IDocument[]>({
+        queryKey: ["documents", "raw"],
+        queryFn: getAllDocuments,
     });
 };
