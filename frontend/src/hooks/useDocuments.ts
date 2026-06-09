@@ -55,7 +55,7 @@ export const useMyDocuments = () => {
                                 "fr-FR",
                             ),
                             type: doc.extension.toUpperCase(),
-                            doctype: "",
+                            doctype: doc.extension.toUpperCase(),
                             priority: mapPriorityToFrench(doc.priority),
                         }),
                     )

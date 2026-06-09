@@ -41,4 +41,15 @@ export class UserApi {
 
         return response.data.data;
     }
+
+    static async deleteMyAccount(): Promise<void> {
+        await api.delete("user/me");
+    }
+
+    static async changePassword(data: {
+        currentPassword: string;
+        newPassword: string;
+    }): Promise<void> {
+        await api.patch("user/me/password", data);
+    }
 }

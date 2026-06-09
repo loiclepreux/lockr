@@ -22,7 +22,7 @@ interface ShareModalState {
     existingAccess: AccessUser[];
     selectedGroupId: string;
     existingGroupAccess: AccessGroup[];
-    groups: { id: number; name: string }[];
+    groups: { id: string; name: string }[];
     users: UserOption[];
 }
 

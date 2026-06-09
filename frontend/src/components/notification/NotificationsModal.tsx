@@ -18,6 +18,9 @@ export default function NotificationsModal() {
         mutationFn: NotificationsApi.markAllAsRead,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            queryClient.invalidateQueries({
+                queryKey: ["notifications-count"],
+            });
         },
     });
 

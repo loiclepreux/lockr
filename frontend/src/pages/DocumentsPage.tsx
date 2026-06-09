@@ -18,7 +18,6 @@ import { DeleteModal } from "../components/documents/DeleteModal";
 import { RenameModal } from "../components/documents/RenameModal";
 import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
-import { mockGroups, mockUsers } from "../types/documentFiles";
 import { useMyDocuments } from "../hooks/useDocuments";
 import { useQuery } from "@tanstack/react-query";
 import { UserApi } from "../api/user.api";
@@ -83,12 +82,16 @@ export default function DocumentsPage() {
 
     const [emailInput, setEmailInput] = useState("");
     const [selectedGroupId, setSelectedGroupId] = useState("");
-    const [existingGroupAccess, setExistingGroupAccess] =
-        useState<AccessGroup[]>(mockGroups);
+
+    const [existingGroupAccess, setExistingGroupAccess] = useState<
+        AccessGroup[]
+    >([]);
+
+    const [existingAccess, setExistingAccess] = useState<AccessUser[]>([]);
+
     const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const [suggestedUsers, setSuggestedUsers] = useState<UserOption[]>([]);
-    const [existingAccess, setExistingAccess] =
-        useState<AccessUser[]>(mockUsers);
+
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -771,7 +774,7 @@ export default function DocumentsPage() {
                     selectedGroupId,
                     existingGroupAccess,
                     groups: myGroups.map((group) => ({
-                        id: Number(group.id),
+                        id: group.id,
                         name: group.name,
                     })),
                     users,

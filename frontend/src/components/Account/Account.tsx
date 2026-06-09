@@ -68,6 +68,20 @@ export default function Account() {
         },
     });
 
+    const changePasswordMutation = useMutation({
+        mutationFn: UserApi.changePassword,
+    });
+
+    const deleteAccountMutation = useMutation({
+        mutationFn: UserApi.deleteMyAccount,
+
+        onSuccess: () => {
+            localStorage.clear();
+
+            window.location.href = "/signin";
+        },
+    });
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-full text-white">
@@ -234,7 +248,10 @@ export default function Account() {
                                 isOpen={isPasswordOpen}
                                 onClose={() => setIsPasswordOpen(false)}
                                 onSubmit={(data) => {
-                                    console.log("Mot de passe modifié :", data);
+                                    changePasswordMutation.mutate({
+                                        currentPassword: data.currentPassword,
+                                        newPassword: data.newPassword,
+                                    });
                                 }}
                             />
                             <p className="text-white tracking-widest">
@@ -330,7 +347,7 @@ export default function Account() {
                         isOpen={confirmOpen}
                         onClose={() => setConfirmOpen(false)}
                         onConfirm={() => {
-                            console.log("Profil supprimé");
+                            deleteAccountMutation.mutate();
                             setConfirmOpen(false);
                         }}
                         title="Supprimer le profil"

@@ -58,9 +58,7 @@ export default function NotificationCenter() {
                 queryKey: ["access-requests"],
             });
 
-            queryClient.invalidateQueries({
-                queryKey: ["notifications"],
-            });
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
 
             queryClient.invalidateQueries({
                 queryKey: ["notifications-count"],
@@ -79,6 +77,10 @@ export default function NotificationCenter() {
             queryClient.invalidateQueries({
                 queryKey: ["notifications"],
             });
+
+            queryClient.invalidateQueries({
+                queryKey: ["notifications-count"],
+            });
         },
     });
 
@@ -91,6 +93,10 @@ export default function NotificationCenter() {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["notifications"],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["notifications-count"],
             });
         },
     });

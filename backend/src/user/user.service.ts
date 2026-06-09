@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { User } from 'prisma/generated/prisma/client';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UserService {
@@ -99,7 +101,6 @@ export class UserService {
   }
 
   async update(id: string, data: UpdateUserDto) {
-
     const result = await this.prisma.user.update({
       where: { id },
 
@@ -161,5 +162,30 @@ export class UserService {
       where: { id },
     });
     return result;
+  }
+
+  async changePassword(userId: string, data: UpdatePasswordDto): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new HttpException('Utilisateur introuvable', HttpStatus.NOT_FOUND);
+    }
+
+    const isPasswordValid = await bcrypt.compare(data.currentPassword, user.password);
+
+    if (!isPasswordValid) {
+      throw new HttpException('Mot de passe actuel incorrect', HttpStatus.BAD_REQUEST);
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        password: hashedPassword,
+      },
+    });
   }
 }

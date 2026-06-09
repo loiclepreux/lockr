@@ -71,7 +71,7 @@ export function UploadModal({ onUpload }: UploadModalProps) {
     };
 
     const handleSubmit = () => {
-        if (!selectedFile || !doctype.trim) return;
+        if (!selectedFile || !doctype.trim()) return;
 
         onUpload({
             file: selectedFile,

@@ -18,7 +18,7 @@ export interface NotificationItem {
 export class NotificationsApi {
     static async findAll(): Promise<NotificationItem[]> {
         const { data } = await api.get("notifications");
-        return data;
+        return data?.data ?? [];
     }
 
     static async markAsRead(notificationId: string): Promise<void> {
@@ -30,7 +30,7 @@ export class NotificationsApi {
     }
 
     static async countUnread(): Promise<number> {
-    const { data } = await api.get("notifications/count");
-    return data;
-}
+        const { data } = await api.get("notifications/count");
+        return data?.data ?? 0;
+    }
 }

@@ -14,7 +14,10 @@ export class DashboardService {
       recentActivitiesCount,
     ] = await Promise.all([
       this.prisma.doc.count({
-        where: { ownerId: userId },
+        where: {
+          ownerId: userId,
+          deletedAt: null,
+        },
       }),
 
       this.prisma.userInGroup.count({
@@ -52,6 +55,7 @@ export class DashboardService {
     const documents = await this.prisma.doc.findMany({
       where: {
         ownerId: userId,
+        deletedAt: null,
       },
       select: {
         addedDate: true,
@@ -90,6 +94,7 @@ export class DashboardService {
     const documents = await this.prisma.doc.findMany({
       where: {
         ownerId: userId,
+        deletedAt: null,
       },
       select: {
         extension: true,

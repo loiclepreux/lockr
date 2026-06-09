@@ -2,6 +2,8 @@ export interface IUser {
     id: string;
     email: string;
 
+    twoFactorEnabled?: boolean;
+
     createdAt?: string;
     updatedAt?: string;
 

@@ -10,6 +10,7 @@ import {
   Post,
   Req,
   Put,
+  Patch,
   UseGuards,
   UploadedFile,
   UseInterceptors,
@@ -22,6 +23,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import type { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createMulterConfig } from 'src/config/config.multer';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 type RequestWithUser = Request & { user: { sub: string } };
 
@@ -126,6 +128,20 @@ export class UserController {
     return {
       data: await this.userService.update(id, updateUserDto),
       dataType: 'User',
+      timeStamp: new Date(),
+    };
+  }
+
+  @Patch('me/password')
+  async changePassword(
+    @Req() req: RequestWithUser,
+    @Body() data: UpdatePasswordDto,
+  ): Promise<IResponse<null>> {
+    await this.userService.changePassword(req.user.sub, data);
+
+    return {
+      data: null,
+      dataType: 'Password',
       timeStamp: new Date(),
     };
   }
