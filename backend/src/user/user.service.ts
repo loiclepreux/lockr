@@ -32,10 +32,23 @@ export class UserService {
   }
 
   async findAll() {
-    const result = await this.prisma.user.findMany({
-      omit: { password: true },
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        profile: {
+          select: {
+            firstName: true,
+            lastName: true,
+            imgUrl: true,
+          },
+        },
+      },
+      take: 50,
+      orderBy: {
+        email: 'asc',
+      },
     });
-    return result;
   }
 
   async countById(id: string): Promise<number> {

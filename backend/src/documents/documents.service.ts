@@ -4,6 +4,8 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import type { Response } from 'express';
+import * as fs from 'fs';
 import { PrismaService } from 'prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateDocumentDto } from './dto/create-document.dto';
@@ -395,5 +397,38 @@ export class DocumentsService {
     });
 
     return this.TransformBigInt(deletedDocument);
+  }
+
+  async download(id: string, userId: string, res: Response) {
+    const document = await this.prisma.doc.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!document) {
+      throw new NotFoundException('Document introuvable');
+    }
+
+    const isOwner = document.ownerId === userId;
+
+    const validShare = await this.prisma.sharedDoc.findFirst({
+      where: {
+        docId: id,
+        receiverId: userId,
+        OR: [{ expirationDate: null }, { expirationDate: { gt: new Date() } }],
+      },
+    });
+
+    if (!isOwner && !validShare) {
+      throw new ForbiddenException('Accès refusé');
+    }
+
+    if (!fs.existsSync(document.filePath)) {
+      throw new NotFoundException('Fichier introuvable sur le serveur');
+    }
+
+    return res.download(document.filePath, document.name);
   }
 }

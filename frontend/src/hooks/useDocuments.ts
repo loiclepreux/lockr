@@ -17,6 +17,7 @@ import {
     deleteDocument,
     renameDocument,
     uploadDocument,
+    downloadDocument,
     type UploadDocumentData,
 } from "../api/documents.api";
 
@@ -193,5 +194,11 @@ export const useRawDocuments = () => {
     return useQuery<IDocument[]>({
         queryKey: ["documents", "raw"],
         queryFn: getAllDocuments,
+    });
+};
+
+export const useDownloadDocument = () => {
+    return useMutation({
+        mutationFn: (documentId: string) => downloadDocument(documentId),
     });
 };

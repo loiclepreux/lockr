@@ -35,8 +35,6 @@ export class AuthController {
 
     const newUser = await this.userService.create(signupData);
 
-    const safeUser = newUser;
-
     return {
       data: newUser,
       dataType: 'User',

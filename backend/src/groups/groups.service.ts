@@ -39,8 +39,22 @@ export class GroupsService {
     return group;
   }
 
-  async findAll() {
-    const result = await this.prisma.group.findMany({
+  async findAll(userId: string) {
+    return this.prisma.group.findMany({
+      where: {
+        OR: [
+          {
+            creatorId: userId,
+          },
+          {
+            users: {
+              some: {
+                userId,
+              },
+            },
+          },
+        ],
+      },
       include: {
         users: {
           include: {
@@ -53,7 +67,6 @@ export class GroupsService {
         },
       },
     });
-    return result;
   }
 
   async findOne(id: string): Promise<Group | null> {
@@ -297,11 +310,24 @@ export class GroupsService {
     };
   }
 
-  async getGroupDocuments(groupId: string) {
+  async getGroupDocuments(groupId: string, userId: string) {
     const group = await this.findOne(groupId);
 
     if (!group) {
       throw new NotFoundException("Le groupe n'existe pas");
+    }
+
+    const isCreator = group.creatorId === userId;
+
+    const isMember = await this.prisma.userInGroup.findFirst({
+      where: {
+        groupId,
+        userId,
+      },
+    });
+
+    if (!isCreator && !isMember) {
+      throw new ForbiddenException("Vous n'avez pas accès à ce groupe");
     }
 
     return this.prisma.docsInGroup.findMany({

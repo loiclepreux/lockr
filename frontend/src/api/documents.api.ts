@@ -108,3 +108,20 @@ export async function shareDocument(
 ): Promise<void> {
     await api.post(`/documents/${documentId}/share`, data);
 }
+
+export async function downloadDocument(documentId: string): Promise<void> {
+    const response = await api.get(`/documents/${documentId}/download`, {
+        responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "document";
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+}

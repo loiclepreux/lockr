@@ -47,7 +47,7 @@ export class AuthService {
     response.cookie(name, token, {
       httpOnly: true,
       sameSite: 'strict',
-      path: '/auth/refresh_token',
+      path: '/auth/refresh',
       secure: process.env.NODE_ENV === 'production',
     });
   }
@@ -56,7 +56,7 @@ export class AuthService {
     response.clearCookie(name, {
       httpOnly: true,
       sameSite: 'strict',
-      path: '/auth/refresh_token',
+      path: '/auth/refresh',
       secure: process.env.NODE_ENV === 'production',
     });
   }

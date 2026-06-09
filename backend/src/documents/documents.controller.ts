@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Res,
   Param,
   Patch,
   Post,
@@ -13,6 +14,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { DocumentsService } from './documents.service';
@@ -68,6 +70,7 @@ export class DocumentsController {
           'image/jpeg',
           'image/webp',
         ],
+        allowedExtensions: ['.pdf', '.docx', '.mp3', '.mp4', '.png', '.jpg', '.jpeg', '.webp'],
         maxSizeMb: 20,
       }),
     ),
@@ -133,6 +136,12 @@ export class DocumentsController {
   permanentDelete(@Param('id') id: string, @Req() req: AuthentifRequest) {
     const userId = this.getUserId(req);
     return this.documentsService.permanentDelete(id, userId);
+  }
+
+  @Get(':id/download')
+  download(@Param('id') id: string, @Req() req: AuthentifRequest, @Res() res: Response) {
+    const userId = this.getUserId(req);
+    return this.documentsService.download(id, userId, res);
   }
 
   // je recupére un doucment de la bdd

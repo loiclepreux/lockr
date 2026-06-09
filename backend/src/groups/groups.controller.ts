@@ -55,8 +55,8 @@ export class GroupsController {
 
   @Get()
   @UseGuards(AuthGuard)
-  findAll(@Req() req: any) {
-    return this.groupsService.findAll();
+  findAll(@Req() req: RequestWithUser) {
+    return this.groupsService.findAll(req.user.sub);
   }
 
   @Get(':id')
@@ -88,7 +88,7 @@ export class GroupsController {
   }
 
   @Get(':groupId/documents')
-  getGroupDocuments(@Param('groupId') groupId: string) {
-    return this.groupsService.getGroupDocuments(groupId);
+  getGroupDocuments(@Param('groupId') groupId: string, @Req() req: RequestWithUser) {
+    return this.groupsService.getGroupDocuments(groupId, req.user.sub);
   }
 }

@@ -27,12 +27,22 @@ import { UpdatePasswordDto } from './dto/update-password.dto';
 
 type RequestWithUser = Request & { user: { sub: string } };
 
+type UserSearchResult = {
+  id: string;
+  email: string;
+  profile: {
+    firstName: string;
+    lastName: string;
+    imgUrl: string | null;
+  } | null;
+};
+
 @UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
-  async findAll(): Promise<IResponse<Omit<User, 'password'>[]>> {
+  async findAll(): Promise<IResponse<UserSearchResult[]>> {
     // pagination a faire
     return {
       data: await this.userService.findAll(),
@@ -65,6 +75,7 @@ export class UserController {
       createMulterConfig({
         folder: 'profiles',
         allowedMimeTypes: ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'],
+        allowedExtensions: ['.png', '.jpg', '.jpeg', '.webp'],
         maxSizeMb: 5,
       }),
     ),

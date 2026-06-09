@@ -6,6 +6,7 @@ import {
     useUpdateDocumentPriority,
     useUpdateDocumentStatus,
     useShareDocument,
+    useDownloadDocument,
 } from "../hooks/useDocuments";
 import { useMyGroups } from "../hooks/useGroups";
 import { useEffect, useRef, useState } from "react";
@@ -49,6 +50,8 @@ export default function DocumentsPage() {
     const { mutateAsync: updateDocumentStatus } = useUpdateDocumentStatus();
 
     const { mutateAsync: shareDocument } = useShareDocument();
+
+    const { mutateAsync: downloadDocument } = useDownloadDocument();
 
     const [selectedDoc, setSelectedDoc] = useState<DocumentFile | null>(null);
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -358,7 +361,7 @@ export default function DocumentsPage() {
     };
 
     // error and success messages for download.
-    const handleDownload = () => {
+    const handleDownload = async () => {
         const doc = documents.find((d) => d.id === openMenuId);
 
         if (!doc) {
@@ -369,10 +372,21 @@ export default function DocumentsPage() {
             return;
         }
 
-        setFeedback({
-            type: "success",
-            message: feedbackMessages.document.downloadSuccess,
-        });
+        try {
+            await downloadDocument(doc.id);
+
+            setFeedback({
+                type: "success",
+                message: feedbackMessages.document.downloadSuccess,
+            });
+        } catch (error) {
+            console.error(error);
+
+            setFeedback({
+                type: "error",
+                message: feedbackMessages.document.downloadError,
+            });
+        }
 
         setOpenMenuId(null);
     };
