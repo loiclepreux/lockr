@@ -14,7 +14,6 @@ const Signin = () => {
     const navigate = useNavigate();
     // login n'existe plus — on utilise setAccessToken et setUser séparément
     const setAccessToken = useAuthStore((state) => state.setAccessToken);
-    const setUser = useAuthStore((state) => state.setUser);
 
     const {
         register,
@@ -29,12 +28,9 @@ const Signin = () => {
                 password: formData.password,
             });
 
-            // response.data contient { accessToken, user } via IResponse<AuthPayload>
-            const { accessToken, user } = response.data;
+            const accessToken = response.data.accessToken;
 
-            // On met à jour le store en deux étapes — plus de login() centralisé
             setAccessToken(accessToken);
-            setUser(user);
 
             navigate("/dashboard");
         } catch (error: unknown) {
@@ -70,6 +66,7 @@ const Signin = () => {
                                 </span>
                             </label>
                             <input
+                                data-cy="login-email"
                                 type="email"
                                 placeholder="Email"
                                 role="email"
@@ -95,6 +92,7 @@ const Signin = () => {
                                 </span>
                             </label>
                             <input
+                                data-cy="login-password"
                                 type="password"
                                 placeholder="Password"
                                 role="password"
@@ -126,6 +124,7 @@ const Signin = () => {
                         </div>
 
                         <button
+                            data-cy="login-submit"
                             type="submit"
                             className="btn btn-primary mt-6 w-full"
                         >

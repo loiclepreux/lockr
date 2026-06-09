@@ -1,4 +1,14 @@
 /// <reference types="cypress" />
+
+declare global {
+    namespace Cypress {
+        interface Chainable {
+            login(): Chainable<void>;
+        }
+    }
+}
+
+export {};
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -35,3 +45,26 @@
 //     }
 //   }
 // }
+Cypress.Commands.add("login", () => {
+    cy.request("POST", "http://localhost:3000/auth/signin", {
+        email: "lepreux.loic@bbox.fr",
+        password: "Loic1983.",
+    }).then((response) => {
+        expect(response.status).to.be.oneOf([200, 201]);
+
+        const accessToken = response.body.data.accessToken;
+
+        window.localStorage.setItem(
+            "auth-storage",
+            JSON.stringify({
+                state: {
+                    accessToken,
+                    user: null,
+                },
+                version: 0,
+            }),
+        );
+    });
+
+    cy.visit("/dashboard");
+});

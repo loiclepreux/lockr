@@ -1,17 +1,28 @@
 /// <reference types="cypress" />
 
-describe("should redirect to signin page", () => {
+describe("Signup", () => {
     beforeEach(() => {
-        cy.visit("http://localhost:5173/signup");
+        cy.visit("/signup");
     });
 
-    it("s inscrire correctement", () => {
-        cy.get('input[role="Email"]').type("tony10@gmail.com");
-        cy.get('input[role="FirsName"]').type("tony");
-        cy.get('input[role="LastName"]').type("stark");
-        cy.get('input[role="phone"]').type("06.13.13.22.23");
-        cy.get('input[role="adress"]').type("3 rue des avengers 92000 Ultron");
-        cy.get('input[role="password"]').type("12345678");
-        cy.get('input[role="confirmPassword"]').type("12345678");
+    it("should register successfully", () => {
+        const email = `cypress-${Date.now()}@lockr.fr`;
+
+        cy.intercept("POST", "**/auth/signup").as("signup");
+
+        cy.get('input[role="Email"]').type(email);
+        cy.get('input[role="FirsName"]').type("Tony");
+        cy.get('input[role="LastName"]').type("Stark");
+        cy.get('input[role="phone"]').type("0613132223");
+        cy.get('input[role="adress"]').type("3 rue des Avengers");
+        cy.get('input[role="password"]').type("Password123!");
+        cy.get('input[role="confirmPassword"]').type("Password123!");
+
+        cy.get('button[type="submit"]').click();
+
+        cy.wait("@signup").then((interception) => {
+            expect(interception.response?.statusCode).to.be.oneOf([200, 201]);
+            expect(interception.response?.body?.data?.email).to.eq(email);
+        });
     });
 });

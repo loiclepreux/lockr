@@ -120,6 +120,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-firstname"
                                         type="text"
                                         role="FirsName"
                                         className={`input input-bordered ${errors.firstName ? "input-error" : ""}`}
@@ -146,6 +147,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-lastname"
                                         type="text"
                                         role="LastName"
                                         className={`input input-bordered ${errors.lastName ? "input-error" : ""}`}
@@ -169,6 +171,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-phone"
                                         type="tel"
                                         role="phone"
                                         className="input input-bordered"
@@ -183,6 +186,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-adress"
                                         type="text"
                                         role="adress"
                                         className="input input-bordered"
@@ -206,6 +210,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-email"
                                         type="email"
                                         role="Email"
                                         className={`input input-bordered ${errors.email ? "input-error" : ""}`}
@@ -232,6 +237,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-password"
                                         type="password"
                                         role="password"
                                         className={`input input-bordered ${errors.password ? "input-error" : ""}`}
@@ -284,6 +290,7 @@ const Signup = () => {
                                         </span>
                                     </label>
                                     <input
+                                        data-cy="signup-confirmPassword"
                                         type="password"
                                         role="confirmPassword"
                                         className={`input input-bordered ${errors.confirmPassword ? "input-error" : ""}`}
@@ -316,6 +323,7 @@ const Signup = () => {
                         </div>
 
                         <button
+                            data-cy="signup-submit"
                             type="submit"
                             className="btn btn-primary w-full mt-8"
                             disabled={isLoading}
