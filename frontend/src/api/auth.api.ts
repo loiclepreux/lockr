@@ -25,6 +25,7 @@ export class AuthApi {
         const { data } = await api.get("user/me");
         return data;
     }
+    
     // ⚠️ Appel direct axios — contourne volontairement l'intercepteur
     // pour éviter la boucle infinie si le refresh token est lui-même invalide
     static async refresh(): Promise<AuthPayload> {

@@ -15,8 +15,16 @@ function axiosClient(): AxiosInstance {
     // ---- REQUEST INTERCEPTOR ----
     api.interceptors.request.use((config) => {
         const { accessToken } = useAuthStore.getState();
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+
+        const cypressAccessToken =
+            typeof window !== "undefined"
+                ? window.localStorage.getItem("accessToken")
+                : null;
+
+        const token = accessToken || cypressAccessToken;
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     });

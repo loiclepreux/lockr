@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { IUser } from "../types/IUser";
 
 type AuthState = {
@@ -9,12 +10,18 @@ type AuthState = {
     clearAuth: () => void;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-    // La session est maintenue par le cookie HttpOnly du refresh token
-    user: null,
-    accessToken: null,
+export const useAuthStore = create<AuthState>()(
+    persist(
+        (set) => ({
+            user: null,
+            accessToken: null,
 
-    setUser: (user) => set({ user }),
-    setAccessToken: (token) => set({ accessToken: token }),
-    clearAuth: () => set({ user: null, accessToken: null }),
-}));
+            setUser: (user) => set({ user }),
+            setAccessToken: (token) => set({ accessToken: token }),
+            clearAuth: () => set({ user: null, accessToken: null }),
+        }),
+        {
+            name: "auth-storage",
+        },
+    ),
+);

@@ -54,17 +54,27 @@ Cypress.Commands.add("login", () => {
 
         const accessToken = response.body.data.accessToken;
 
-        window.localStorage.setItem(
-            "auth-storage",
-            JSON.stringify({
-                state: {
-                    accessToken,
-                    user: null,
-                },
-                version: 0,
-            }),
-        );
-    });
+        cy.request({
+            method: "GET",
+            url: "http://localhost:3000/user/me",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }).then((meResponse) => {
+            expect(meResponse.status).to.eq(200);
 
-    cy.visit("/dashboard");
+            cy.window().then((win) => {
+                win.localStorage.setItem(
+                    "auth-storage",
+                    JSON.stringify({
+                        state: {
+                            accessToken,
+                            user: meResponse.body.data,
+                        },
+                        version: 0,
+                    }),
+                );
+            });
+        });
+    });
 });

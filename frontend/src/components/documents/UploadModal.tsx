@@ -115,6 +115,7 @@ export function UploadModal({ onUpload }: UploadModalProps) {
                 </div>
 
                 <input
+                    data-cy="upload-file"
                     ref={fileInputRef}
                     type="file"
                     className="hidden"
@@ -169,6 +170,7 @@ export function UploadModal({ onUpload }: UploadModalProps) {
                             Type
                         </label>
                         <input
+                            data-cy="upload-doctype"
                             type="text"
                             value={doctype}
                             onChange={(e) => setDoctype(e.target.value)}
@@ -182,6 +184,7 @@ export function UploadModal({ onUpload }: UploadModalProps) {
                             Priorité
                         </label>
                         <select
+                            data-cy="upload-priority"
                             value={priority}
                             onChange={(e) =>
                                 setPriority(
@@ -210,6 +213,7 @@ export function UploadModal({ onUpload }: UploadModalProps) {
                     </button>
 
                     <button
+                        data-cy="upload-submit"
                         type="button"
                         onClick={handleSubmit}
                         className="w-full rounded-xl bg-cyan-500 px-5 py-2 font-semibold text-black transition hover:bg-cyan-400 sm:w-auto"
