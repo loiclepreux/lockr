@@ -34,6 +34,7 @@ export function RenameModal({
 
                 <div className="mt-5">
                     <input
+                        data-cy="rename-input"
                         type="text"
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
@@ -49,6 +50,7 @@ export function RenameModal({
                         </button>
                     </form>
                     <button
+                        data-cy="rename-submit"
                         type="button"
                         onClick={confirmRename}
                         className="w-full rounded-xl bg-cyan-500 px-5 py-2 font-semibold text-black transition hover:bg-cyan-400 sm:w-auto"

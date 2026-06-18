@@ -122,6 +122,7 @@ export function DocumentDesktop({
 
                                 <td className="border-b border-white/5 px-4 py-4 text-right lg:px-6 lg:py-5 lg:pr-8">
                                     <button
+                                        data-cy={`document-actions-${doc.id}`}
                                         type="button"
                                         className="rounded-lg p-2 text-gray-300 transition hover:bg-cyan-500/10 hover:text-cyan-400"
                                         onClick={(e) =>

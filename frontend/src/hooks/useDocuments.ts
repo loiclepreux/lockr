@@ -43,23 +43,17 @@ export const useMyDocuments = () => {
         queryKey: ["documents", "mine", userId],
         queryFn: async () => {
             const allDocs = await getAllDocuments();
-            return (
-                allDocs
-                    .filter((doc) => doc.ownerId === userId)
-                    // On transforme IDocument → DocumentFile pour compatibilité avec l'UI existante
-                    .map(
-                        (doc): DocumentFile => ({
-                            id: doc.id,
-                            name: doc.name,
-                            size: doc.size,
-                            date: new Date(doc.addedDate).toLocaleDateString(
-                                "fr-FR",
-                            ),
-                            type: doc.extension.toUpperCase(),
-                            doctype: doc.extension.toUpperCase(),
-                            priority: mapPriorityToFrench(doc.priority),
-                        }),
-                    )
+
+            return allDocs.map(
+                (doc): DocumentFile => ({
+                    id: doc.id,
+                    name: doc.name,
+                    size: doc.size,
+                    date: new Date(doc.addedDate).toLocaleDateString("fr-FR"),
+                    type: doc.extension.toUpperCase(),
+                    doctype: doc.extension.toUpperCase(),
+                    priority: mapPriorityToFrench(doc.priority),
+                }),
             );
         },
         enabled: !!userId,

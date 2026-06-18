@@ -19,8 +19,11 @@ export async function uploadDocument(
 ): Promise<IDocument> {
     const formData = new FormData();
 
+    const extension = data.file.name.split(".").pop()?.toLowerCase() ?? "";
+
     formData.append("file", data.file);
     formData.append("name", data.name);
+    formData.append("extension", extension);
 
     if (data.typeId) {
         formData.append("docTypeId", data.typeId);

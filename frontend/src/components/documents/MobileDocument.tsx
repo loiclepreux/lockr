@@ -81,6 +81,7 @@ export function DocumentMobile({
                         </div>
 
                         <button
+                            data-cy={`document-actions-${doc.id}`}
                             type="button"
                             className="shrink-0 rounded-lg p-2 text-gray-300 transition hover:bg-cyan-500/10 hover:text-cyan-400"
                             onClick={(e) => handleMenuToggle(doc, e)}

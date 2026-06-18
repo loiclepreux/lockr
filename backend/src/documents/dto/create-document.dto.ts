@@ -19,8 +19,9 @@ export class CreateDocumentDto {
   @IsEnum(extentionEnum)
   extension: extentionEnum;
 
+  @IsOptional()
   @IsUUID()
-  docTypeId: string;
+  docTypeId?: string;
 
   @IsOptional()
   @IsDateString()

@@ -642,6 +642,7 @@ export default function DocumentsPage() {
 
                         <li>
                             <button
+                                data-cy="rename-document"
                                 type="button"
                                 onClick={() => {
                                     const doc = documents.find(

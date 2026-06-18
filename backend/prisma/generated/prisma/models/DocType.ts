@@ -301,9 +301,9 @@ export type DocTypeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DocTypeScalarRelationFilter = {
-  is?: Prisma.DocTypeWhereInput
-  isNot?: Prisma.DocTypeWhereInput
+export type DocTypeNullableScalarRelationFilter = {
+  is?: Prisma.DocTypeWhereInput | null
+  isNot?: Prisma.DocTypeWhereInput | null
 }
 
 export type DocTypeOrderByRelevanceInput = {
@@ -384,10 +384,12 @@ export type DocTypeCreateNestedOneWithoutDocsInput = {
   connect?: Prisma.DocTypeWhereUniqueInput
 }
 
-export type DocTypeUpdateOneRequiredWithoutDocsNestedInput = {
+export type DocTypeUpdateOneWithoutDocsNestedInput = {
   create?: Prisma.XOR<Prisma.DocTypeCreateWithoutDocsInput, Prisma.DocTypeUncheckedCreateWithoutDocsInput>
   connectOrCreate?: Prisma.DocTypeCreateOrConnectWithoutDocsInput
   upsert?: Prisma.DocTypeUpsertWithoutDocsInput
+  disconnect?: Prisma.DocTypeWhereInput | boolean
+  delete?: Prisma.DocTypeWhereInput | boolean
   connect?: Prisma.DocTypeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.DocTypeUpdateToOneWithWhereWithoutDocsInput, Prisma.DocTypeUpdateWithoutDocsInput>, Prisma.DocTypeUncheckedUpdateWithoutDocsInput>
 }

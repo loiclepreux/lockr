@@ -46,7 +46,7 @@ model Doc {
   extension extentionEnum
   ownerId   String
   size      BigInt
-  docTypeId String
+  docTypeId String?
   status    DocStatus     @default(ACTIVE)
   priority  DocPriority   @default(MEDIUM)
   addedDate DateTime
@@ -56,7 +56,7 @@ model Doc {
   updatedAt DateTime      @updatedAt
 
   owner      User          @relation(fields: [ownerId], references: [id])
-  docType    DocType       @relation(fields: [docTypeId], references: [id])
+  docType    DocType?      @relation(fields: [docTypeId], references: [id])
   sharedDocs SharedDoc[]
   groups     DocsInGroup[]
 

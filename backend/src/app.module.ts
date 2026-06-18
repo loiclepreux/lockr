@@ -12,6 +12,7 @@ import { AccessRequestsModule } from './access-requests/access-requests.module';
 import { AuditLogModule } from './audit-log/audit-log.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging-interceptor';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LoggingInterceptor } from './common/interceptors/logging-interceptor';
     UserModule,
     AuthModule,
     GroupsModule,
+    DocumentsModule,
     NotificationsModule,
     EventEmitterModule.forRoot(),
     ActivityLogModule,
