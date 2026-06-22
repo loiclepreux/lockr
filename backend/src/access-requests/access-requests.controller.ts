@@ -1,23 +1,19 @@
 import { Controller, Param, Body, Get, Req, Put, UseGuards } from '@nestjs/common';
-
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { AccessRequestsService } from './access-requests.service';
 import { IResponse } from 'src/utils/interfaces/response.interface';
 import { UpdateAccessRequestDto } from './dto/update-access-requests.dto';
+import type { RequestWithUser } from 'src/utils/interfaces/request-with-user.interface';
 
-import type { Request } from 'express';
-
-type RequestWithUser = Request & {
-  user: {
-    sub: string;
-  };
-};
-
+@ApiTags('Access Requests')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('access-requests')
 export class AccessRequestsController {
   constructor(private readonly accessRequestsService: AccessRequestsService) {}
 
+  @ApiOperation({ summary: 'Lister mes demandes d\'accès' })
   @Get()
   async findAll(@Req() req: RequestWithUser): Promise<IResponse<any>> {
     return {
@@ -27,6 +23,7 @@ export class AccessRequestsController {
     };
   }
 
+  @ApiOperation({ summary: 'Répondre à une demande d\'accès (ACCEPTED / REJECTED)' })
   @Put(':id')
   async update(
     @Param('id') id: string,

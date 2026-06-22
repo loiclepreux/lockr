@@ -20,6 +20,7 @@ import { RenameModal } from "../components/documents/RenameModal";
 import { DocumentMobile } from "../components/documents/MobileDocument";
 import { DocumentDesktop } from "../components/documents/DesktopDocument";
 import { useMyDocuments } from "../hooks/useDocuments";
+import { DocumentRowSkeleton } from "../components/ui/Skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { UserApi } from "../api/user.api";
 import type { UserOption } from "../api/user.api";
@@ -504,10 +505,16 @@ export default function DocumentsPage() {
     };
     if (isLoading)
         return (
-            <main className="min-w-0 bg-[#0b0f14] text-white px-10 py-10">
-                <p className="text-gray-400 text-sm">
-                    Chargement des documents...
-                </p>
+            <main className="min-w-0 bg-[#0b0f14] text-white px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-10">
+                <div className="mb-8 space-y-2">
+                    <div className="h-8 w-56 animate-pulse rounded-lg bg-white/5" />
+                    <div className="h-4 w-36 animate-pulse rounded-lg bg-white/5" />
+                </div>
+                <div className="space-y-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <DocumentRowSkeleton key={i} />
+                    ))}
+                </div>
             </main>
         );
 
