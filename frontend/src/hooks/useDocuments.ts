@@ -8,7 +8,6 @@ import {
     type DocumentStatus,
     type ShareDocumentData,
     type DocumentPriority,
-    type PaginatedDocuments,
 } from "../api/documents.api";
 import type { AddDocToGroupData } from "../api/documents.api";
 import { useAuthStore } from "../stores/useAuthStore";

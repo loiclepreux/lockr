@@ -20,8 +20,6 @@ export class GroupsController {
   @Post()
   @UseGuards(AuthGuard)
   async create(@Body() createGroupDto: CreateGroupDto, @Req() req: any) {
-    console.log('User from request:', req.user);
-
     const newGroupData = {
       ...createGroupDto,
       creatorId: req.user?.id || req.user?.sub,

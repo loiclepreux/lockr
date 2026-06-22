@@ -31,14 +31,8 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UpdateDocumentStatusDto } from './dto/status-document.dto';
+import { UpdateDocumentPriorityDto } from './dto/priority-document.dto';
 import { createMulterConfig } from 'src/config/config.multer';
-import { IsEnum } from 'class-validator';
-import { DocPriority } from 'prisma/generated/prisma/client';
-
-export class UpdateDocumentPriorityDto {
-  @IsEnum(DocPriority)
-  priority: DocPriority;
-}
 
 interface AuthentifRequest extends Request {
   user: {
