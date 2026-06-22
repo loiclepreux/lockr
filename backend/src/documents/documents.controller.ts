@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Query,
   Res,
   Param,
   Patch,
@@ -14,6 +15,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
@@ -39,6 +47,8 @@ interface AuthentifRequest extends Request {
   };
 }
 
+@ApiTags('Documents')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('documents')
 export class DocumentsController {
@@ -95,11 +105,20 @@ export class DocumentsController {
     });
   }
 
-  // je recupére tous les documents de la bdd
+  @ApiOperation({ summary: 'Lister mes documents avec pagination' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Numéro de page (défaut: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Nombre par page (défaut: 20, max: 100)' })
+  @ApiResponse({ status: 200, description: 'Liste paginée des documents' })
   @Get()
-  findAll(@Req() req: AuthentifRequest) {
+  findAll(
+    @Req() req: AuthentifRequest,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
     const userId = this.getUserId(req);
-    return this.documentsService.findAll(userId);
+    const pageNum = Math.max(1, parseInt(page ?? '1', 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit ?? '20', 10) || 20));
+    return this.documentsService.findAll(userId, pageNum, limitNum);
   }
 
   @Get('trash')

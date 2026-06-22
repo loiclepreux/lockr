@@ -8,6 +8,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -16,6 +17,7 @@ import { User } from 'prisma/generated/prisma/client';
 import { SigninDto } from './dto/signin.dto';
 import type { Request, Response } from 'express';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -23,6 +25,9 @@ export class AuthController {
     private readonly userService: UserService,
   ) {}
 
+  @ApiOperation({ summary: 'Créer un compte' })
+  @ApiResponse({ status: 201, description: 'Compte créé avec succès' })
+  @ApiResponse({ status: 409, description: 'Email déjà utilisé' })
   @Post('signup')
   async signup(
     @Body() signupData: CreateUserDto,
@@ -42,6 +47,9 @@ export class AuthController {
     };
   }
 
+  @ApiOperation({ summary: 'Se connecter' })
+  @ApiResponse({ status: 200, description: 'Connexion réussie, retourne un accessToken' })
+  @ApiResponse({ status: 401, description: 'Identifiants incorrects' })
   @Post('signin')
   async signin(
     @Body() loginData: SigninDto,
@@ -70,6 +78,8 @@ export class AuthController {
     };
   }
 
+  @ApiOperation({ summary: 'Rafraîchir le token via cookie' })
+  @ApiResponse({ status: 200, description: 'Nouveau accessToken généré' })
   @Get('refresh')
   async refreshToken(
     @Req() request: Request,
@@ -100,6 +110,7 @@ export class AuthController {
     };
   }
 
+  @ApiOperation({ summary: 'Se déconnecter et révoquer le refresh token' })
   @Post('logout')
   async logout(
     @Req() request: Request,

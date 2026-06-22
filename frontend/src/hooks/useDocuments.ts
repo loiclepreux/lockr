@@ -8,6 +8,7 @@ import {
     type DocumentStatus,
     type ShareDocumentData,
     type DocumentPriority,
+    type PaginatedDocuments,
 } from "../api/documents.api";
 import type { AddDocToGroupData } from "../api/documents.api";
 import { useAuthStore } from "../stores/useAuthStore";
@@ -35,28 +36,32 @@ const mapPriorityToFrench = (
     }
 };
 
-// ─── MES DOCUMENTS ──────────────────────────────────────────────────────────
-export const useMyDocuments = () => {
+// ─── MES DOCUMENTS (paginés) ─────────────────────────────────────────────────
+export const useMyDocuments = (page = 1, limit = 20) => {
     const userId = useAuthStore((state) => state.user?.id);
 
     return useQuery({
-        queryKey: ["documents", "mine", userId],
+        queryKey: ["documents", "mine", userId, page, limit],
         queryFn: async () => {
-            const allDocs = await getAllDocuments();
+            const result = await getAllDocuments(page, limit);
 
-            return allDocs.map(
-                (doc): DocumentFile => ({
-                    id: doc.id,
-                    name: doc.name,
-                    size: doc.size,
-                    date: new Date(doc.addedDate).toLocaleDateString("fr-FR"),
-                    type: doc.extension.toUpperCase(),
-                    doctype: doc.extension.toUpperCase(),
-                    priority: mapPriorityToFrench(doc.priority),
-                }),
-            );
+            return {
+                documents: result.data.map(
+                    (doc): DocumentFile => ({
+                        id: doc.id,
+                        name: doc.name,
+                        size: doc.size,
+                        date: new Date(doc.addedDate).toLocaleDateString("fr-FR"),
+                        type: doc.extension.toUpperCase(),
+                        doctype: doc.extension.toUpperCase(),
+                        priority: mapPriorityToFrench(doc.priority),
+                    }),
+                ),
+                meta: result.meta,
+            };
         },
         enabled: !!userId,
+        placeholderData: (prev) => prev,
     });
 };
 
@@ -183,11 +188,14 @@ export const useShareDocument = () => {
     });
 };
 
-// ─── DOCUMENTS BRUTS POUR LES SELECTS ───────────────────────────────────────
+// ─── DOCUMENTS BRUTS POUR LES SELECTS (charge tout, sans pagination) ────────
 export const useRawDocuments = () => {
     return useQuery<IDocument[]>({
         queryKey: ["documents", "raw"],
-        queryFn: getAllDocuments,
+        queryFn: async () => {
+            const result = await getAllDocuments(1, 100);
+            return result.data;
+        },
     });
 };
 

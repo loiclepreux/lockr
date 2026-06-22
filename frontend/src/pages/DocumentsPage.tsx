@@ -31,7 +31,12 @@ import type {
 } from "../types/documentFiles";
 
 export default function DocumentsPage() {
-    const { data: documents = [], isLoading } = useMyDocuments();
+    const [page, setPage] = useState(1);
+    const LIMIT = 20;
+
+    const { data: result, isLoading } = useMyDocuments(page, LIMIT);
+    const documents = result?.documents ?? [];
+    const meta = result?.meta;
     const { data: myGroups = [] } = useMyGroups();
     const { data: users = [] } = useQuery({
         queryKey: ["users"],
@@ -360,7 +365,6 @@ export default function DocumentsPage() {
         }
     };
 
-    // error and success messages for download.
     const handleDownload = async () => {
         const doc = documents.find((d) => d.id === openMenuId);
 
@@ -565,7 +569,7 @@ export default function DocumentsPage() {
                     </div>
 
                     <p className="mt-2 text-sm text-gray-400">
-                        {documents.length} fichiers sécurisés dans votre espace
+                        {meta?.total ?? documents.length} fichiers sécurisés dans votre espace
                         Lockr
                     </p>
                 </div>
@@ -592,6 +596,31 @@ export default function DocumentsPage() {
                     getTypeClasses={getTypeClasses}
                     handleMenuToggle={handleMenuToggle}
                 />
+
+                {/* PAGINATION */}
+                {meta && meta.totalPages > 1 && (
+                    <div className="mt-6 flex items-center justify-center gap-4">
+                        <button
+                            type="button"
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            disabled={page === 1}
+                            className="rounded-lg border border-cyan-500/20 bg-[#111318] px-4 py-2 text-sm text-gray-300 transition hover:border-cyan-400 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            ← Précédent
+                        </button>
+                        <span className="text-sm text-gray-400">
+                            Page {meta.page} / {meta.totalPages}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+                            disabled={page === meta.totalPages}
+                            className="rounded-lg border border-cyan-500/20 bg-[#111318] px-4 py-2 text-sm text-gray-300 transition hover:border-cyan-400 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            Suivant →
+                        </button>
+                    </div>
+                )}
             </div>
             {openMenuId !== null && (
                 <div

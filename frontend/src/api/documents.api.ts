@@ -2,8 +2,18 @@ import { api } from "../utils/axios-client";
 import type { IDocument } from "../types/IDocument";
 
 // ─── RÉCUPÉRER MES DOCUMENTS ────────────────────────────────────────────────
-export async function getAllDocuments(): Promise<IDocument[]> {
-    const { data } = await api.get<IDocument[]>("/documents");
+export type PaginatedDocuments = {
+    data: IDocument[];
+    meta: { total: number; page: number; limit: number; totalPages: number };
+};
+
+export async function getAllDocuments(
+    page = 1,
+    limit = 20,
+): Promise<PaginatedDocuments> {
+    const { data } = await api.get<PaginatedDocuments>("/documents", {
+        params: { page, limit },
+    });
     return data;
 }
 

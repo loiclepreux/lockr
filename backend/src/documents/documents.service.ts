@@ -75,19 +75,24 @@ export class DocumentsService {
     return this.TransformBigInt(newDocument);
   }
 
-  // récupèration de tout les documents
-  async findAll(userId: string) {
-    const documents = await this.prisma.doc.findMany({
-      where: {
-        ownerId: userId,
-        deletedAt: null,
-      },
-      include: {
-        docType: true,
-      },
-    });
+  async findAll(userId: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
 
-    return this.TransformBigInt(documents);
+    const [documents, total] = await this.prisma.$transaction([
+      this.prisma.doc.findMany({
+        where: { ownerId: userId, deletedAt: null },
+        include: { docType: true },
+        orderBy: { addedDate: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.doc.count({ where: { ownerId: userId, deletedAt: null } }),
+    ]);
+
+    return this.TransformBigInt({
+      data: documents,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    });
   }
 
   // récupèration d'un document
