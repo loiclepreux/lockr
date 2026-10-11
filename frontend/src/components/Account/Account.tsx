@@ -297,9 +297,9 @@ export default function Account() {
                                 />
                             </div>
                             <p
-                                className={`${user.twoFactorEnabled ? "text-green-400" : "text-red-400"}`}
+                                className={`${user?.twoFactorEnabled ? "text-green-400" : "text-red-400"}`}
                             >
-                                {user.twoFactorEnabled
+                                {user?.twoFactorEnabled
                                     ? "Activée"
                                     : "Désactivée"}
                             </p>

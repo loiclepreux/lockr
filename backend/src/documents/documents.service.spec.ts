@@ -1,3 +1,4 @@
+import { FilesService } from 'src/files/files.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -62,6 +63,7 @@ describe('DocumentsService', () => {
         { provide: PrismaService, useValue: mockPrisma },
         { provide: ActivityLogService, useValue: mockActivityLog },
         { provide: EventEmitter2, useValue: mockEventEmitter },
+        { provide: FilesService, useValue: { save: jest.fn(), get: jest.fn(), remove: jest.fn() } },
       ],
     }).compile();
 

@@ -130,8 +130,13 @@ export async function downloadDocument(documentId: string): Promise<void> {
     const url = window.URL.createObjectURL(response.data);
     const link = document.createElement("a");
 
+    // Le vrai nom du fichier est envoyé par le serveur (en-tête Content-Disposition)
+    const disposition = String(response.headers["content-disposition"] ?? "");
+    const match = disposition.match(/filename\*=UTF-8''([^;]+)/i) ?? disposition.match(/filename="?([^";]+)"?/i);
+    const fileName = match ? decodeURIComponent(match[1]) : "document";
+
     link.href = url;
-    link.download = "document";
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
 

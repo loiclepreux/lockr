@@ -6,9 +6,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
+import { FilesService } from 'src/files/files.service';
+
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly filesService: FilesService,
+  ) {}
 
   async create(data: CreateUserDto): Promise<Omit<User, 'password' | 'refreshToken'>> {
     const user = await this.prisma.user.create({
@@ -151,7 +156,13 @@ export class UserService {
   }
 
   async updateProfilePhoto(userId: string, file: Express.Multer.File) {
-    const imgUrl = `/uploads/profiles/${file.filename}`;
+    // La photo est rangée dans la base et servie par /files/<id>
+    const ref = await this.filesService.save(file, 'profiles');
+    const imgUrl = `/files/${ref.replace('db:', '')}`;
+
+    // On supprime l'ancienne photo
+    const previous = await this.prisma.profile.findUnique({ where: { userId }, select: { imgUrl: true } });
+    await this.filesService.remove(previous?.imgUrl);
 
     return this.prisma.profile.update({
       where: {

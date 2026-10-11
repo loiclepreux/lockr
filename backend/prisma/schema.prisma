@@ -266,3 +266,14 @@ model AuditLog {
   userAgent String?
   createdAt DateTime @default(now())
 }
+
+// Fichiers envoyés (documents et photos de profil), rangés directement dans la base :
+// l'hébergeur gratuit (Render) efface son disque à chaque redémarrage.
+model StoredFile {
+  id        String   @id @default(uuid())
+  kind      String   @db.VarChar(20) // "documents" | "profiles" | "groups"
+  mimeType  String   @db.VarChar(100)
+  size      Int
+  data      Bytes    @db.LongBlob
+  createdAt DateTime @default(now())
+}

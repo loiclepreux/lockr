@@ -13,6 +13,7 @@ import { UpdateDocumentDto } from './dto/update-document.dto';
 import { CreateShareDto } from './dto/create-share.dto';
 import { DocStatus, DocPriority, targetEnum } from 'prisma/generated/prisma/client';
 import { ActivityLogService } from 'src/activity-log/activity-log.service';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class DocumentsService {
@@ -20,6 +21,7 @@ export class DocumentsService {
     private readonly prisma: PrismaService,
     private readonly activityLogService: ActivityLogService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly filesService: FilesService,
   ) {}
 
   // je transforme les BigInt en string pour éviter des erreurs JSON
@@ -401,6 +403,9 @@ export class DocumentsService {
       where: { id },
     });
 
+    // On supprime aussi le contenu du fichier rangé dans la base
+    await this.filesService.remove(document.filePath);
+
     return this.TransformBigInt(deletedDocument);
   }
 
@@ -430,6 +435,19 @@ export class DocumentsService {
       throw new ForbiddenException('Accès refusé');
     }
 
+    // Fichier rangé dans la base
+    if (FilesService.isStored(document.filePath)) {
+      const file = await this.filesService.get(document.filePath);
+      res.set({
+        'Content-Type': file.mimeType,
+        'Content-Length': String(file.size),
+        'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(document.name)}`,
+        'Cache-Control': 'private, no-store',
+      });
+      return res.send(file.data);
+    }
+
+    // Ancien fichier sur le disque (avant le passage au stockage en base)
     if (!fs.existsSync(document.filePath)) {
       throw new NotFoundException('Fichier introuvable sur le serveur');
     }

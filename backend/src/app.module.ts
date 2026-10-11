@@ -13,6 +13,7 @@ import { AuditLogModule } from './audit-log/audit-log.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging-interceptor';
 import { DocumentsModule } from './documents/documents.module';
+import { FilesModule } from './files/files.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './common/logger/logger.config';
@@ -27,6 +28,7 @@ import { winstonConfig } from './common/logger/logger.config';
       { name: 'long', ttl: 60000, limit: 200 },
     ]),
     PrismaModule,
+    FilesModule,
     UserModule,
     AuthModule,
     GroupsModule,

@@ -1,4 +1,4 @@
-import Account from "../components/account/Account";
+import Account from "../components/Account/Account";
 
 export default function MyAccount() {
     return (

@@ -33,6 +33,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { UpdateDocumentStatusDto } from './dto/status-document.dto';
 import { UpdateDocumentPriorityDto } from './dto/priority-document.dto';
 import { createMulterConfig } from 'src/config/config.multer';
+import { FilesService } from 'src/files/files.service';
 
 interface AuthentifRequest extends Request {
   user: {
@@ -46,7 +47,10 @@ interface AuthentifRequest extends Request {
 @UseGuards(AuthGuard)
 @Controller('documents')
 export class DocumentsController {
-  constructor(private readonly documentsService: DocumentsService) {}
+  constructor(
+    private readonly documentsService: DocumentsService,
+    private readonly filesService: FilesService,
+  ) {}
 
   // je récupère l'id de l'utilisateur connecté
   private getUserId(req: AuthentifRequest): string {
@@ -75,11 +79,11 @@ export class DocumentsController {
           'image/webp',
         ],
         allowedExtensions: ['.pdf', '.docx', '.mp3', '.mp4', '.png', '.jpg', '.jpeg', '.webp'],
-        maxSizeMb: 20,
+        maxSizeMb: 10, // 10 Mo max : la base MySQL refuse les envois trop gros
       }),
     ),
   )
-  create(
+  async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() createDocumentDto: CreateDocumentDto,
     @Req() req: AuthentifRequest,
@@ -93,7 +97,7 @@ export class DocumentsController {
     return this.documentsService.create({
       ...createDocumentDto,
       ownerId: userId,
-      filePath: file.path,
+      filePath: await this.filesService.save(file, 'documents'),
       size: file.size.toString(),
       name: createDocumentDto.name ? createDocumentDto.name : file.originalname,
     });

@@ -1,3 +1,4 @@
+import { FilesService } from 'src/files/files.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -26,6 +27,7 @@ describe('UserService', () => {
       providers: [
         UserService,
         { provide: PrismaService, useValue: mockPrisma },
+        { provide: FilesService, useValue: { save: jest.fn(), get: jest.fn(), remove: jest.fn() } },
       ],
     }).compile();
 

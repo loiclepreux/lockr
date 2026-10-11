@@ -1,0 +1,40 @@
+# =========================================================
+#  LOCKR — mise en ligne sur Render (offre gratuite)
+#  Un seul service : NestJS sert l'API (/api) ET le site React.
+#  Render → New → Blueprint → choisir ce dépôt : tout est lu ici.
+# =========================================================
+services:
+  - type: web
+    name: lockr
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: >-
+      cd frontend && npm ci --include=dev && npm run build &&
+      cd ../backend && npm ci --include=dev && npx prisma generate && npm run build
+    startCommand: cd backend && node dist/src/main
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      # Cypress (tests du front) n'est pas utile en ligne : on ne télécharge pas son logiciel
+      - key: CYPRESS_INSTALL_BINARY
+        value: "0"
+      # Base MySQL Hostinger — à remplir à la création (jamais dans ce fichier)
+      - key: DATABASE_URL
+        sync: false
+      # Clés secrètes des jetons de connexion : Render les génère au hasard
+      - key: ACCESSSECRET
+        generateValue: true
+      - key: REFRESHSECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ACCESSEXPIRE
+        value: 15m
+      - key: REFRESHEXPIRE
+        value: 7d
+      - key: JWTALGORITHM
+        value: HS512

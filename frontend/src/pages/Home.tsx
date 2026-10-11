@@ -1,5 +1,5 @@
-import Footer from "../components/landingpage/Footer";
-import HeroBanner from "../components/landingpage/HeroBanner";
+import Footer from "../components/LandingPage/Footer";
+import HeroBanner from "../components/LandingPage/HeroBanner";
 import NavBarLanding from "../components/ui/NavBarLanding";
 
 const Home = () => {
