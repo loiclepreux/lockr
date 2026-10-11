@@ -11,7 +11,7 @@ import { Link } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import logo from "../../assets/images/logo.png";
-import foto from "../../assets/images/photo.png";
+import Avatar from "./Avatar";
 import NotificationsModal from "../notification/NotificationsModal";
 import { useLogout } from "../../hooks/useAuth";
 import { NotificationsApi } from "../../api/notifications.api";
@@ -60,9 +60,10 @@ const NavBarDashboard = ({
 
     const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
 
+    // Pas de photo : l'Avatar affiche les initiales
     const profileImage = profile?.imgUrl
         ? `${API_URL}${profile.imgUrl}?v=${meResponse?.data?.updatedAt ?? ""}`
-        : foto;
+        : null;
 
     const displayName =
         `${profile?.firstName ?? ""} ${profile?.lastName ?? ""}`.trim() ||
@@ -95,13 +96,12 @@ const NavBarDashboard = ({
                 {/* ========================= */}
                 <div className="px-6 py-5 border-b border-white/5">
                     <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-cyan-400">
-                            <img
-                                src={profileImage}
-                                alt="Photo profil"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
+                        <Avatar
+                            src={profileImage}
+                            firstName={profile?.firstName}
+                            lastName={profile?.lastName}
+                            className="w-14 h-14 shrink-0 border-2 border-cyan-400"
+                        />
 
                         <h2 className="text-lg font-semibold">{displayName}</h2>
                     </div>

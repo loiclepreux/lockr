@@ -10,7 +10,7 @@ import {
     Trash2,
     User,
 } from "lucide-react";
-import foto from "../../assets/images/photo.png";
+import Avatar from "../ui/Avatar";
 import EditProfileModal from "./ModalProfile";
 import ChangePasswordModal from "./ModalPassword";
 import ChangePhotoModal from "./ModalPhoto";
@@ -96,9 +96,10 @@ export default function Account() {
 
     const API_URL = import.meta.env.VITE_API_URL.replace(/\/$/, "");
 
+    // Pas de photo : l'Avatar affiche les initiales
     const profileImage = profile?.imgUrl
         ? `${API_URL}${profile.imgUrl}?v=${user?.updatedAt ?? ""}`
-        : foto;
+        : null;
 
     return (
         <section className="w-full h-full">
@@ -116,10 +117,12 @@ export default function Account() {
 
                     <div className="flex flex-col items-center lg:items-start">
                         <div className="relative w-32 h-32">
-                            <img
+                            <Avatar
                                 src={profileImage}
-                                alt="Photo de profil"
-                                className="w-full h-full rounded-full object-cover border-2 border-cyan-400"
+                                firstName={profile?.firstName}
+                                lastName={profile?.lastName}
+                                className="w-full h-full border-2 border-cyan-400"
+                                textClassName="text-4xl"
                             />
 
                             <button
