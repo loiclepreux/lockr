@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'prisma/prisma.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
   controllers: [UserController],
-  providers: [UserService, PrismaService],
+  // PrismaService vient du PrismaModule global : une seule connexion à la base pour toute l'appli
+  providers: [UserService],
   exports:[UserService]
 })
 export class UserModule {}
